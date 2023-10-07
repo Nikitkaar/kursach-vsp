@@ -1,6 +1,7 @@
 from initial_data import PodvizhnoySostav
 from openpyxl import Workbook
 
+# ВВОЖУ ИСХОДНЫЕ ДАННЫЕ
 # Локомотив/Вагон;;;
 Pct = [12000, 12500]
 q = [2760, 1070]
@@ -54,6 +55,7 @@ printList()
 workbook = Workbook()
 sheet = workbook.active
 
+# РАБОТА С ЭКСЕЛЬ, ЗАПИСЬ НУЖНЫХ ДАННЫХ В ТАБЛИЦУ
 # Запись результатов метода get_info() в столбец A
 for i, sostav in enumerate(sostavs, start=1):
     info = sostav.p_max_ver()
