@@ -56,38 +56,23 @@ workbook = Workbook()
 sheet = workbook.active
 
 # РАБОТА С ЭКСЕЛЬ, ЗАПИСЬ НУЖНЫХ ДАННЫХ В ТАБЛИЦУ
-# Запись результатов метода get_info() в столбец A
+
 for i, sostav in enumerate(sostavs, start=1):
     info = sostav.p_max_ver()
     sheet.cell(row=1, column=i, value=info)
-
-# Запись результатов метода get_info() в столбец A
-for i, sostav in enumerate(sostavs, start=1):
     info = sostav.s()
     sheet.cell(row=2, column=i, value=info)
-
-for i, sostav in enumerate(sostavs, start=1):
     info = sostav.s_ink()
-    a = sheet.cell(row=3, column=i, value=info)
-
-for c, sostav in enumerate(sostavs, start=1):
+    s = sheet.cell(row=3, column=i, value=info)
     informat = sostav.s_nnk()
-    a = sheet.cell(row=4, column=c, value=informat)
-
-for c, sostav in enumerate(sostavs, start=1):
+    f = sheet.cell(row=4, column=i, value=informat)
     informat = sostav.s_np()
-    a = sheet.cell(row=5, column=c, value=informat)
-
-for c, sostav in enumerate(sostavs, start=1):
+    b = sheet.cell(row=5, column=i, value=informat)
     informat = sostav.s_p()
-    a = sheet.cell(row=6, column=c, value=informat)
-
-for c, sostav in enumerate(sostavs, start=1):
+    j = sheet.cell(row=6, column=i, value=informat)
     informat = sostav.p_cp()
-    a = sheet.cell(row=7, column=c, value=informat)
-
-for c, sostav in enumerate(sostavs, start=1):
+    k = sheet.cell(row=7, column=i, value=informat)
     informat = sostav.p_cp_p()
-    a = sheet.cell(row=8, column=c, value=informat)
+    w = sheet.cell(row=8, column=i, value=informat)
 
 workbook.save('файл.xlsx')
