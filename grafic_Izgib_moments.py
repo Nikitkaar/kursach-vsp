@@ -1,25 +1,39 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-k = [0.02323, 0.01536, 0.02276, 0.01578, 0.01536, 0.01245, 0.01987, 0.02134] # Заданные значения k
+g = ["Локомотив Прямая Лето", "Локомотив Прямая Зима", "Локомотив Кривая Лето", "Локомотив Кривая Зима", "Вагон Прямая Лето", "Вагон Прямая Зима", "Вагон Кривая Лето", "Вагон Кривая Зима"]
+k = [0.01338, 0.015163, 0.01421, 0.0154096, 0.01338, 0.015163, 0.01421, 0.0154096]
 
-fig, axes = plt.subplots(len(k), 1, figsize=(10, 20), dpi=300) # Создаем 8 строки и 1 столбец Axes, указываем размеры изображения
-
-x = np.arange(-500, 500) # Создаем массив x с использованием первого значения k
+fig, axes = plt.subplots(len(k), 1, figsize=(8, 11), dpi=300)
 
 for i in range(len(k)):
-    x = np.arange(-500, 500) # Создаем массив x с использованием текущего значения k
-    y = np.exp((-k[i] * np.abs(x))) * (np.cos(k[i] * x) - np.sin(k[i] * np.abs(x))) # Вычисляем значения y для каждого значения k
+    x = np.linspace(-500, 500, 1000)
+    y = np.exp((-k[i] * np.abs(x))) * (np.cos(k[i] * x) - np.sin(k[i] * np.abs(x)))
 
-    axes[i].plot(x, y, marker='o', markersize=2, linewidth=0.2) # Строим график в текущем Axes с измененными параметрами
-    axes[i].set_title('k = {:.5f}'.format(k[i]), fontsize=8) # Устанавливаем заголовок для текущего Axes с измененным размером шрифта
+    axes[i].plot(x, y, linewidth=0.5)
+    axes[i].set_title('k = {:.5f}, {}'.format(k[i], g[i]), fontsize=8)
+    axes[i].set_xlim(-550, 550)
+    axes[i].set_ylim(-1, 1.5)
+    axes[i].tick_params(labelsize=6)
+    axes[i].invert_yaxis()
+    axes[i].spines['left'].set_position(('data', 1.5))
+    axes[i].spines['bottom'].set_position(('data', 0))
+    axes[i].spines['top'].set_visible(False) # Удаление верхней границы спайнов
+    axes[i].spines['right'].set_visible(False) # Удаление правой границы спайнов
 
-    axes[i].set_xlim(-500, 500) # Устанавливаем границы оси x
-    axes[i].set_ylim(-1, 1.5) # Устанавливаем границы оси y
+    # Отметка точек на графике
+    highlight_x = [np.pi / (4 * k[i]), 5 * np.pi / (4 * k[i]), -np.pi / (4 * k[i]), -5 * np.pi / (4 * k[i])]
+    highlight_y = [np.exp((-k[i] * np.abs(np.pi / (4 * k[i])))) * (np.cos(k[i] * np.pi / (4 * k[i])) - np.sin(k[i] * np.abs(np.pi / (4 * k[i])))),
+    np.exp((-k[i] * np.abs(5 * np.pi / (4 * k[i])))) * (np.cos(k[i] * 5 * np.pi / (4 * k[i])) - np.sin(k[i] * np.abs(5 * np.pi / (4 * k[i])))),
+    np.exp((-k[i] * np.abs(-np.pi / (4 * k[i])))) * (np.cos(k[i] * -np.pi / (4 * k[i])) - np.sin(k[i] * np.abs(-np.pi / (4 * k[i])))),
+    np.exp((-k[i] * np.abs(-5 * np.pi / (4 * k[i])))) * (np.cos(k[i] * -5 * np.pi / (4 * k[i])) - np.sin(k[i] * np.abs(-5 * np.pi / (4 * k[i]))))]
 
-    axes[i].tick_params(labelsize=6) # Изменяем размер меток на осях
-    axes[i].invert_yaxis() # Инвертируем ось y
+    axes[i].scatter(highlight_x, highlight_y, color='none', edgecolors='blue', marker='o')
 
+# Добавление подписей к точкам
+    for (x, y) in zip(highlight_x, highlight_y):
+        axes[i].annotate('{:.1f}'.format(x), xy=(x, y), xytext=(-5, -7), textcoords='offset points', fontsize=6, ha='left', va='top')
+        axes[i].annotate(f"\u03BC = 0".format(x), xy=(x, y), xytext=(5, 9), textcoords='offset points', fontsize=6,
+                         ha='left', va='top')
 plt.tight_layout()
-plt.savefig('my_plot.pdf', format='pdf', bbox_inches='tight', pad_inches=0) # Сохраняем график в формате PDF с оптимальными размерами
-plt.show()
+plt.savefig('ИЗГИБЫ.pdf', format='pdf', bbox_inches='tight', pad_inches=0)

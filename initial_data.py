@@ -1,4 +1,6 @@
 import numpy
+import random
+import pandas as pd
 
 
 class PodvizhnoySostav:
@@ -17,7 +19,7 @@ class PodvizhnoySostav:
 
     q     : int    -- Вес необрессоренных частей, отнесенных  к одному колесу, q.кгс
 
-    stiff_of_the_sg_set: int -- Жесткость комплекта рессор, Ж.кг/мм
+    JestcostRessor: int -- Жесткость комплекта рессор, Ж.кг/мм
 
     d     : int    -- Диаметр колеса, d.см
 
@@ -31,7 +33,7 @@ class PodvizhnoySostav:
 
     z_max : float  -- Наибольшая расчетная глубина неровности на колесе, e.мм
 
-    rail_type_led_wear: str -- Тип рельса (приведенный износ).-/мм
+    rail_type: str -- Тип рельса (приведенный износ).-/мм
 
     material_of_sleep: str -- Материал шпал.
 
@@ -45,17 +47,17 @@ class PodvizhnoySostav:
 
     l_sh  : int    -- Расстояние между осями шпал, lш.см
 
-    ll    : float  -- Коэффициент, учитывающий влияние колеб. масс подвижного состава и пути, типа рельса,
+    L    : float  -- Коэффициент, учитывающий влияние колеб. масс подвижного состава и пути, типа рельса,
                     материала шпал, рода балласта на образование динамических неровностей пути, L
 
-    w_     : int    -- Момент сопротивления рельса относительно наибольшего удаленного волокна от подошвы, W.см3
+     W     : int    -- Момент сопротивления рельса относительно наибольшего удаленного волокна от подошвы, W.см3
 
     alpha0: float  -- Коэффициент, учитывающий отношение необрессореной массы колеса и участвующей во взаимодействии
                      массы пути, α0
 
-    w     : int    -- Площадь рельсовой подкладки, w.см2
+    omega     : int    -- Площадь рельсовой подкладки, omega.см2
 
-    omega_d: int   -- Площадь полушпалы с поправкой на изгиб, Ωd.см2
+    omega_a: int   -- Площадь полушпалы с поправкой на изгиб, Ωd.см2
 
     b     : float  -- Ширина нижней постели шпалы , b.см
 
@@ -88,16 +90,20 @@ class PodvizhnoySostav:
     kx придется просчитывать вручную для каждой оси
     нет интерфейса, связи с эксель и ворд, недостаточно подробное описание"""
 
-    def __init__(self, type_sostav: str, season: str, curve: str, q: int, stiff_of_the_sg_set: int, d: int,
+    def __init__(self, type_sostav: str, season: str, curve, q: int, JestcostRessor: float, d: int,
                  n: int, l_i: list, f: float, e: float, z_max: float, plot_of_sleep: int, u: int, k: float, l_sh: int,
                  p_ct: int):
+        self.results = None
+        self.rounded_value = None
+        self.value = None
+        self.results = None
         self.type_sostav = type_sostav
-        self.summer = season
+        self.season = season
         self.curve = curve
         self.p_ct = p_ct
         self.q = q
-        self.stiff_of_the_sg_set = stiff_of_the_sg_set
         self.d = d
+        self.JestcostRessor = JestcostRessor
         self.n = n
         self.l_i = l_i
         self.f = f
@@ -108,42 +114,50 @@ class PodvizhnoySostav:
         self.k = k
         self.l_sh = l_sh
         self.alpha_E = 25.2
-        self.k3 = 1.3
+        self.k3 = 1.3  # round(random.uniform(0.9, 1.3), 1)
         self.delta_t3 = 10
         self.v = 75
-        self.material_of_sleepers = "Дерево"
-        self.rail_type_led_wear = "Р50/6"
+        self.material_of_sleepers = "Железобетон"
+        self.rail_type = "P65"
         self.ballast = "Щебень"
-        self.ll = 1
-        self.W = 273
-        self.b = 23
-        self.alpha0 = 0.433
-        self.w = 527
-        self.omega_d = 2466
+        self.L = 0.261
+        self.W = 417
+        self.alpha0 = 0.403
+        self.omega = 518
+        self.omega_a = 3092
+        self.b = 27
+        self.h = 65
+        self.ae = 0.7
 
     def __str__(self):
         """Возвращает форматированную строку для нижепосчитанных значений для вывода в таблице.
         Стандартный метод, возвращающий текстовое представление объекта"""
-        return f"{self.type_sostav, self.summer, self.curve}\n{79 * '='}   \nР_р^max:{self.p_max_p():5.2f}   "\
-               f"Р_р^ср кг:{self.p_cp_p()}   Pср,кгс:{self.p_cp()}   Sр,кг:{self.s_p()}\nSnp:{self.s_np()}   "\
-               f"Snnk:{self.s_nnk()}   Sink:{self.s_ink()}   S:{self.s()}   P_max^ver:{self.p_max_ver()}\n"\
-               f"                    РАСЧЕТЫ К 1.3:\npi_4k:{self.pi_4k():7.2f}   pi_3_4k:{self.pi_3_4k():7.2f}   "\
-               f"pi_5_4k:{self.pi_5_4k():7.2f}   pi_7_4k:{self.pi_7_4k():7.2f}\nР_1_экв:{round(self.P_I_ekv(), 2)}   "\
+        return f"{self.type_sostav, self.season, self.curve}\n{79 * '='}   \nР_р^max:{self.JestcostRessor}*{self.z_max}={self.p_max_p():5.2f}   " \
+               f"Р_р^ср кг: 0.75 * {self.p_max_p()} = {self.p_cp_p()}\n" \
+               f"Pср,кгс: {self.p_ct} + {self.p_cp_p()} = {self.p_cp()}\n" \
+               f"Sр,кг: 0.08 * {self.p_max_p()} = {self.s_p()}\n\n" \
+               f"Snp: 0.565 * 10^-8 * {self.L}*{self.l_sh}* sqrt{self.u}/{self.k}*sqrt{self.q}*{self.p_cp()} * {self.v}={self.s_np()}\n" \
+               f"\nSnnk: 0.052 * {self.alpha0}*{self.u}*{self.v}^2 * sqrt{self.q} /// {self.d}^2 * sqrt{self.k}*{self.u} - 3.26 * {self.k}^2*sqrt{self.q}={self.s_nnk()}\n\n" \
+               f"Sink: 0.735 * {self.alpha0} * 2 * {self.u}/{self.k} * {self.e} = {self.s_ink()}\n\nS:{self.s_p()}^2 + {self.s_np()}^2 + 0.95 * {self.s_nnk()}^2 + 0.05 * {self.s_ink()}^2 = {self.s()}   " \
+               f"\nP_max^ver: {self.p_cp()} + 2.5 * {self.s()} = {self.p_max_ver()}\n" \
+               f"                    РАСЧЕТЫ К 1.3:\npi_4k:{self.pi_4k():7.2f}   pi_3_4k:{self.pi_3_4k():7.2f}   " \
+               f"pi_5_4k:{self.pi_5_4k():7.2f}   pi_7_4k:{self.pi_7_4k():7.2f}\nР_1_экв:{round(self.P_I_ekv(), 2)}   " \
                f"Р_2_экв:{round(self.P_II_ekv(), 2)}\nMu2:{self.Muu2()}   Mu3:{self.Muu3()}    Mu4:{self.Muu4()}   " \
                f"SIGMA_MU:{round(self.Sigma_Muu(), 5)}\nsigma_kp:{self.sigma_kp()}   sigma_sh:{self.sigma_sh()}   " \
                f" sigma_b:{self.sigma_br()}\nN_2:{self.N_2()}   N_3:{self.N_3()}   N_4:{self.N_4()}   " \
                f"Sigma N:{self.Sigma_N()}   Расчетные оси: Мю:{self.RaschetnayaOS_Muu()}   " \
                f"Тета: {self.RaschetnayaOS_N()}\n\t\t\t\t\tРАСЧЕТЫ К 2.2\nPIIэкв1шп:{round(self.P_II_ekvONE(), 2)}   " \
-               f"PIIэкв3шп:{round(self.P_II_ekvThree(), 2)}\nsigmaH1: {self.sigma_h1()}   sigmaH2: {self.sigma_h2()}  "\
+               f"PIIэкв3шп:{round(self.P_II_ekvThree(), 2)}\nsigmaH1: {self.sigma_h1()}   sigmaH2: {self.sigma_h2()}  " \
                f" sigmaH3: {self.sigma_h3()}   Sigma_H: {self.sigma_h()}\nsigmaB1: {self.sigma_b1()}   " \
                f"sigmaB3: {self.sigma_b3()}    KOFm: {self.m()}\n" \
-            # ПУНКТ 1.2 Определение среднего и максимального вероятного
+ \
+        # ПУНКТ 1.2 Определение среднего и максимального вероятного
 
     # значения динамической силы воздействия колеса на рельс
 
     def p_max_p(self):
         """вычисляет динамическую нагрузку Р (верхний индекс max) + (нижний - р)"""
-        return round(self.stiff_of_the_sg_set * self.z_max, 2)
+        return round(self.JestcostRessor * self.z_max, 2)
 
     def p_cp_p(self):
         """вычисляем – среднее значение динамической нагрузки колеса на рельс от вертикальных колебаний надрессорного
@@ -162,7 +176,8 @@ class PodvizhnoySostav:
     def s_np(self):
         """Среднее квадратическое отклонение динамической на¬грузки колеса на рельс, Sнп,  кг, от сил инерции
         необрессоренных масс """
-        return round(0.565 * 10 ** -8 * self.ll * self.l_sh * (self.u / self.k) ** (1 / 2) * self.q ** (1 / 2) * self.p_cp() * \
+        return round(
+            0.565 * 10 ** -8 * self.L * self.l_sh * (self.u / self.k) ** (1 / 2) * self.q ** (1 / 2) * self.p_cp() * \
             self.v, 2)
 
     def s_nnk(self):
@@ -178,7 +193,8 @@ class PodvizhnoySostav:
 
     def s(self):
         """Среднее квадратическое отклонение динамической вертикальной нагрузки колеса на рельс"""
-        return round((self.s_p() ** 2 + self.s_np() ** 2 + 0.95 * self.s_nnk() ** 2 + 0.05 * self.s_ink() ** 2) ** (1 / 2), 2)
+        return round(
+            (self.s_p() ** 2 + self.s_np() ** 2 + 0.95 * self.s_nnk() ** 2 + 0.05 * self.s_ink() ** 2) ** (1 / 2), 2)
 
     def p_max_ver(self):
         """Динамическая максимальная нагрузка от колеса на рельс. Оно же Рmax_вер и еще что-то..."""
@@ -188,25 +204,25 @@ class PodvizhnoySostav:
     # 1.Строим лин влияния
 
     def pi_4k(self):
-        return 3.14 / (4.0 * self.k)
+        return round(3.14 / (4.0 * self.k), 2)
 
     def pi_3_4k(self):
-        return 3 * 3.14 / (4.0 * self.k)
+        return round(3 * 3.14 / (4.0 * self.k), 2)
 
     def pi_7_4k(self):
-        return 7 * 3.14 / (4.0 * self.k)
+        return round(7 * 3.14 / (4.0 * self.k), 2)
 
     def pi_5_4k(self):
-        return 5 * 3.14 / (4.0 * self.k)
+        return round(5 * 3.14 / (4.0 * self.k), 2)
 
     def RaschetnayaOS_Muu(self):
-        if (numpy.pi / (4 * self.k)) > self.l_i[0] and self.l_i[1]:
-            return 2
+        if (numpy.pi / (4 * self.k)) > self.l_i[0] or self.l_i[0]:
+            return 1
         else:
             return 1
 
     def RaschetnayaOS_N(self):
-        if (3 * numpy.pi / (4 * self.k)) > self.l_i[0] and self.l_i[1]:
+        if ((3 * numpy.pi) / (4 * self.k)) > self.l_i[0] or ((3 * numpy.pi) / (4 * self.k)) > self.l_i[1]:
             return 2
         else:
             return 1
@@ -224,24 +240,17 @@ class PodvizhnoySostav:
     def Muu3(self):
         if self.n == 2:
             return 0
-        elif self.RaschetnayaOS_Muu() == 1:
-            return round(self.MMM(self.l_i[0] + self.l_i[1]), 5)
         else:
-            return round(self.MMM(self.l_i[1]), 5)
+            return round(self.MMM(self.l_i[0] + self.l_i[1]), 5)
 
     def Muu4(self):
         if self.n == 2 or self.n == 3:
             return 0
-        elif self.RaschetnayaOS_N() == 1:
+        else:
             if (self.k * sum(self.l_i)) >= 5.5:
                 return 0
             else:
                 return round(self.MMM(self.l_i[0] + self.l_i[1] + self.l_i[2]), 5)
-        else:
-            if self.k * (self.l_i[1] + self.l_i[2]) >= 5.5:
-                return 0
-            else:
-                return round(self.MMM(self.l_i[1] + self.l_i[2]), 5)
 
     def Sigma_Muu(self):
         return self.Muu2() + self.Muu4() + self.Muu3()
@@ -253,19 +262,19 @@ class PodvizhnoySostav:
         return (numpy.cos(self.k * x) - numpy.sin(self.k * x)) * (numpy.e ** (-self.k * x))
 
     def P_I_ekv(self):
-        if self.RaschetnayaOS_N() == 1 and self.n == 2:
+        if self.RaschetnayaOS_Muu() == 1 and self.n == 2:
             return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0])
-        elif self.RaschetnayaOS_N() == 1 and self.n == 3:
+        elif self.RaschetnayaOS_Muu() == 1 and self.n == 3:
             return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0]) + self.p_cp() * self.MMM(
                 self.l_i[0] + self.l_i[1])
-        elif self.RaschetnayaOS_N() == 1 and self.n == 4:
+        elif self.RaschetnayaOS_Muu() == 1 and self.n == 4:
             return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0]) + self.p_cp() * self.MMM(
                 self.l_i[0] + self.l_i[1]) + self.p_cp() * self.MMM(self.l_i[0] + self.l_i[1] + self.l_i[2])
-        elif self.RaschetnayaOS_N() == 2 and self.n == 2:
+        elif self.RaschetnayaOS_Muu() == 2 and self.n == 2:
             return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0])
-        elif self.RaschetnayaOS_N() == 2 and self.n == 3:
+        elif self.RaschetnayaOS_Muu() == 2 and self.n == 3:
             return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0]) + self.p_cp() * self.MMM(self.l_i[1])
-        elif self.RaschetnayaOS_N() == 2 and self.n == 4:
+        elif self.RaschetnayaOS_Muu() == 2 and self.n == 4:
             return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0]) + self.p_cp() * self.MMM(
                 self.l_i[1]) + self.p_cp() * self.MMM(
                 self.l_i[1] + self.l_i[2])
@@ -310,25 +319,28 @@ class PodvizhnoySostav:
         if self.RaschetnayaOS_N() == 1 and self.n == 2:
             return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0])
         elif self.RaschetnayaOS_N() == 1 and self.n == 3:
-            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(self.l_i[0] + self.l_i[1])
+            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(
+                self.l_i[0] + self.l_i[1])
         elif self.RaschetnayaOS_N() == 1 and self.n == 4:
-            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(self.l_i[0] + self.l_i[1]) + self.p_cp() * self.NNN(self.l_i[0] + self.l_i[1] + self.l_i[2])
+            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(
+                self.l_i[0] + self.l_i[1]) + self.p_cp() * self.NNN(self.l_i[0] + self.l_i[1] + self.l_i[2])
         elif self.RaschetnayaOS_N() == 2 and self.n == 2:
             return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0])
         elif self.RaschetnayaOS_N() == 2 and self.n == 3:
             return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(self.l_i[1])
         elif self.RaschetnayaOS_N() == 2 and self.n == 4:
-            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(self.l_i[1]) + self.p_cp() * self.NNN(
-                    self.l_i[1] + self.l_i[2])
+            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(
+                self.l_i[1]) + self.p_cp() * self.NNN(
+                self.l_i[1] + self.l_i[2])
 
     def sigma_kp(self):
         return round(self.P_I_ekv() * self.f / (4 * self.k * self.W), 2)
 
     def sigma_sh(self):
-        return round(self.P_II_ekv() * self.k * self.l_sh / (2 * self.w), 2)
+        return round(self.P_II_ekv() * self.k * self.l_sh / (2 * self.omega), 2)
 
     def sigma_br(self):
-        return round(((self.k * self.l_sh) / (2 * self.omega_d)) * self.P_II_ekv(), 2)
+        return round(((self.k * self.l_sh) / (2 * self.omega_a)) * self.P_II_ekv(), 2)
 
     ### 2.2 Определение напряжений на основной площадке земполотна
 
@@ -338,69 +350,140 @@ class PodvizhnoySostav:
         else:
             return 1
 
-    def ae(self):
-        if self.material_of_sleepers == "IronBeton":
-            return 0.7
-        else:
-            return 0.8
-
     def sigma_h2(self):
-        return round(self.sigma_br() * self.ae() * (2.55 * 0.263 + (0.635 * 0.126 - 1.275 * 0.263) * self.m()), 3)
+        return round(
+            self.sigma_br() * self.ae * (2.55 * self.C2() + (0.635 * self.C1() - 1.275 * self.C2()) * self.m()), 3)
         # вот здесь жопа, С должна браться из таблицы
 
     def sigma_h1(self):
-        return round(0.25 * 0.195 * self.sigma_b1(), 4)  # тоже жопа
+        return round(0.25 * self.A() * self.sigma_b1(), 4)  # тоже жопа
 
     def sigma_b1(self):
-        return round((self.k * self.l_sh / (2 * self.omega_d)) * self.P_II_ekvONE(), 2)
+        return round((self.k * self.l_sh / (2 * self.omega_a)) * self.P_II_ekvONE(), 2)
 
     def NNN(self, x: int):
         return round((numpy.cos(self.k * x) + numpy.sin(self.k * x)) * (numpy.e ** ((-self.k) * x)), 5)
 
-    def P_II_ekvONE(self):
-        if self.RaschetnayaOS_N() == 1 and self.n == 2:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(self.l_i[0] + self.l_sh)
-        elif self.RaschetnayaOS_N() == 1 and self.n == 3:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(self.l_i[0] + self.l_sh) + self.p_cp() * self.NNN(self.l_i[0] + self.l_i[1] + self.l_sh)
-        elif self.RaschetnayaOS_N() == 1 and self.n == 4:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(self.l_i[0] + self.l_sh) + self.p_cp() * self.NNN(self.l_i[0] + self.l_i[1] + self.l_sh) + self.p_cp() * self.NNN(self.l_i[0] + self.l_i[1] + self.l_i[2] + self.l_sh)
-        elif self.RaschetnayaOS_N() == 2 and self.n == 2:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(self.l_i[0] - self.l_sh)
-        elif self.RaschetnayaOS_N() == 2 and self.n == 3:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(self.l_i[0] - self.l_sh) + self.p_cp() * self.NNN(self.l_i[1] + self.l_sh)
-        else:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(self.l_i[0] - self.l_sh) +\
-                self.p_cp() * self.NNN(self.l_i[1] + self.l_sh) + self.p_cp() * self.NNN(self.l_i[1] + self.l_i[2] + self.l_sh)
 
-    def P_II_ekvThree(self):
-        if self.RaschetnayaOS_N() == 1 and self.n == 2:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(self.l_i[0] - self.l_sh)
-        elif self.RaschetnayaOS_N() == 1 and self.n == 3:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(
-                    self.l_i[0] - self.l_sh) + self.p_cp() * self.NNN(
-                    self.l_i[0] + self.l_i[1] - self.l_sh)
-        elif self.RaschetnayaOS_N() == 1 and self.n == 4:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(
-                    self.l_i[0] - self.l_sh) + self.p_cp() * self.NNN(
-                    self.l_i[0] + self.l_i[1] - self.l_sh) + self.p_cp() * self.NNN(
-                    self.l_i[0] + self.l_i[1] + self.l_i[2] - self.l_sh)
-        elif self.RaschetnayaOS_N() == 2 and self.n == 2:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(
-                    self.l_i[0] + self.l_sh) + self.p_cp()
-        elif self.RaschetnayaOS_N() == 2 and self.n == 3:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(
-                    self.l_i[0] + self.l_sh) + self.p_cp() * self.NNN(self.l_i[1] - self.l_sh)
-        else:
-            return self.p_max_ver() * self.N_sh() + self.p_cp() * self.NNN(
-                    self.l_i[0] + self.l_sh) + self.p_cp() * self.NNN(self.l_i[1] - self.l_sh) + self.p_cp() * self.NNN(self.l_i[1] + self.l_i[2] - self.l_sh)
 
     def sigma_h3(self):
-        return round(0.25 * 0.195 * self.sigma_b3(), 4)
+        return round(0.25 * self.A() * self.sigma_b3(), 4)
 
     def sigma_b3(self):
-        return round((self.k * self.l_sh / (2 * self.omega_d)) * self.P_II_ekvThree(), 2)
+        return round((self.k * self.l_sh / (2 * self.omega_a)) * self.P_II_ekvThree(), 3)
 
     def sigma_h(self):
         return round(self.sigma_h1() + self.sigma_h2() + self.sigma_h3(), 3)
 
     ### 3.1 Расчет бс пути по условию устойчивости
+    def delta_t_p(self):
+        return int((4000 - (1.3 * self.sigma_kp())) / 25.2)
+
+    def xm(self):
+        if self.n == 4:
+            return [0, self.l_i[0], self.l_i[0] + self.l_i[1], self.l_i[0] + self.l_i[1] + self.l_i[2]]
+        if self.n == 3:
+            return [0, self.l_i[0], self.l_i[0] + self.l_i[1], 0]
+        else:
+            return [0, self.l_i[0], 0, 0]
+
+    def xn(self):
+        if self.RaschetnayaOS_N() == 1 or self.n == 2:
+            return self.xm()
+        else:
+            if self.n == 4:
+                return [self.l_i[0], 0, self.l_i[1], self.l_i[1] + self.l_i[2]]
+            if self.n == 3:
+                return [self.l_i[0], 0, self.l_i[1], 0]
+
+# Открываем файл Excel
+    def C1(self):
+        workbook_12 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\Лист.xlsx')
+        return list(workbook_12.loc[workbook_12["H"] == self.h, "l" + str(self.b)])[0]
+
+    def C2(self):
+        workbook_11 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\Лист1.xlsx')
+        return list(workbook_11.loc[workbook_11["H"] == self.h, "l" + str(self.b)])[0]
+
+    def A(self):
+        workbook_15 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\Лист3.xlsx')
+        alarm = workbook_15.loc[workbook_15["h"] == self.h, "l" + str(self.b)]
+        return list(alarm.head())[0]
+
+    def xnn1(self):
+        if self.RaschetnayaOS_N() == 1 or self.n == 2:
+            return [55, self.xn()[1]+55, self.xn()[2]+self.xn()[1]+55, self.xn()[1]+self.xn()[2]+self.xn()[3]+55]
+        else:
+            return [self.xn()[0]-55, 55, self.xn()[2]+55, self.xn()[2]+self.xn()[3]+55]
+
+    def xnn3(self):
+        if self.RaschetnayaOS_N() == 1 or self.n == 2:
+            return [55, self.xn()[1]-55, self.xn()[2]+self.xn()[1]-55, self.xn()[1]+self.xn()[2]+self.xn()[3]-55]
+        else:
+            return [self.xn()[0] + 55, 55, self.xn()[2] - 55, self.xn()[2] + self.xn()[3] - 55]
+
+    def Iter(self):
+        self.results = []
+        for i in self.xnn1():
+            self.value = (numpy.cos(self.k * i) + numpy.sin(self.k * i)) * numpy.e ** ((-self.k) * i)
+            self.rounded_value = round(self.value, 5)
+            self.results.append(self.rounded_value)
+        return self.results
+    
+    def Iter1(self):
+        self.results = []
+        for i in self.xnn3():
+            self.value = (numpy.cos(self.k * i) + numpy.sin(self.k * i)) * numpy.e ** ((-self.k) * i)
+            self.rounded_value = round(self.value, 5)
+            self.results.append(self.rounded_value)
+        return self.results
+
+    def summa1(self):
+        if self.RaschetnayaOS_N() == 2:
+            if self.n == 4:
+                return self.Iter()[0] + self.Iter()[2] + self.Iter()[3]
+            if self.n == 3:
+                return self.Iter()[0] + self.Iter()[2]
+        else:
+            if self.n == 4:
+                return self.Iter()[1] + self.Iter()[2] + self.Iter()[3]
+            if self.n == 3:
+                return self.Iter()[1] + self.Iter()[2]
+            if self.n == 2:
+                return self.Iter()[1]
+    def summa2(self):
+        if self.RaschetnayaOS_N() == 2:
+            if self.n == 4:
+                return self.Iter1()[0] + self.Iter1()[2] + self.Iter1()[3]
+            if self.n == 3:
+                return self.Iter1()[0] + self.Iter1()[2]
+        else:
+            if self.n == 4:
+                return self.Iter1()[1] + self.Iter1()[2] + self.Iter1()[3]
+            if self.n == 3:
+                return self.Iter1()[1] + self.Iter1()[2]
+            if self.n == 2:
+                return self.Iter1()[1]
+
+    def P_II_ekvONE(self):
+        return round(self.p_max_ver() * self.NNN(self.l_sh) + self.p_cp() * self.summa1(), 2)
+    def P_II_ekvThree(self):
+        return round(self.p_max_ver() * self.NNN(self.l_sh) + self.p_cp() * self.summa2(), 2)
+
+    def AA(self):
+        workbook_16 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\Лист4.xlsx')
+
+        # Преобразовываем столбец "R" в строковый тип данных
+        workbook_16["R"] = workbook_16["R"].astype(str)
+
+        alarm = workbook_16.loc[workbook_16["R"] == str(self.curve), self.rail_type]
+        return list((alarm.head()))
+
+    def AA1(self):
+        workbook_17 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\Лист5.xlsx')
+
+        # Преобразовываем столбец "R" в строковый тип данных
+        workbook_17["R"] = workbook_17["R"].astype(str)
+
+        alarm = workbook_17.loc[workbook_17["R"] == str(self.curve), self.rail_type]
+        return list((alarm.head()))
