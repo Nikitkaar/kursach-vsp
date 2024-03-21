@@ -93,10 +93,10 @@ class PodvizhnoySostav:
     def __init__(self, type_sostav: str, season: str, curve, q: int, JestcostRessor: float, d: int,
                  n: int, l_i: list, f: float, e: float, z_max: float, plot_of_sleep: int, u: int, k: float, l_sh: int,
                  p_ct: int):
-        self.results = None
+        self.resulted = []
+        self.results = []
         self.rounded_value = None
         self.value = None
-        self.results = None
         self.type_sostav = type_sostav
         self.season = season
         self.curve = curve
@@ -116,17 +116,17 @@ class PodvizhnoySostav:
         self.alpha_E = 25.2
         self.k3 = 1.3  # round(random.uniform(0.9, 1.3), 1)
         self.delta_t3 = 10
-        self.v = 75
-        self.material_of_sleepers = "Железобетон"
-        self.rail_type = "P65"
+        self.v = 85
+        self.material_of_sleepers = "Дерево"
+        self.rail_type = "P50"
         self.ballast = "Щебень"
         self.L = 0.261
         self.W = 417
         self.alpha0 = 0.403
         self.omega = 518
         self.omega_a = 3092
-        self.b = 27
-        self.h = 65
+        self.b = 23
+        self.h = 55
         self.ae = 0.7
 
     def __str__(self):
@@ -222,7 +222,9 @@ class PodvizhnoySostav:
             return 1
 
     def RaschetnayaOS_N(self):
-        if ((3 * numpy.pi) / (4 * self.k)) > self.l_i[0] or ((3 * numpy.pi) / (4 * self.k)) > self.l_i[1]:
+        if self.n == 2:
+            return 1
+        elif ((3 * numpy.pi) / (4 * self.k)) > self.l_i[0] or ((3 * numpy.pi) / (4 * self.k)) > self.l_i[1]:
             return 2
         else:
             return 1
@@ -398,29 +400,29 @@ class PodvizhnoySostav:
 
 # Открываем файл Excel
     def C1(self):
-        workbook_12 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\Лист.xlsx')
+        workbook_12 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\C1.xlsx')
         return list(workbook_12.loc[workbook_12["H"] == self.h, "l" + str(self.b)])[0]
 
     def C2(self):
-        workbook_11 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\Лист1.xlsx')
+        workbook_11 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\C2.xlsx')
         return list(workbook_11.loc[workbook_11["H"] == self.h, "l" + str(self.b)])[0]
 
     def A(self):
-        workbook_15 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\Лист3.xlsx')
+        workbook_15 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\A.xlsx')
         alarm = workbook_15.loc[workbook_15["h"] == self.h, "l" + str(self.b)]
         return list(alarm.head())[0]
 
     def xnn1(self):
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
-            return [55, self.xn()[1]+55, self.xn()[2]+self.xn()[1]+55, self.xn()[1]+self.xn()[2]+self.xn()[3]+55]
+            return [55, self.xn()[1]+55, self.xn()[2]+55, self.xn()[3]+55]
         else:
-            return [self.xn()[0]-55, 55, self.xn()[2]+55, self.xn()[2]+self.xn()[3]+55]
+            return [self.xn()[0]-55, 55, self.xn()[2]+55, self.xn()[3]+55]
 
     def xnn3(self):
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
-            return [55, self.xn()[1]-55, self.xn()[2]+self.xn()[1]-55, self.xn()[1]+self.xn()[2]+self.xn()[3]-55]
+            return [55, self.xn()[1]-55, self.xn()[2]-55, self.xn()[3]-55]
         else:
-            return [self.xn()[0] + 55, 55, self.xn()[2] - 55, self.xn()[2] + self.xn()[3] - 55]
+            return [self.xn()[0] + 55, 55, self.xn()[2] - 55, self.xn()[3] - 55]
 
     def Iter(self):
         self.results = []
@@ -431,47 +433,47 @@ class PodvizhnoySostav:
         return self.results
     
     def Iter1(self):
-        self.results = []
+        self.resulted = []
         for i in self.xnn3():
             self.value = (numpy.cos(self.k * i) + numpy.sin(self.k * i)) * numpy.e ** ((-self.k) * i)
             self.rounded_value = round(self.value, 5)
-            self.results.append(self.rounded_value)
-        return self.results
+            self.resulted.append(self.rounded_value)
+        return self.resulted
 
     def summa1(self):
         if self.RaschetnayaOS_N() == 2:
             if self.n == 4:
                 return self.Iter()[0] + self.Iter()[2] + self.Iter()[3]
-            if self.n == 3:
+            else:
                 return self.Iter()[0] + self.Iter()[2]
         else:
             if self.n == 4:
                 return self.Iter()[1] + self.Iter()[2] + self.Iter()[3]
-            if self.n == 3:
+            elif self.n == 3:
                 return self.Iter()[1] + self.Iter()[2]
-            if self.n == 2:
+            else:
                 return self.Iter()[1]
     def summa2(self):
         if self.RaschetnayaOS_N() == 2:
             if self.n == 4:
                 return self.Iter1()[0] + self.Iter1()[2] + self.Iter1()[3]
-            if self.n == 3:
+            else:
                 return self.Iter1()[0] + self.Iter1()[2]
         else:
             if self.n == 4:
                 return self.Iter1()[1] + self.Iter1()[2] + self.Iter1()[3]
-            if self.n == 3:
+            elif self.n == 3:
                 return self.Iter1()[1] + self.Iter1()[2]
-            if self.n == 2:
+            else:
                 return self.Iter1()[1]
 
     def P_II_ekvONE(self):
-        return round(self.p_max_ver() * self.NNN(self.l_sh) + self.p_cp() * self.summa1(), 2)
+        return round(self.p_max_ver() * self.NNN(self.l_sh) + self.p_cp() * int(self.summa1()), 2)
     def P_II_ekvThree(self):
-        return round(self.p_max_ver() * self.NNN(self.l_sh) + self.p_cp() * self.summa2(), 2)
+        return round(self.p_max_ver() * self.NNN(self.l_sh) + self.p_cp() * int(self.summa2()), 2)
 
     def AA(self):
-        workbook_16 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\Лист4.xlsx')
+        workbook_16 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\AA.xlsx')
 
         # Преобразовываем столбец "R" в строковый тип данных
         workbook_16["R"] = workbook_16["R"].astype(str)
@@ -480,7 +482,7 @@ class PodvizhnoySostav:
         return list((alarm.head()))
 
     def AA1(self):
-        workbook_17 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\Лист5.xlsx')
+        workbook_17 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\M.xlsx')
 
         # Преобразовываем столбец "R" в строковый тип данных
         workbook_17["R"] = workbook_17["R"].astype(str)

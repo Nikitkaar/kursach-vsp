@@ -7,7 +7,7 @@ k = [0.01338, 0.015163, 0.01421, 0.0154096, 0.01338, 0.015163, 0.01421, 0.015409
 fig, axes = plt.subplots(len(k), 1, figsize=(8, 11), dpi=300)
 
 for i in range(len(k)):
-    x = np.linspace(-500, 500, 1000)
+    x = np.linspace(-550, 550, 1100)
     y = np.exp((-k[i] * np.abs(x))) * (np.cos(k[i] * x) - np.sin(k[i] * np.abs(x)))
 
     axes[i].plot(x, y, linewidth=0.5)

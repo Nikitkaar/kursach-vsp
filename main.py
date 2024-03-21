@@ -3,46 +3,50 @@ from openpyxl import Workbook
 
 # ВВОЖУ ИСХОДНЫЕ ДАННЫЕ
 # Локомотив/Вагон;;;
-Pct = [11500, 13400]
-q = [3170, 1070]
-JestcostRessor = [142, 195]
-d = [120, 95]
-n = [3, 3]
-l_i = [[220, 220, 0.0], [175, 175, 0]]
-curve = ["Прямая", 700]
+Pct = [11500, 14000]
+q = [3160, 995]
+JestcostRessor = [116, 200]
+d = [125, 95]
+n = [2, 4]
+l_i = [[300, 0, 0], [185, 125, 185]]
+curve = ["Прямая", 600]
+
+# Прямая, Лето\Зима:     Кривая, Лето\Зима:
+U = [260, 500, 290, 600]
+k = [0.01145, 0.0, 0.01176, 0.0]
+k[1] = round((U[1]/(4*2.1*10**6*2018)) ** 0.25, 5)
+k[3] = round((U[3]/(4*2.1*10**6*2018)) ** 0.25, 5)
 # Локомотив:     Вагон:
 # Прямая/Кривая; Прямая/Кривая
 f = [1.17, 1.26, 1.13, 1.32]
 Zmax = [16.3, 15.0]
-# Прямая, Лето\Зима:     Кривая, Лето\Зима:
-U = [1000, 1500, 1100, 1600]
-k = [0.01338, 0.015163, 0.01421, 0.0154096]
+
 # U = [U[0], U[0] * 1.5, U[1], U[1] * 1.5]  # Вместе с зимой
 
 sostavs = [
-    PodvizhnoySostav("ВЛ-23", "Лето", curve[0], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[0], 0.047, Zmax[0],
+    PodvizhnoySostav("ВЛ-10", "Лето", curve[0], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[0], 0.047, Zmax[0],
                      1840, U[0], k[0], 55, Pct[0]),
-    PodvizhnoySostav("ВЛ-23", "Зима", curve[0], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[0], 0.047, Zmax[0],
+    PodvizhnoySostav("ВЛ-10", "Зима", curve[0], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[0], 0.047, Zmax[0],
                      1840, U[1], k[1], 55, Pct[0]),
-    PodvizhnoySostav("ВЛ-23", "Лето", curve[1], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[1], 0.047, Zmax[0],
+    PodvizhnoySostav("ВЛ-10", "Лето", curve[1], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[1], 0.047, Zmax[0],
                      2000, U[2], k[2], 51, Pct[0]),
-    PodvizhnoySostav("ВЛ-23", "Зима", curve[1], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[1], 0.047, Zmax[0],
+    PodvizhnoySostav("ВЛ-10", "Зима", curve[1], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[1], 0.047, Zmax[0],
                      2000, U[3], k[3], 51, Pct[0]),
-    PodvizhnoySostav("6-осный Вагон", "Лето", curve[0], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[2], 0.067,
+    PodvizhnoySostav("8-осный Вагон", "Лето", curve[0], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[2], 0.067,
                      Zmax[1],
                      1840, U[0], k[0], 55, Pct[1]),
-    PodvizhnoySostav("6-осный Вагон", "Зима", curve[0], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[2], 0.067,
+    PodvizhnoySostav("8-осный Вагон", "Зима", curve[0], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[2], 0.067,
                      Zmax[1],
                      1840, U[1], k[1], 55, Pct[1]),
-    PodvizhnoySostav("6-осный Вагон", "Лето", curve[1], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[3], 0.067,
+    PodvizhnoySostav("8-осный Вагон", "Лето", curve[1], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[3], 0.067,
                      Zmax[1],
                      2000, U[2], k[2], 51, Pct[1]),
-    PodvizhnoySostav("6-осный Вагон", "Зима", curve[1], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[3], 0.067,
+    PodvizhnoySostav("8-осный Вагон", "Зима", curve[1], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[3], 0.067,
                      Zmax[1],
                      2000, U[3], k[3], 51, Pct[1])
 ]
 
-
+'''
 def printHead(s):
     print("=" * 79)
     print(s)
@@ -59,7 +63,7 @@ def printList():
 
 
 printList()
-
+'''
 # ГЛАВНАЯ ТАБЛИЦА
 
 workbook_3 = Workbook()
@@ -245,20 +249,26 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=98, column=i, value=inf)
     inf = sostav.xnn3()[3]
     sheet.cell(row=99, column=i, value=inf)
+
     inf = sostav.P_II_ekvONE()
     sheet.cell(row=100, column=i, value=inf)
     inf = sostav.P_II_ekvThree()
     sheet.cell(row=101, column=i, value=inf)
+    
     inf = sostav.sigma_b1()
     sheet.cell(row=102, column=i, value=inf)
+    
     inf = sostav.sigma_h1()
     sheet.cell(row=103, column=i, value=inf)
+   
     inf = sostav.sigma_b3()
     sheet.cell(row=104, column=i, value=inf)
+    
     inf = sostav.sigma_h3()
     sheet.cell(row=105, column=i, value=inf)
     inf = sostav.sigma_h()
     sheet.cell(row=106, column=i, value=inf)
+
     inf = sostav.AA()[0]
     sheet.cell(row=107, column=i, value=inf)
     inf = sostav.AA1()[0]
@@ -269,4 +279,5 @@ for i, sostav in enumerate(sostavs, start=1):
 
 workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
 
-print(sostav.AA()[0])
+print(sostav.summa1())
+print(sostav.Iter())
