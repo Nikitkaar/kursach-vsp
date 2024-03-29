@@ -2,7 +2,6 @@ import numpy
 import random
 import pandas as pd
 
-
 class PodvizhnoySostav:
     """Хранит и принимает исходные данные и работает с ними, выполняя расчеты. По пунктам КР (Пункты будут подписаны в коде
     с помощью ###)
@@ -91,8 +90,10 @@ class PodvizhnoySostav:
     нет интерфейса, связи с эксель и ворд, недостаточно подробное описание"""
 
     def __init__(self, type_sostav: str, season: str, curve, q: int, JestcostRessor: float, d: int,
-                 n: int, l_i: list, f: float, e: float, z_max: float, plot_of_sleep: int, u: int, k: float, l_sh: int,
+                 n: int, l_i: list, f: float, e: float, plot_of_sleep: int, u: int, k: float, l_sh: int,
                  p_ct: int):
+
+        self.min_value_0 = None
         self.resulted = []
         self.results = []
         self.rounded_value = None
@@ -108,7 +109,6 @@ class PodvizhnoySostav:
         self.l_i = l_i
         self.f = f
         self.e = e
-        self.z_max = z_max
         self.plot_of_sleep = plot_of_sleep
         self.u = u
         self.k = k
@@ -129,10 +129,23 @@ class PodvizhnoySostav:
         self.h = 55
         self.ae = 0.7
 
+    def z_max(self):
+        if 'чс' in self.type_sostav.lower() or 'вл' in self.type_sostav.lower():
+            return 10.9 + 9.6 * 10 **(-4) * self.v ** 2
+        elif 'тэ' in self.type_sostav.lower() or 'м62' in self.type_sostav.lower() or 'чм' in self.type_sostav.lower():
+            return 10.9 + 9.6 * 10 **(-4) * self.v ** 2
+        elif '8' in self.type_sostav.lower():
+            return 9.5 + 9 * 10 ** (-4) * self.v ** 2
+        elif '6' in self.type_sostav.lower():
+            return 6 + 16 * 10 ** (-4) * self.v ** 2
+        else:
+            return 10 + 16 * 10 ** (-4) * self.v ** 2
+
+    '''
     def __str__(self):
         """Возвращает форматированную строку для нижепосчитанных значений для вывода в таблице.
         Стандартный метод, возвращающий текстовое представление объекта"""
-        return f"{self.type_sostav, self.season, self.curve}\n{79 * '='}   \nР_р^max:{self.JestcostRessor}*{self.z_max}={self.p_max_p():5.2f}   " \
+        return f"{self.type_sostav, self.season, self.curve}\n{79 * '='}   \nР_р^max:{self.JestcostRessor}*{self.z_max()}={self.p_max_p():5.2f}   " \
                f"Р_р^ср кг: 0.75 * {self.p_max_p()} = {self.p_cp_p()}\n" \
                f"Pср,кгс: {self.p_ct} + {self.p_cp_p()} = {self.p_cp()}\n" \
                f"Sр,кг: 0.08 * {self.p_max_p()} = {self.s_p()}\n\n" \
@@ -151,13 +164,14 @@ class PodvizhnoySostav:
                f" sigmaH3: {self.sigma_h3()}   Sigma_H: {self.sigma_h()}\nsigmaB1: {self.sigma_b1()}   " \
                f"sigmaB3: {self.sigma_b3()}    KOFm: {self.m()}\n" \
  \
+    '''
         # ПУНКТ 1.2 Определение среднего и максимального вероятного
 
     # значения динамической силы воздействия колеса на рельс
 
     def p_max_p(self):
         """вычисляет динамическую нагрузку Р (верхний индекс max) + (нижний - р)"""
-        return round(self.JestcostRessor * self.z_max, 2)
+        return round(self.JestcostRessor * self.z_max(), 2)
 
     def p_cp_p(self):
         """вычисляем – среднее значение динамической нагрузки колеса на рельс от вертикальных колебаний надрессорного
@@ -489,3 +503,6 @@ class PodvizhnoySostav:
 
         alarm = workbook_17.loc[workbook_17["R"] == str(self.curve), self.rail_type]
         return list((alarm.head()))
+
+    def sigma_norm(self, min_value_0):
+        return self.sigma_kp() * 1.3 + min_value_0 * 25.2

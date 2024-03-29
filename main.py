@@ -2,7 +2,7 @@ from initial_data import PodvizhnoySostav
 from openpyxl import Workbook
 
 # ВВОЖУ ИСХОДНЫЕ ДАННЫЕ
-# Локомотив/Вагон;;;
+# Локомотив/Вагон;
 Pct = [11500, 14000]
 q = [3160, 995]
 JestcostRessor = [116, 200]
@@ -18,31 +18,30 @@ k[1] = round((U[1]/(4*2.1*10**6*2018)) ** 0.25, 5)
 k[3] = round((U[3]/(4*2.1*10**6*2018)) ** 0.25, 5)
 # Локомотив:     Вагон:
 # Прямая/Кривая; Прямая/Кривая
-f = [1.17, 1.26, 1.13, 1.32]
-Zmax = [16.3, 15.0]
+f = [1.25, 1.33, 1.18, 1.37]
 
 # U = [U[0], U[0] * 1.5, U[1], U[1] * 1.5]  # Вместе с зимой
 
 sostavs = [
-    PodvizhnoySostav("ВЛ-10", "Лето", curve[0], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[0], 0.047, Zmax[0],
+    PodvizhnoySostav("ВЛ-10", "Лето", curve[0], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[0], 0.047,
                      1840, U[0], k[0], 55, Pct[0]),
-    PodvizhnoySostav("ВЛ-10", "Зима", curve[0], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[0], 0.047, Zmax[0],
+    PodvizhnoySostav("ВЛ-10", "Зима", curve[0], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[0], 0.047,
                      1840, U[1], k[1], 55, Pct[0]),
-    PodvizhnoySostav("ВЛ-10", "Лето", curve[1], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[1], 0.047, Zmax[0],
+    PodvizhnoySostav("ВЛ-10", "Лето", curve[1], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[1], 0.047,
                      2000, U[2], k[2], 51, Pct[0]),
-    PodvizhnoySostav("ВЛ-10", "Зима", curve[1], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[1], 0.047, Zmax[0],
+    PodvizhnoySostav("ВЛ-10", "Зима", curve[1], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[1], 0.047,
                      2000, U[3], k[3], 51, Pct[0]),
-    PodvizhnoySostav("8-осный Вагон", "Лето", curve[0], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[2], 0.067,
-                     Zmax[1],
+    PodvizhnoySostav("8-осный", "Лето", curve[0], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[2], 0.067,
+
                      1840, U[0], k[0], 55, Pct[1]),
-    PodvizhnoySostav("8-осный Вагон", "Зима", curve[0], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[2], 0.067,
-                     Zmax[1],
+    PodvizhnoySostav("8-осный", "Зима", curve[0], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[2], 0.067,
+
                      1840, U[1], k[1], 55, Pct[1]),
-    PodvizhnoySostav("8-осный Вагон", "Лето", curve[1], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[3], 0.067,
-                     Zmax[1],
+    PodvizhnoySostav("8-осный", "Лето", curve[1], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[3], 0.067,
+
                      2000, U[2], k[2], 51, Pct[1]),
-    PodvizhnoySostav("8-осный Вагон", "Зима", curve[1], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[3], 0.067,
-                     Zmax[1],
+    PodvizhnoySostav("8-осный", "Зима", curve[1], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[3], 0.067,
+
                      2000, U[3], k[3], 51, Pct[1])
 ]
 
@@ -96,11 +95,7 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=11, column=i, value=inf)
     inf = sostav.e
     sheet.cell(row=12, column=i, value=inf)
-    inf = sostav.z_max
-    # sheet.cell(row=13, column=i, value=inf)
-    # inf = sostav.type_of_rail
-    # sheet.cell(row=14, column=i, value=inf)
-    # inf = sostav.радиус кривой
+    inf = round(sostav.z_max(), 2)
     sheet.cell(row=15, column=i, value=inf)
     inf = sostav.material_of_sleepers
     sheet.cell(row=16, column=i, value=inf)
@@ -274,10 +269,27 @@ for i, sostav in enumerate(sostavs, start=1):
     inf = sostav.AA1()[0]
     sheet.cell(row=108, column=i, value=inf)
 
+    sheet.cell(row=113, column=i, value=min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p()))
+    sheet.cell(row=114, column=i, value=sostav.sigma_norm(min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p())))
+
+    sheet.cell(row=115, column=i, value=min(sostavs[3].delta_t_p(), sostavs[7].delta_t_p()))
+    sheet.cell(row=116, column=i, value=sostav.sigma_norm(min(sostavs[3].delta_t_p(), sostavs[7].delta_t_p())))
+
+    sheet.cell(row=117, column=i, value=25.2 * min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p()))
+    sheet.cell(row=118, column=i, value=25.2 * min(sostavs[3].delta_t_p(), sostavs[7].delta_t_p()))
+
 
 
 
 workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
 
-print(sostav.summa1())
-print(sostav.Iter())
+# Предположим, что у вас уже есть список `sostavs` и значение, которое возвращает метод `delta_t_p()`, назовем его `target_value`
+target_value = min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p())  # Пример значения, которое возвращает метод delta_t_p()
+
+# Проходим по каждому элементу в списке и проверяем значение метода delta_t_p()
+for index, sostav in enumerate(sostavs):
+    if sostav.delta_t_p() == target_value:
+        print(f"Метод delta_t_p() объекта в списке `sostavs` под индексом {index} возвращает значение {target_value}")
+
+
+
