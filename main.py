@@ -268,28 +268,57 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=107, column=i, value=inf)
     inf = sostav.AA1()[0]
     sheet.cell(row=108, column=i, value=inf)
+    delta_t_p0_min = min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p())
+    sheet.cell(row=113, column=i, value=delta_t_p0_min)
+    sheet.cell(row=114, column=i, value=sostav.sigma_norm(delta_t_p0_min))
+    delta_t_p1_min = min(sostavs[3].delta_t_p(), sostavs[7].delta_t_p())
+    sheet.cell(row=115, column=i, value=delta_t_p1_min)
+    sheet.cell(row=116, column=i, value=sostav.sigma_norm(delta_t_p1_min))
 
-    sheet.cell(row=113, column=i, value=min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p()))
-    sheet.cell(row=114, column=i, value=sostav.sigma_norm(min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p())))
-
-    sheet.cell(row=115, column=i, value=min(sostavs[3].delta_t_p(), sostavs[7].delta_t_p()))
-    sheet.cell(row=116, column=i, value=sostav.sigma_norm(min(sostavs[3].delta_t_p(), sostavs[7].delta_t_p())))
-
-    sheet.cell(row=117, column=i, value=25.2 * min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p()))
-    sheet.cell(row=118, column=i, value=25.2 * min(sostavs[3].delta_t_p(), sostavs[7].delta_t_p()))
-
-
-
-
-workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
-
-# Предположим, что у вас уже есть список `sostavs` и значение, которое возвращает метод `delta_t_p()`, назовем его `target_value`
-target_value = min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p())  # Пример значения, которое возвращает метод delta_t_p()
+    sheet.cell(row=117, column=i, value=25.2 * delta_t_p0_min)
+    sheet.cell(row=118, column=i, value=25.2 * delta_t_p1_min)
 
 # Проходим по каждому элементу в списке и проверяем значение метода delta_t_p()
-for index, sostav in enumerate(sostavs):
-    if sostav.delta_t_p() == target_value:
-        print(f"Метод delta_t_p() объекта в списке `sostavs` под индексом {index} возвращает значение {target_value}")
+    def indexxx_0():
+        global sostav
+        for index, sostav in enumerate(sostavs):
+            if sostav.delta_t_p() == delta_t_p0_min:
+                return index
+    sheet.cell(row=119, column=i, value=round(sostavs[indexxx_0()].sigma_kp() * 1.3 + 25.2 * delta_t_p0_min, 2))
 
-
-
+    def indexxx_1():
+        global sostav
+        for index, sostav in enumerate(sostavs):
+            if sostav.delta_t_p() == delta_t_p1_min:
+                return index
+    sheet.cell(row=120, column=i, value=round(sostavs[indexxx_1()].sigma_kp() * 1.3 + 25.2 * delta_t_p1_min, 2))
+    sigma_kp0 = sostavs[indexxx_0()].sigma_kp()
+    sheet.cell(row=121, column=i, value=sigma_kp0)
+    sigma_kp1 = sostavs[indexxx_1()].sigma_kp()
+    sheet.cell(row=122, column=i, value=sigma_kp1)
+    AA0 = sostavs[indexxx_0()].AA()[0]
+    AA1 = sostavs[indexxx_0()].AA1()[0]
+    P_k0 = round((AA0 * 0.9 * 1 * 1.03) / (2**AA1), 2)
+    sheet.cell(row=123, column=i, value=P_k0)
+    AA2 = sostavs[indexxx_1()].AA()[0]
+    AA3 = sostavs[indexxx_1()].AA1()[0]
+    P_k1 = round((AA2 * 0.9 * 1.08 * 1.05) / (3**AA3), 2)
+    sheet.cell(row=124, column=i, value=P_k1)
+    kgs0 = round(P_k0 * 101.971621297793, 2)
+    sheet.cell(row=125, column=i, value=kgs0)
+    kgs1 = round(P_k1 * 101.971621297793, 2)
+    sheet.cell(row=126, column=i, value=kgs1)
+    P_norm0 = round(kgs0 / 1.5, 2)
+    sheet.cell(row=127, column=i, value=P_norm0)
+    P_norm1 = round(kgs1 / 1.5, 2)
+    sheet.cell(row=128, column=i, value=P_norm1)
+    if sostav.rail_type == 'P50':
+        F = 65.99
+    else:
+        F = 82.56
+    sheet.cell(row=129, column=i, value=F)
+    sheet.cell(row=130, column=i, value=F * 2)
+    sheet.cell(row=131, column=i, value=round(P_norm0 / (25 * 2 * F), 2))
+    sheet.cell(row=132, column=i, value=round(P_norm1 / (25 * 2 * F), 2))
+workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
+print(k)
