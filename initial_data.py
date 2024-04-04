@@ -430,13 +430,13 @@ class PodvizhnoySostav:
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
             return [55, self.xn()[1]+55, self.xn()[2]+55, self.xn()[3]+55]
         else:
-            return [self.xn()[0]-55, 55, self.xn()[2]+55, self.xn()[3]+55]
+            return [-self.xn()[0]+55, 55, self.xn()[2]+55, self.xn()[3]+55]
 
     def xnn3(self):
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
             return [55, self.xn()[1]-55, self.xn()[2]-55, self.xn()[3]-55]
         else:
-            return [self.xn()[0] + 55, 55, self.xn()[2] - 55, self.xn()[3] - 55]
+            return [-self.xn()[0] - 55, -55, self.xn()[2] - 55, self.xn()[3] - 55]
 
     def Iter(self):
         self.results = []

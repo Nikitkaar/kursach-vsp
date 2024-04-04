@@ -321,4 +321,3 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=131, column=i, value=round(P_norm0 / (25 * 2 * F), 2))
     sheet.cell(row=132, column=i, value=round(P_norm1 / (25 * 2 * F), 2))
 workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
-print(k)

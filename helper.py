@@ -1,39 +1,20 @@
-import numpy
-from openpyxl import Workbook
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 
-'''
-def N_1(k, l_i):
-    return round((numpy.cos(k * l_i) + numpy.sin(k * l_i)) * numpy.e ** ((-k) * l_i), 5)
+# Создаем фигуру и оси
+fig, ax = plt.subplots()
 
-def M(k, l_i):
-    return (numpy.cos(k * l_i) - numpy.sin(k * l_i)) * numpy.e ** (-k * l_i)
+# Создаем и добавляем прямоугольники на график
+rect1 = Rectangle((0, 0), 3, 2, edgecolor='r', facecolor='none')  # Прямоугольник с шириной 2 и высотой 3
+rect2 = Rectangle((4, 0), 3, 2, edgecolor='b', facecolor='none')  # Прямоугольник с шириной 1 и высотой 2
+rect3 = Rectangle((8, 0), 3, 2, edgecolor='b', facecolor='none')  # Прямоугольник с шириной 1 и высотой 2
 
-print(round(N_1(0.015, 55), 5))
+ax.add_patch(rect1)
+ax.add_patch(rect2)
+ax.add_patch(rect3)
+# Устанавливаем пределы осей чтобы видеть прямоугольники
+ax.set_xlim(0, 12)
+ax.set_ylim(0, 12)
 
-
-def RaschetnayaOS_N(k, l_i):
-    if ((3 * numpy.pi) / (4 * k)) > l_i[0] or ((3 * numpy.pi) / (4 * k)) > l_i[1]:
-        return 2
-    else:
-        return 1
-
-U = [260, 500, 290, 600]
-k = [0.01145, 0.0, 0.01176, 0.0]
-k[1] = round((U[1]/(4*2.1*10**6*2018))**(0.25), 5)
-k[3] = round((U[3]/(4*2.1*10**6*2018))**(0.25), 5)
-
-c = [1, 2, 3]
-print(N_1(0.01145, 70))
-'''
-
-from openpyxl import Workbook, load_workbook
-
-# Предполагаем, что у вас уже есть workbook_3 и sheet
-# Загружаем данные из ячеек 67 строки в список
-row_values = [cell.value for cell in sheet[67]]
-
-# Находим минимальное значение
-min_value = min(row_values)
-
-print("Минимальное значение из 67 строки:", min_value)
+plt.show()
 
