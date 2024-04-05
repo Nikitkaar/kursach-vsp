@@ -445,7 +445,7 @@ class PodvizhnoySostav:
             self.rounded_value = round(self.value, 5)
             self.results.append(self.rounded_value)
         return self.results
-    
+
     def Iter1(self):
         self.resulted = []
         for i in self.xnn3():
@@ -506,3 +506,20 @@ class PodvizhnoySostav:
 
     def sigma_norm(self, min_value_0):
         return self.sigma_kp() * 1.3 + min_value_0 * 25.2
+
+    def Ekv_gruzi_η(self):
+        if self.RaschetnayaOS_N() == 2:
+            return f'I ось: x = {self.l_i[0]} см; kx = {self.k}×{self.l_i[0]} = {(self.k*self.l_i[0]):.2f}; η = {self.N_2()}\nIII ось: x = {self.l_i[1]} см; kx = {self.k}×{self.l_i[1]} = {(self.k*self.l_i[1]):.2f}; η = {self.N_3()}\nVI ось: x = {self.l_i[1]}+{self.l_i[2]} см; kx = {self.k}×{self.l_i[1]+self.l_i[2]} = {(self.k*(self.l_i[1]+self.l_i[2])):.2f}; η = {self.N_4()}'
+        else:
+            return f'II ось: x = {self.l_i[0]} см; kx = {self.k}×{self.l_i[0]} = {(self.k*self.l_i[0]):.2f};' \
+                   f' η = {self.N_2()}\nIII ось: x = {self.l_i[1]}+{self.l_i[0]} см;' \
+                   f' kx = {self.k}×{self.l_i[0]+self.l_i[1]} = {(self.k*(self.l_i[0]+self.l_i[1])):.2f}; η = {self.N_3()}\nVI ось: ' \
+                   f'x = {self.l_i[0]}+{self.l_i[1]}+{self.l_i[2]} см; kx = {self.k}×{self.l_i[0]+self.l_i[1]+self.l_i[2]} =' \
+                   f' {(self.k*(self.l_i[0]+self.l_i[1]+self.l_i[2])):.2f}; η = {self.N_4()}'
+
+    def Ekv_gruzi_µ(self):
+        return f'II ось: x = {self.l_i[0]} см; kx = {self.k}×{self.l_i[0]} = {(self.k * self.l_i[0]):.2f};' \
+               f' µ = {self.Muu2()}\nIII ось: x = {self.l_i[1]}+{self.l_i[0]} см;' \
+               f' kx = {self.k}×{self.l_i[0] + self.l_i[1]} = {(self.k * (self.l_i[0] + self.l_i[1])):.2f}; µ = {self.Muu3()}\nVI ось: ' \
+               f'x = {self.l_i[0]}+{self.l_i[1]}+{self.l_i[2]} см; kx = {self.k}×{self.l_i[0] + self.l_i[1] + self.l_i[2]} =' \
+               f' {(self.k * (self.l_i[0] + self.l_i[1] + self.l_i[2])):.2f}; µ = {self.Muu4()}'

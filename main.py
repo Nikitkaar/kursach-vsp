@@ -178,7 +178,13 @@ for i, sostav in enumerate(sostavs, start=1):
     inf = sostav.A()
     sheet.cell(row=57, column=i, value=inf)
     inf = sostav.C1()
-    sheet.cell(row=63, column=i, value=inf)
+    sheet.cell(row=58, column=i, value=inf)
+    inf = sostav.l_i[0]
+    sheet.cell(row=59, column=i, value=inf)
+    inf = sostav.l_i[1]
+    sheet.cell(row=60, column=i, value=inf)
+    inf = sostav.l_i[2]
+    sheet.cell(row=61, column=i, value=inf)
     inf = sostav.C2()
     sheet.cell(row=64, column=i, value=inf)
     inf = sostav.delta_t_p()
@@ -186,7 +192,6 @@ for i, sostav in enumerate(sostavs, start=1):
     inf = sostav.k3
     sheet.cell(row=68, column=i, value=inf)
     inf = sostav.curve
-
     sheet.cell(row=70, column=i, value=inf)
     inf = sostav.xm()[0]
     sheet.cell(row=71, column=i, value=inf)
@@ -320,4 +325,6 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=130, column=i, value=F * 2)
     sheet.cell(row=131, column=i, value=round(P_norm0 / (25 * 2 * F), 2))
     sheet.cell(row=132, column=i, value=round(P_norm1 / (25 * 2 * F), 2))
+    sheet.cell(row=133, column=i, value=(sostav.Ekv_gruzi_η()))
+    sheet.cell(row=134, column=i, value=(sostav.Ekv_gruzi_µ()))
 workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
