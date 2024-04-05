@@ -95,7 +95,10 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=11, column=i, value=inf)
     inf = sostav.e
     sheet.cell(row=12, column=i, value=inf)
-    inf = round(sostav.z_max(), 2)
+    inf = round(sostav.z_max()[1], 2)
+    sheet.cell(row=13, column=i, value=inf)
+    inf = round(sostav.z_max()[0], 2)
+
     sheet.cell(row=15, column=i, value=inf)
     inf = sostav.material_of_sleepers
     sheet.cell(row=16, column=i, value=inf)

@@ -131,15 +131,15 @@ class PodvizhnoySostav:
 
     def z_max(self):
         if 'чс' in self.type_sostav.lower() or 'вл' in self.type_sostav.lower():
-            return 10.9 + 9.6 * 10 **(-4) * self.v ** 2
+            return [10.9 + 9.6 * 10 **(-4) * self.v ** 2, 'Электровоз']
         elif 'тэ' in self.type_sostav.lower() or 'м62' in self.type_sostav.lower() or 'чм' in self.type_sostav.lower():
-            return 10.9 + 9.6 * 10 **(-4) * self.v ** 2
+            return [10.9 + 9.6 * 10 **(-4) * self.v ** 2, '']
         elif '8' in self.type_sostav.lower():
-            return 9.5 + 9 * 10 ** (-4) * self.v ** 2
+            return [9.5 + 9 * 10 ** (-4) * self.v ** 2, 'Тепловоз']
         elif '6' in self.type_sostav.lower():
-            return 6 + 16 * 10 ** (-4) * self.v ** 2
+            return [6 + 16 * 10 ** (-4) * self.v ** 2, 'НЕТУ']
         else:
-            return 10 + 16 * 10 ** (-4) * self.v ** 2
+            return [10 + 16 * 10 ** (-4) * self.v ** 2, 'НЕТУ']
 
     '''
     def __str__(self):
@@ -171,7 +171,7 @@ class PodvizhnoySostav:
 
     def p_max_p(self):
         """вычисляет динамическую нагрузку Р (верхний индекс max) + (нижний - р)"""
-        return round(self.JestcostRessor * self.z_max(), 2)
+        return round(self.JestcostRessor * self.z_max()[0], 2)
 
     def p_cp_p(self):
         """вычисляем – среднее значение динамической нагрузки колеса на рельс от вертикальных колебаний надрессорного
