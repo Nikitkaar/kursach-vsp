@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import main
 
+from main import k
+from main import sostavs
 g = ["Локомотив Прямая Лето", "Локомотив Прямая Зима", "Локомотив Кривая Лето", "Локомотив Кривая Зима", "Вагон Прямая Лето", "Вагон Прямая Зима", "Вагон Кривая Лето", "Вагон Кривая Зима"]
 k = main.k * 2
 
@@ -92,6 +93,3 @@ for i in range(len(k)):
 
 plt.tight_layout()
 plt.savefig('ИЗГИБЫ.pdf', format='pdf', bbox_inches='tight', pad_inches=0)
-
-print(isser())
-print(isser_1())

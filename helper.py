@@ -1,20 +1,28 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+import pandas as pd
 
-# Создаем фигуру и оси
-fig, ax = plt.subplots()
 
-# Создаем и добавляем прямоугольники на график
-rect1 = Rectangle((0, 0), 3, 2, edgecolor='r', facecolor='none')  # Прямоугольник с шириной 2 и высотой 3
-rect2 = Rectangle((4, 0), 3, 2, edgecolor='b', facecolor='none')  # Прямоугольник с шириной 1 и высотой 2
-rect3 = Rectangle((8, 0), 3, 2, edgecolor='b', facecolor='none')  # Прямоугольник с шириной 1 и высотой 2
+"""def my_function(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
 
-ax.add_patch(rect1)
-ax.add_patch(rect2)
-ax.add_patch(rect3)
-# Устанавливаем пределы осей чтобы видеть прямоугольники
-ax.set_xlim(0, 12)
-ax.set_ylim(0, 12)
+my_function(name="Alice", age=30, city="New York")
 
-plt.show()
+def my_function(*args, **kwargs):
+    for arg in args:
+        print(arg)
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+my_function(1, 2, 3, name="Alice", age=30)
+"""
+
+def my_function(*args):
+    for arg in args:
+        print(arg)
+
+my_function(1, 2, 3)
+
+print(my_function())
 

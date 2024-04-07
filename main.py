@@ -1,74 +1,137 @@
 from initial_data import PodvizhnoySostav
 from openpyxl import Workbook
+import pandas as pd
 
+rail_type = "P50"
+v = 85
+val = 23  # РУЧНОЙ ВВОД ИЗ Таблицы
+raion = "Тула"
+capacity = 20.7
+material_of_sleepers = 'Дерево'
+h = 65
+Type = ['ВЛ10', '8-осный']  # РУЧНОЙ ВВОД ИЗ ДАНО
+
+workbook_7 = pd.read_excel(
+    r'C:\Users\Администратор\PycharmProjects\kursach-vsp\РасчетныеХарактеристикиЛокомотивовВагонов.xlsx')
+alarm = list(workbook_7.loc[workbook_7["Type"] == Type[0], 'Pct'])[0]
+alarms_0 = list(workbook_7.loc[workbook_7["Type"] == Type[0], 'q'])[0]
+alarms_1 = workbook_7.loc[workbook_7["Type"] == Type[1], 'q']
+alarms_2 = workbook_7.loc[workbook_7["Type"] == Type[0], 'G']
+alarms_3 = workbook_7.loc[workbook_7["Type"] == Type[1], 'G']
+alarms_4 = workbook_7.loc[workbook_7["Type"] == Type[0], 'd']
+alarms_5 = workbook_7.loc[workbook_7["Type"] == Type[1], 'd']
+alarms_6 = workbook_7.loc[workbook_7["Type"] == Type[0], 'n']
+alarms_7 = workbook_7.loc[workbook_7["Type"] == Type[1], 'n']
+alarms_8 = workbook_7.loc[workbook_7["Type"] == Type[0], 'l_i']
+# Разделить строку по запятым и преобразовать каждый элемент в числовой формат
+alarms_8_1 = [int(x) for x in list(alarms_8)[0].split(',')]
+alarms_9 = workbook_7.loc[workbook_7["Type"] == Type[1], 'l_i']
+alarms_9_1 = [int(x) for x in list(alarms_9)[0].split(',')]
+
+workbook_8 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\РасчетныеХарактеристикиПути.xlsx')
+val_0 = list(workbook_8.loc[workbook_8["№"] == val, 'U'])[0]
+val_1 = list(workbook_8.loc[workbook_8["№"] == val - 1, 'U'])[0]
+val_2 = list(workbook_8.loc[workbook_8["№"] == val, 'k'])[0]
+val_3 = list(workbook_8.loc[workbook_8["№"] == val - 1, 'k'])[0]
+L = float(list(workbook_8.loc[workbook_8["№"] == val, 'L'])[0])
+
+W = int(list(workbook_8.loc[workbook_8["№"] == val, 'W(6)'])[0])
+alpha0 = float(list(workbook_8.loc[workbook_8["№"] == val, 'α0'])[0])
+omega = int(list(workbook_8.loc[workbook_8["№"] == val, 'ω'])[0])
+omega_a = int(list(workbook_8.loc[workbook_8["№"] == val, 'Ωа'])[0])
+b = int(list(workbook_8.loc[workbook_8["№"] == val, 'b'])[0])
+ae = float(list(workbook_8.loc[workbook_8["№"] == val, 'æ'])[0])
+a = val_1
+if a.imag == 0:
+    print("a - вещественное число", a)
+else:
+    print("a - комплексное число", a)
+print(b)
 # ВВОЖУ ИСХОДНЫЕ ДАННЫЕ
 # Локомотив/Вагон;
-Pct = [11500, 14000]
-q = [3160, 995]
-JestcostRessor = [116, 200]
-d = [125, 95]
-n = [2, 4]
-l_i = [[300, 0, 0], [185, 125, 185]]
-curve = ["Прямая", 600]
+P_ct = [alarm, 14000]  # РУЧНОЙ ВВОД ИЗ ДАНО
+q = [alarms_0, alarms_1]
+JestcostRessor = [list(alarms_2)[0], list(alarms_3)[0]]
+d = [list(alarms_4)[0], list(alarms_5)[0]]
+n = [list(alarms_6)[0], list(alarms_7)[0]]
+l_i = [list(alarms_8_1), list(alarms_9_1)]
+curve = ["Прямая", 600]  # РУЧНОЙ ВВОД ИЗ ДАНО
 
 # Прямая, Лето\Зима:     Кривая, Лето\Зима:
-U = [260, 500, 290, 600]
-k = [0.01145, 0.0, 0.01176, 0.0]
-k[1] = round((U[1]/(4*2.1*10**6*2018)) ** 0.25, 5)
-k[3] = round((U[3]/(4*2.1*10**6*2018)) ** 0.25, 5)
+U = [val_0, 500, val_1, 600]  # РУЧНОЙ ВВОД
+k = [val_2, 0.0, val_3, 0.0]  # РУЧНОЙ ВВОД
+
+if rail_type == 'P50' or rail_type == 'Р50':
+    J0 = 2018
+elif rail_type == 'P65' or rail_type == 'Р65':
+    J0 = 3547
+else:
+    J0 = 4490
+
+k[1] = round((U[1] / (4 * 2.1 * 10 ** 6 * J0)) ** 0.25, 5)
+k[3] = round((U[3] / (4 * 2.1 * 10 ** 6 * J0)) ** 0.25, 5)
 # Локомотив:     Вагон:
 # Прямая/Кривая; Прямая/Кривая
-f = [1.25, 1.33, 1.18, 1.37]
-
-# U = [U[0], U[0] * 1.5, U[1], U[1] * 1.5]  # Вместе с зимой
+f = [1.25, 1.33, 1.18, 1.37]  ##можно автоматизировать ввод с помощью таблицы
 
 sostavs = [
-    PodvizhnoySostav("ВЛ-10", "Лето", curve[0], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[0], 0.047,
-                     1840, U[0], k[0], 55, Pct[0]),
-    PodvizhnoySostav("ВЛ-10", "Зима", curve[0], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[0], 0.047,
-                     1840, U[1], k[1], 55, Pct[0]),
-    PodvizhnoySostav("ВЛ-10", "Лето", curve[1], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[1], 0.047,
-                     2000, U[2], k[2], 51, Pct[0]),
-    PodvizhnoySostav("ВЛ-10", "Зима", curve[1], q[0], JestcostRessor[0], d[0], n[0], l_i[0], f[1], 0.047,
-                     2000, U[3], k[3], 51, Pct[0]),
-    PodvizhnoySostav("8-осный", "Лето", curve[0], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[2], 0.067,
-
-                     1840, U[0], k[0], 55, Pct[1]),
-    PodvizhnoySostav("8-осный", "Зима", curve[0], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[2], 0.067,
-
-                     1840, U[1], k[1], 55, Pct[1]),
-    PodvizhnoySostav("8-осный", "Лето", curve[1], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[3], 0.067,
-
-                     2000, U[2], k[2], 51, Pct[1]),
-    PodvizhnoySostav("8-осный", "Зима", curve[1], q[1], JestcostRessor[1], d[1], n[1], l_i[1], f[3], 0.067,
-
-                     2000, U[3], k[3], 51, Pct[1])
+    PodvizhnoySostav(type_sostav=Type[0], season="Лето", curve=curve[0], q=q[0], JestcostRessor=JestcostRessor[0],
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=1840, k=k[0], val=U[0], P_ct=P_ct[0], l_sh=51, v=v, L=L, alpha0=alpha0, W=W, rail_type=rail_type,
+                     material_of_sleepers=material_of_sleepers, omega=omega, omega_a=omega_a, b=b, ae=ae, h=h),
+    PodvizhnoySostav(type_sostav=Type[0], season="Зима", curve=curve[0], q=q[0], JestcostRessor=JestcostRessor[0],
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=1840, k=k[1], val=U[1], P_ct=P_ct[0], l_sh=51, v=v, L=L, alpha0=alpha0, W=W, rail_type=rail_type,
+                     material_of_sleepers=material_of_sleepers, omega=omega, omega_a=omega_a, b=b, ae=ae, h=h),
+    PodvizhnoySostav(type_sostav=Type[0], season="Лето", curve=curve[1], q=q[0], JestcostRessor=JestcostRessor[0],
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[1], e=0.047, u=U[2], k=k[2], val=51, P_ct=P_ct[0], l_sh=55, v=v, L=L, alpha0=alpha0, W=W, rail_type=rail_type,
+                     material_of_sleepers=material_of_sleepers, omega=omega, omega_a=omega_a, b=b, ae=ae, h=h),
+    PodvizhnoySostav(type_sostav=Type[0], season="Зима", curve=curve[1], q=q[0], JestcostRessor=JestcostRessor[0],
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=1840, k=k[0], val=U[0], P_ct=P_ct[0], l_sh=55, v=v, L=L, alpha0=alpha0, W=W, rail_type=rail_type,
+                     material_of_sleepers=material_of_sleepers, omega=omega, omega_a=omega_a, b=b, ae=ae, h=h),
+    PodvizhnoySostav(type_sostav=Type[1], season="Лето", curve=curve[0], q=q[0], JestcostRessor=JestcostRessor[1],
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=1840, k=k[1], val=U[1], P_ct=P_ct[1], l_sh=51, v=v, L=L, alpha0=alpha0, W=W, rail_type=rail_type,
+                     material_of_sleepers=material_of_sleepers, omega=omega, omega_a=omega_a, b=b, ae=ae, h=h),
+    PodvizhnoySostav(type_sostav=Type[1], season="Зима", curve=curve[0], q=q[0], JestcostRessor=JestcostRessor[1],
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[1], e=0.047, u=U[2], k=k[2], val=51, P_ct=P_ct[1], l_sh=51, v=v, L=L, alpha0=alpha0, W=W, rail_type=rail_type,
+                     material_of_sleepers=material_of_sleepers, omega=omega, omega_a=omega_a, b=b, ae=ae, h=h),
+    PodvizhnoySostav(type_sostav=Type[1], season="Лето", curve=curve[1], q=q[0], JestcostRessor=JestcostRessor[1],
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=1840, k=k[1], val=U[1], P_ct=P_ct[1], l_sh=55, v=v, L=L, alpha0=alpha0, W=W, rail_type=rail_type,
+                     material_of_sleepers=material_of_sleepers, omega=omega, omega_a=omega_a, b=b, ae=ae, h=h),
+    PodvizhnoySostav(type_sostav=Type[1], season="Зима", curve=curve[1], q=q[0], JestcostRessor=JestcostRessor[1],
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[1], e=0.047, u=U[2], k=k[2], val=51, P_ct=P_ct[1], l_sh=55, v=v, L=L, alpha0=alpha0, W=W, rail_type=rail_type,
+                     material_of_sleepers=material_of_sleepers, omega=omega, omega_a=omega_a, b=b, ae=ae, h=h),
 ]
 
-'''
-def printHead(s):
-    print("=" * 79)
-    print(s)
-    print("=" * 79)
+# Минимальные температуры на прямой и кривой соответственно
+delta_t_p0_min = min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p())
+delta_t_p1_min = min(sostavs[3].delta_t_p(), sostavs[7].delta_t_p())
 
 
-# Выводит содержимое расчетов
-def printList():
-    printHead("РАСЧЕТЫ:")
-    for i in range(len(sostavs)):
-        # Заметьте, что выводится объект products[i]
-        # Возвращаемая строка указана в методе __str__ класса
-        print(f"{(i + 1)}.{sostavs[i]}")
+def indexxx_0():
+    """возвращаем индекс sostavs, с минимальным delta_t_p на прямой"""
+    global sostav
+    for index, sostav in enumerate(sostavs):
+        if sostav.delta_t_p() == delta_t_p0_min:
+            return index
 
 
-printList()
-'''
+def indexxx_1():
+    """возвращаем индекс sostavs, с минимальным delta_t_p на кривой"""
+    global sostav
+    for index, sostav in enumerate(sostavs):
+        if sostav.delta_t_p() == delta_t_p1_min:
+            return index
+
+
+if sostavs[0].rail_type == 'P50':
+    F = 65.99
+else:
+    F = 82.56
+
+# РАБОТА С ЭКСЕЛЬ, ЗАПИСЬ ДАННЫХ В ТАБЛИЦУ (с помощью специальной вставки они переходят в ворд-документ отчета)
 # ГЛАВНАЯ ТАБЛИЦА
 
 workbook_3 = Workbook()
 sheet = workbook_3.active
-
-# РАБОТА С ЭКСЕЛЬ, ЗАПИСЬ НУЖНЫХ ДАННЫХ В ТАБЛИЦУ
 
 for i, sostav in enumerate(sostavs, start=1):
     info = sostav.type_sostav
@@ -77,7 +140,7 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=2, column=i, value=info)
     info = sostav.season
     sheet.cell(row=3, column=i, value=info)
-    info = sostav.p_ct
+    info = sostav.P_ct
     sheet.cell(row=4, column=i, value=info)
     informa = sostav.v
     sheet.cell(row=5, column=i, value=informa)
@@ -95,10 +158,16 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=11, column=i, value=inf)
     inf = sostav.e
     sheet.cell(row=12, column=i, value=inf)
-    inf = round(sostav.z_max()[1], 2)
+    inf = sostav.z_max()[1]
     sheet.cell(row=13, column=i, value=inf)
+    if sostav.n == 4:
+        inf = f'{sostav.l_i[0]}+{sostav.l_i[1]}+{sostav.l_i[2]}'
+    elif sostav.n == 3:
+        inf = f'{sostav.l_i[0]}+{sostav.l_i[1]}'
+    else:
+        inf = str(sostav.l_i[0])
+    sheet.cell(row=14, column=i, value=inf)
     inf = round(sostav.z_max()[0], 2)
-
     sheet.cell(row=15, column=i, value=inf)
     inf = sostav.material_of_sleepers
     sheet.cell(row=16, column=i, value=inf)
@@ -204,101 +273,48 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=73, column=i, value=inf)
     inf = sostav.xm()[3]
     sheet.cell(row=74, column=i, value=inf)
-    inf = sostav.xn()[0]
-    sheet.cell(row=75, column=i, value=inf)
-    inf = sostav.xn()[1]
-    sheet.cell(row=76, column=i, value=inf)
-    inf = sostav.xn()[2]
-    sheet.cell(row=77, column=i, value=inf)
-    inf = sostav.xn()[3]
-    sheet.cell(row=78, column=i, value=inf)
-    inf = sostav.l_i[1]
-    sheet.cell(row=79, column=i, value=inf)
+
     inf = sostav.xn()[2]
     sheet.cell(row=81, column=i, value=inf)
-    inf = sostav.xnn1()[0]
+    inf = round(sostavs[4].summa1(), 5)
     sheet.cell(row=82, column=i, value=inf)
-    inf = sostav.xnn1()[1]
-    sheet.cell(row=83, column=i, value=inf)
-    inf = sostav.xnn1()[2]
-    sheet.cell(row=84, column=i, value=inf)
-    inf = sostav.xnn1()[3]
-    sheet.cell(row=85, column=i, value=inf)
-    inf = sostav.Iter()[0]
-    sheet.cell(row=86, column=i, value=inf)
-    inf = sostav.Iter()[1]
-    sheet.cell(row=87, column=i, value=inf)
-    inf = sostav.Iter()[2]
-    sheet.cell(row=88, column=i, value=inf)
-    inf = sostav.Iter()[3]
-    sheet.cell(row=89, column=i, value=inf)
-    inf = sostav.summa1()
-    sheet.cell(row=90, column=i, value=inf)
-    inf = sostav.Iter1()[0]
-    sheet.cell(row=91, column=i, value=inf)
-    inf = sostav.Iter1()[1]
-    sheet.cell(row=92, column=i, value=inf)
-    inf = sostav.Iter1()[2]
-    sheet.cell(row=93, column=i, value=inf)
-    inf = sostav.Iter1()[3]
-    sheet.cell(row=94, column=i, value=inf)
-    inf = sostav.summa2()
+
+    inf = round(sostavs[4].summa2(), 5)
     sheet.cell(row=95, column=i, value=inf)
-    inf = sostav.xnn3()[0]
-    sheet.cell(row=96, column=i, value=inf)
-    inf = sostav.xnn3()[1]
-    sheet.cell(row=97, column=i, value=inf)
-    inf = sostav.xnn3()[2]
-    sheet.cell(row=98, column=i, value=inf)
-    inf = sostav.xnn3()[3]
+
     sheet.cell(row=99, column=i, value=inf)
 
-    inf = sostav.P_II_ekvONE()
+    inf = sostavs[4].P_II_ekvONE()
     sheet.cell(row=100, column=i, value=inf)
-    inf = sostav.P_II_ekvThree()
+    inf = sostavs[4].P_II_ekvThree()
     sheet.cell(row=101, column=i, value=inf)
-    
-    inf = sostav.sigma_b1()
+    inf = sostavs[4].sigma_b1()
     sheet.cell(row=102, column=i, value=inf)
-    
-    inf = sostav.sigma_h1()
+    inf = sostavs[4].sigma_h1()
     sheet.cell(row=103, column=i, value=inf)
-   
-    inf = sostav.sigma_b3()
+    inf = sostavs[4].sigma_b3()
     sheet.cell(row=104, column=i, value=inf)
-    
-    inf = sostav.sigma_h3()
+    inf = sostavs[4].sigma_h3()
     sheet.cell(row=105, column=i, value=inf)
-    inf = sostav.sigma_h()
+    inf = sostavs[4].sigma_h()
     sheet.cell(row=106, column=i, value=inf)
-
     inf = sostav.AA()[0]
     sheet.cell(row=107, column=i, value=inf)
     inf = sostav.AA1()[0]
     sheet.cell(row=108, column=i, value=inf)
-    delta_t_p0_min = min(sostavs[1].delta_t_p(), sostavs[5].delta_t_p())
     sheet.cell(row=113, column=i, value=delta_t_p0_min)
     sheet.cell(row=114, column=i, value=sostav.sigma_norm(delta_t_p0_min))
-    delta_t_p1_min = min(sostavs[3].delta_t_p(), sostavs[7].delta_t_p())
     sheet.cell(row=115, column=i, value=delta_t_p1_min)
     sheet.cell(row=116, column=i, value=sostav.sigma_norm(delta_t_p1_min))
-
+    inf = sostav.Ekv_gruzi_η()
+    sheet.cell(row=133, column=i, value=inf)
+    inf = sostav.Ekv_gruzi_µ()
+    sheet.cell(row=134, column=i, value=inf)
+    inf = sostav.Ekv_gruzi_η_shpala_1()
+    sheet.cell(row=135, column=i, value=inf)
     sheet.cell(row=117, column=i, value=25.2 * delta_t_p0_min)
     sheet.cell(row=118, column=i, value=25.2 * delta_t_p1_min)
-
-# Проходим по каждому элементу в списке и проверяем значение метода delta_t_p()
-    def indexxx_0():
-        global sostav
-        for index, sostav in enumerate(sostavs):
-            if sostav.delta_t_p() == delta_t_p0_min:
-                return index
     sheet.cell(row=119, column=i, value=round(sostavs[indexxx_0()].sigma_kp() * 1.3 + 25.2 * delta_t_p0_min, 2))
-
-    def indexxx_1():
-        global sostav
-        for index, sostav in enumerate(sostavs):
-            if sostav.delta_t_p() == delta_t_p1_min:
-                return index
     sheet.cell(row=120, column=i, value=round(sostavs[indexxx_1()].sigma_kp() * 1.3 + 25.2 * delta_t_p1_min, 2))
     sigma_kp0 = sostavs[indexxx_0()].sigma_kp()
     sheet.cell(row=121, column=i, value=sigma_kp0)
@@ -306,11 +322,11 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=122, column=i, value=sigma_kp1)
     AA0 = sostavs[indexxx_0()].AA()[0]
     AA1 = sostavs[indexxx_0()].AA1()[0]
-    P_k0 = round((AA0 * 0.9 * 1 * 1.03) / (2**AA1), 2)
+    P_k0 = round((AA0 * 0.9 * 1 * 1.03) / (2 ** AA1), 2)
     sheet.cell(row=123, column=i, value=P_k0)
     AA2 = sostavs[indexxx_1()].AA()[0]
     AA3 = sostavs[indexxx_1()].AA1()[0]
-    P_k1 = round((AA2 * 0.9 * 1.08 * 1.05) / (3**AA3), 2)
+    P_k1 = round((AA2 * 0.9 * 1.08 * 1.05) / (3 ** AA3), 2)
     sheet.cell(row=124, column=i, value=P_k1)
     kgs0 = round(P_k0 * 101.971621297793, 2)
     sheet.cell(row=125, column=i, value=kgs0)
@@ -320,14 +336,12 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=127, column=i, value=P_norm0)
     P_norm1 = round(kgs1 / 1.5, 2)
     sheet.cell(row=128, column=i, value=P_norm1)
-    if sostav.rail_type == 'P50':
-        F = 65.99
-    else:
-        F = 82.56
     sheet.cell(row=129, column=i, value=F)
     sheet.cell(row=130, column=i, value=F * 2)
     sheet.cell(row=131, column=i, value=round(P_norm0 / (25 * 2 * F), 2))
     sheet.cell(row=132, column=i, value=round(P_norm1 / (25 * 2 * F), 2))
-    sheet.cell(row=133, column=i, value=(sostav.Ekv_gruzi_η()))
-    sheet.cell(row=134, column=i, value=(sostav.Ekv_gruzi_µ()))
+# Уже заняты 133 и 134
+# Почему-то возвращают только первое вхождение если строки кода стоят здесь, а не выше
+
 workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
+print(sostavs[7].summa1())
