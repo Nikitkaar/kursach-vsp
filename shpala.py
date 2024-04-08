@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import main
 
-k = [main.k[0], main.k[0]]
+k = [main.k[2], main.k[2]]
 
 
 def summa_l_0():

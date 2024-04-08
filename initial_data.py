@@ -87,7 +87,7 @@ class PodvizhnoySostav:
     ОШИБКИ:
     -------
 
-    Стоит разбавить процедурное программирование ООП(Хотя бы графики оюернуть в классы).
+    Стоит разбавить процедурное программирование ООП(Хотя бы графики обернуть в классы). Задание со *
     kx считается вручную для каждой оси.
     нет интерфейса, стабильной связи с эксель и ворд (файл ворд иногда вылетает,
     необходимо держать резервную копию), недостаточно подробное описание
@@ -242,7 +242,7 @@ class PodvizhnoySostav:
                 self.l_i[1] + self.l_i[2])
 
     def N_2(self):
-        """Ордината функции момента от приложенной еденичной силы (линии влияния) Мю по 2-ой расчетной
+        """Ордината функции момента от приложенной еденичной силы (линии влияния) Мю по 2-ой и расчетной
         оси"""
         if (self.k * self.l_i[0]) >= 5.5:
             return 0
@@ -250,6 +250,8 @@ class PodvizhnoySostav:
             return self.NNN(self.l_i[0])
 
     def N_3(self):
+        """Ордината функции момента от приложенной еденичной силы (линии влияния) Мю по 3-ей расчетной
+        оси"""
         if self.n < 3:
             return 0
         elif self.RaschetnayaOS_N() == 1:
@@ -261,6 +263,8 @@ class PodvizhnoySostav:
             return self.NNN(self.l_i[1])
 
     def N_4(self):
+        """Ордината функции момента от приложенной еденичной силы (линии влияния) Мю по 4-ей расчетной
+        оси"""
         if self.n < 4:
             return 0
         elif self.RaschetnayaOS_N() == 1:
@@ -339,6 +343,7 @@ class PodvizhnoySostav:
         return round((4000 - (1.3 * self.sigma_kp())) / 25.2)
 
     def xm(self):
+        """Расстояния от оси колесной пары до рассчетной оси µ"""
         if self.n == 4:
             return [0, self.l_i[0], self.l_i[0] + self.l_i[1], self.l_i[0] + self.l_i[1] + self.l_i[2]]
         if self.n == 3:
@@ -347,6 +352,7 @@ class PodvizhnoySostav:
             return [0, self.l_i[0], 0, 0]
 
     def xn(self):
+        """Расстояния от оси колесной пары до рассчетной оси η"""
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
             return self.xm()
         else:
@@ -365,12 +371,12 @@ class PodvizhnoySostav:
         return list(workbook_11.loc[workbook_11["H"] == self.h, "l" + str(self.b)])[0]
 
     def A(self):
+        """коэффициент, учитывающий расстояние между шпалами, ширину шпалы и глубину"""
         workbook_15 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\A.xlsx')
-        alarm = workbook_15.loc[workbook_15["h"] == self.h, "l" + str(self.b)]
-        return list(alarm.head())[0]
+        return list(workbook_15.loc[workbook_15["h"] == self.h, "l" + str(self.b)].head())[0]
 
     def summa1(self):
-        """Напряжения от 1-0й шпалы. Складывает η от всех осей, кроме расчетной"""
+        """Напряжения от 1-0й шпалы. Складывает η от всех осей, кроме ближайшей к расчетной"""
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
             if self.n == 4:
                 return self.NNN(self.l_i[0]+55) + self.NNN(self.l_i[0]+self.l_i[1]+55) + self.NNN(self.l_i[0]+self.l_i[1]+self.l_i[2]+55)
@@ -387,7 +393,7 @@ class PodvizhnoySostav:
 
 
     def summa2(self):
-        """Напряжения от 3-ей шпалы.Складывает η от всех осей, кроме расчетной"""
+        """Напряжения от 3-ей шпалы.Складывает η от всех осей, кроме ближайшей к расчетной"""
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
             if self.n == 4:
                 return self.NNN(self.l_i[0]-55) + self.NNN(self.l_i[1]+55) + self.NNN(self.l_i[1]+self.l_i[2]+55)
@@ -409,6 +415,7 @@ class PodvizhnoySostav:
         return round(self.p_max_ver() * self.NNN(self.l_sh) + self.p_cp() * int(self.summa2()), 2)
 
     def AA(self):
+        "Параметр А, зависящий от радиуса кривой и типа рельса"
         workbook_16 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\AA.xlsx')
 
         # Преобразовываем столбец "R" в строковый тип данных
@@ -418,6 +425,7 @@ class PodvizhnoySostav:
         return list((alarm.head()))
 
     def AA1(self):
+        "Параметр µ, зависящий от радиуса кривой и типа рельса"
         workbook_17 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\M.xlsx')
 
         # Преобразовываем столбец "R" в строковый тип данных
@@ -425,9 +433,6 @@ class PodvizhnoySostav:
 
         alarm = workbook_17.loc[workbook_17["R"] == str(self.curve), self.rail_type]
         return list((alarm.head()))
-
-    def sigma_norm(self, min_value_0):
-        return self.sigma_kp() * 1.3 + min_value_0 * 25.2
 
     def Ekv_gruzi_η(self):
         if self.RaschetnayaOS_N() == 2:
@@ -445,6 +450,13 @@ class PodvizhnoySostav:
                f'VI ось: x = {self.l_i[0]}+{self.l_i[1]}+{self.l_i[2]} см; kx = {self.k}×{self.l_i[0] + self.l_i[1] + self.l_i[2]} = {(self.k * (self.l_i[0] + self.l_i[1] + self.l_i[2])):.2f}; µ = {self.Muu4():.5f}'
 
     def Ekv_gruzi_η_shpala_1(self):
+        if self.RaschetnayaOS_N() == 2:
+            return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0]):.5f}\n' \
+                   f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
+                   f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1]+55} = {self.k*self.l_i[1]+55:.2f}; η = {self.NNN(self.l_i[1]+55):.5f}\n' \
+                   f'ηIV: x = {self.l_i[1]}+{self.l_i[2]}+55; kx = {self.k}×{self.l_i[1]+self.l_i[2]+55} = {self.k * (self.l_i[1]+self.l_i[2]+5):.2f}; η = {self.NNN(self.l_i[1]+self.l_i[2]+55):.5f}'
+
+    def Ekv_gruzi_η_shpala_3(self):
         if self.RaschetnayaOS_N() == 2:
             return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0]):.5f}\n' \
                    f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
