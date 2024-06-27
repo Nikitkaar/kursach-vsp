@@ -2,13 +2,17 @@ from initial_data import PodvizhnoySostav
 from openpyxl import Workbook
 import pandas as pd
 
+station = "Тула"
+t_min_min = -42
+t_max_max = 58
+Ta = t_max_max - t_min_min
 rail_type = "P50"
 v = 85
 val = 23  # РУЧНОЙ ВВОД ИЗ Таблицы
 raion = "Тула"
 capacity = 20.7
 material_of_sleepers = 'Дерево'
-h = 65
+h = 55
 Type = ['ВЛ10', '8-миосный']  # РУЧНОЙ ВВОД ИЗ ДАНО
 
 # Чтение данных из файла Excel
@@ -34,6 +38,8 @@ df = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach
 Vag_0 = df.loc[df['Критерии'] == '[бкр]', criteria].values[0]
 Vag_1 = df.loc[df['Критерии'] == '[бш]', criteria].values[0]
 Vag_2 = df.loc[df['Критерии'] == '[бб]', criteria].values[0]
+Vag_3 = df.loc[df['Критерии'] == '[бз]', criteria].values[0]
+
 
 workbook_7 = pd.read_excel(
     r'C:\Users\Администратор\PycharmProjects\kursach-vsp\РасчетныеХарактеристикиЛокомотивовВагонов.xlsx')
@@ -102,35 +108,35 @@ f = [f0, f1, f2, f3]  ##можно автоматизировать ввод с 
 
 sostavs = [
     PodvizhnoySostav(type_sostav=Type[0], season="Лето", curve=curve[0], q=q[0], JestcostRessor=JestcostRessor[0],
-                     d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=U[2], k=k[2], P_ct=P_ct[0], l_sh=51, v=v, L=L,
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=U[2], k=k[2], P_ct=P_ct[0], l_sh=55, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
                      omega_a=omega_a, b=b, ae=ae, h=h),
     PodvizhnoySostav(type_sostav=Type[0], season="Зима", curve=curve[0], q=q[0], JestcostRessor=JestcostRessor[0],
-                     d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=U[1], k=k[1], P_ct=P_ct[0], l_sh=51, v=v, L=L,
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=U[1], k=k[1], P_ct=P_ct[0], l_sh=55, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
                      omega_a=omega_a, b=b, ae=ae, h=h),
     PodvizhnoySostav(type_sostav=Type[0], season="Лето", curve=curve[1], q=q[0], JestcostRessor=JestcostRessor[0],
-                     d=d[0], n=n[0], l_i=l_i[0], f=f[1], e=0.047, u=U[0], k=k[0], P_ct=P_ct[0], l_sh=55, v=v, L=L,
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[1], e=0.047, u=U[0], k=k[0], P_ct=P_ct[0], l_sh=51, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers,
                      omega=omega, omega_a=omega_a, b=b, ae=ae, h=h),
     PodvizhnoySostav(type_sostav=Type[0], season="Зима", curve=curve[1], q=q[0], JestcostRessor=JestcostRessor[0],
-                     d=d[0], n=n[0], l_i=l_i[0], f=f[1], e=0.047, u=U[3], k=k[3], P_ct=P_ct[0], l_sh=55, v=v, L=L,
+                     d=d[0], n=n[0], l_i=l_i[0], f=f[1], e=0.047, u=U[3], k=k[3], P_ct=P_ct[0], l_sh=51, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers,
                      omega=omega, omega_a=omega_a, b=b, ae=ae, h=h),
     PodvizhnoySostav(type_sostav=Type[1], season="Лето", curve=curve[0], q=q[1], JestcostRessor=JestcostRessor[1],
-                     d=d[1], n=n[1], l_i=l_i[1], f=f[2], e=0.067, u=U[2], k=k[2], P_ct=P_ct[1], l_sh=51, v=v, L=L,
+                     d=d[1], n=n[1], l_i=l_i[1], f=f[2], e=0.067, u=U[2], k=k[2], P_ct=P_ct[1], l_sh=55, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
                      omega_a=omega_a, b=b, ae=ae, h=h),
     PodvizhnoySostav(type_sostav=Type[1], season="Зима", curve=curve[0], q=q[1], JestcostRessor=JestcostRessor[1],
-                     d=d[1], n=n[1], l_i=l_i[1], f=f[2], e=0.067, u=U[1], k=k[1], P_ct=P_ct[1], l_sh=51, v=v, L=L,
+                     d=d[1], n=n[1], l_i=l_i[1], f=f[2], e=0.067, u=U[1], k=k[1], P_ct=P_ct[1], l_sh=55, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
                      omega_a=omega_a, b=b, ae=ae, h=h),
     PodvizhnoySostav(type_sostav=Type[1], season="Лето", curve=curve[1], q=q[1], JestcostRessor=JestcostRessor[1],
-                     d=d[1], n=n[1], l_i=l_i[1], f=f[3], e=0.067, u=U[0], k=k[0], P_ct=P_ct[1], l_sh=55, v=v, L=L,
+                     d=d[1], n=n[1], l_i=l_i[1], f=f[3], e=0.067, u=U[0], k=k[0], P_ct=P_ct[1], l_sh=51, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
                      omega_a=omega_a, b=b, ae=ae, h=h),
     PodvizhnoySostav(type_sostav=Type[1], season="Зима", curve=curve[1], q=q[1], JestcostRessor=JestcostRessor[1],
-                     d=d[1], n=n[1], l_i=l_i[1], f=f[3], e=0.067, u=U[3], k=k[3], P_ct=P_ct[1], l_sh=55, v=v, L=L,
+                     d=d[1], n=n[1], l_i=l_i[1], f=f[3], e=0.067, u=U[3], k=k[3], P_ct=P_ct[1], l_sh=51, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
                      omega_a=omega_a, b=b, ae=ae, h=h),
 ]
@@ -277,6 +283,7 @@ for i, sostav in enumerate(sostavs, start=1):
 
     inf = sostav.p_max_ver()
     sheet.cell(row=33, column=i, value=inf)
+    sheet.cell(row=33, column=9, value='p_max_ver')
 
     inf = sostav.pi_4k()
     sheet.cell(row=34, column=i, value=inf)
@@ -322,6 +329,7 @@ for i, sostav in enumerate(sostavs, start=1):
 
     inf = sostav.RaschetnayaOS_N()
     sheet.cell(row=48, column=i, value=inf)
+    sheet.cell(row=48, column=9, value="номер оси n")
 
     inf = sostav.sigma_kp()
     sheet.cell(row=49, column=i, value=inf)
@@ -335,29 +343,43 @@ for i, sostav in enumerate(sostavs, start=1):
     inf = sostav.ae
     sheet.cell(row=52, column=i, value=inf)
 
+    sheet.cell(row=53, column=i, value=sostav.NNN(55))
+    sheet.cell(row=53, column=9, value="Тета от длинны шпалы")
+
     inf = sostav.m()
     sheet.cell(row=55, column=i, value=inf)
 
     inf = sostav.sigma_h2()
     sheet.cell(row=56, column=i, value=inf)
+    sheet.cell(row=56, column=9, value="sigma_h2()")
 
-    inf = sostav.A()
-    sheet.cell(row=57, column=i, value=inf)
 
-    inf = sostav.C1()
-    sheet.cell(row=58, column=i, value=inf)
+
+
+    sheet.cell(row=57, column=i, value=sostav.A())
+    sheet.cell(row=57, column=9, value='А, коэффициент расстояния между шпал')
+
+    sheet.cell(row=58, column=i, value=sostav.C1())
+    sheet.cell(row=58, column=9, value='C1')
 
     inf = sostav.l_i[0]
     sheet.cell(row=59, column=i, value=inf)
+    sheet.cell(row=59, column=9, value='l_i[0]')
 
     inf = sostav.l_i[1]
     sheet.cell(row=60, column=i, value=inf)
+    sheet.cell(row=60, column=9, value='l_i[1]')
 
     inf = sostav.l_i[2]
     sheet.cell(row=61, column=i, value=inf)
+    sheet.cell(row=61, column=9, value='l_i[2]')
+
+    sheet.cell(row=62, column=i, value=Vag_3)
+    sheet.cell(row=62, column=9, value='[бз_Вагон]')
 
     inf = sostav.C2()
     sheet.cell(row=64, column=i, value=inf)
+    sheet.cell(row=64, column=9, value='C2')
 
     inf = sostav.delta_t_p()
     sheet.cell(row=67, column=i, value=inf)
@@ -397,33 +419,43 @@ for i, sostav in enumerate(sostavs, start=1):
 
     inf = sostav.xn()[2]
     sheet.cell(row=81, column=i, value=inf)
+    sheet.cell(row=81, column=9, value="xn")
 
-    inf = round(sostavs[4].summa1(), 5)
+    inf = round(sostav.summa1(), 5)
     sheet.cell(row=82, column=i, value=inf)
+    sheet.cell(row=82, column=9, value="сигма тета 1 шпала")
 
-    inf = round(sostavs[4].summa2(), 5)
+    inf = round(sostav.summa2(), 5)
     sheet.cell(row=95, column=i, value=inf)
+    sheet.cell(row=95, column=9, value="сигма тета 3 шпала")
 
-    inf = sostavs[4].P_II_ekvONE()
+    inf = sostav.P_II_ekvONE()
     sheet.cell(row=100, column=i, value=inf)
+    sheet.cell(row=100, column=9, value="P_II_ekvONE")
 
-    inf = sostavs[4].P_II_ekvThree()
+    inf = sostav.P_II_ekvThree()
     sheet.cell(row=101, column=i, value=inf)
+    sheet.cell(row=101, column=9, value="P_II_ekvThree")
 
     inf = sostavs[4].sigma_b1()
     sheet.cell(row=102, column=i, value=inf)
+    sheet.cell(row=102, column=9, value='sigma_b1')
 
     inf = sostavs[4].sigma_h1()
     sheet.cell(row=103, column=i, value=inf)
+    sheet.cell(row=103, column=9, value='sigma_h1')
 
     inf = sostavs[4].sigma_b3()
     sheet.cell(row=104, column=i, value=inf)
+    sheet.cell(row=104, column=9, value='sigma_b3')
 
     inf = sostavs[4].sigma_h3()
     sheet.cell(row=105, column=i, value=inf)
+    sheet.cell(row=105, column=9, value='sigma_h3')
 
     inf = sostavs[4].sigma_h()
     sheet.cell(row=106, column=i, value=inf)
+    sheet.cell(row=106, column=9, value="∑_h")
 
     inf = sostav.AA()[0]
     sheet.cell(row=107, column=i, value=inf)
@@ -445,13 +477,18 @@ for i, sostav in enumerate(sostavs, start=1):
 
     inf = sostav.Ekv_gruzi_η()
     sheet.cell(row=133, column=i, value=inf)
+    sheet.cell(row=133, column=9, value="Ekv_gruzi_η")
 
     inf = sostav.Ekv_gruzi_µ()
     sheet.cell(row=134, column=i, value=inf)
+    sheet.cell(row=134, column=9, value="Ekv_gruzi_µ")
 
 
     sheet.cell(row=135, column=1, value=sostavs[4].Ekv_gruzi_η_shpala_1())
     sheet.cell(row=135, column=9, value="Ekv_gruzi_η_shpala_1")
+
+    sheet.cell(row=136, column=1, value=sostavs[4].Ekv_gruzi_η_shpala_3())
+    sheet.cell(row=136, column=9, value="Ekv_gruzi_η_shpala_3")
     
     sheet.cell(row=117, column=i, value=25.2 * delta_t_p0_min)
     sheet.cell(row=118, column=i, value=25.2 * delta_t_p1_min)
@@ -500,14 +537,38 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=130, column=i, value=F * 2)
     sheet.cell(row=130, column=9, value="F * 2")
 
-    sheet.cell(row=131, column=i, value=round(P_norm0 / (25 * 2 * F), 2))
-    sheet.cell(row=131, column=9, value="[∆t_у0]")
-    sheet.cell(row=132, column=i, value=round(P_norm1 / (25 * 2 * F), 2))
-    sheet.cell(row=132, column=9, value="[∆t_у0]")
+    t_у = round(P_norm0 / (25 * 2 * F))
+    sheet.cell(row=131, column=i, value=t_у)
+    sheet.cell(row=131, column=9, value="[∆t_уПрямая]")
+    t_у_curve = round(P_norm1 / (25 * 2 * F))
+    sheet.cell(row=132, column=i, value=t_у_curve)
+    sheet.cell(row=132, column=9, value="[∆t_у_curve]")
+    sheet.cell(row=141, column=i, value=delta_t_p0_min + round(P_norm0 / (25 * 2 * F), 2) - 10)
+    sheet.cell(row=141, column=9, value="[T] прямая")
+    sheet.cell(row=140, column=i, value=delta_t_p1_min + round(P_norm1 / (25 * 2 * F), 2) - 10)
+    sheet.cell(row=140, column=9, value="[T] кривая")
+    sheet.cell(row=139, column=i, value=Ta)
+    sheet.cell(row=139, column=9, value="Tа")
+    sheet.cell(row=138, column=i, value=t_min_min)
+    sheet.cell(row=138, column=9, value="t_min_min")
+    sheet.cell(row=137, column=i, value=t_max_max)
+    sheet.cell(row=137, column=9, value="t_max_max")
+
+    t_max_zakr = min(t_min_min + delta_t_p0_min, t_max_max)
+    sheet.cell(row=142, column=i, value=t_max_zakr)
+    sheet.cell(row=142, column=9, value="t_max_zakr")
+    t_max_zakr_curve = min(t_min_min + delta_t_p1_min, t_max_max)
+    sheet.cell(row=143, column=i, value=t_max_zakr_curve)
+    sheet.cell(row=143, column=9, value="t_max_zakr_curve")
+    t_min_zakr = max(t_max_max - t_у, t_min_min)
+    sheet.cell(row=144, column=i, value=t_min_zakr)
+    sheet.cell(row=144, column=9, value='t_min_zakr')
+    t_min_zakr_curve = max(t_max_max - t_у_curve, t_min_min)
+    sheet.cell(row=145, column=i, value=t_min_zakr_curve)
+    sheet.cell(row=145, column=9, value='t_min_zakr_curve')
 
 # Уже заняты 133 и 134
 # Почему-то возвращают только первое вхождение если строки кода стоят здесь, а не выше
 
 workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
 
-print(sostavs[7].summa1())

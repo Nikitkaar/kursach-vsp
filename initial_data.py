@@ -3,7 +3,6 @@ import pandas as pd
 
 
 class PodvizhnoySostav:
-
     """Хранит и принимает исходные данные и работает с ними, выполняя расчеты. По пунктам КР (Пункты будут подписаны в
     коде с помощью ###)
 
@@ -61,7 +60,7 @@ class PodvizhnoySostav:
 
     b     : float  -- Ширина нижней постели шпалы , b.см
 
-    there is a curve:  no curve \ have curve
+    there is a curve:  no curve/have curve
 
     МЕТОДЫ:
     -------
@@ -100,7 +99,6 @@ class PodvizhnoySostav:
         # Остальные атрибуты и их инициализация
         self.k3 = 1.3  # round(random.uniform(0.9, 1.3), 1)
         self.ballast = "Щебень"
-
 
     def z_max(self):
         if 'чс' in self.type_sostav.lower() or 'вл' in self.type_sostav.lower():
@@ -218,7 +216,6 @@ class PodvizhnoySostav:
 
     def Sigma_Muu(self):
         return self.Muu2() + self.Muu4() + self.Muu3()
-
 
     def MMM(self, x):
         return (numpy.cos(self.k * x) - numpy.sin(self.k * x)) * (numpy.e ** (-self.k * x))
@@ -379,40 +376,41 @@ class PodvizhnoySostav:
         """Напряжения от 1-0й шпалы. Складывает η от всех осей, кроме ближайшей к расчетной"""
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
             if self.n == 4:
-                return self.NNN(self.l_i[0]+55) + self.NNN(self.l_i[0]+self.l_i[1]+55) + self.NNN(self.l_i[0]+self.l_i[1]+self.l_i[2]+55)
+                return self.NNN(self.l_i[0] + 55) + self.NNN(self.l_i[0] + self.l_i[1] + 55) + self.NNN(
+                    self.l_i[0] + self.l_i[1] + self.l_i[2] + 55)
             elif self.n == 3:
-                return self.NNN(self.l_i[0]+55) + self.NNN(self.l_i[0]+self.l_i[1]+55)
+                return self.NNN(self.l_i[0] + 55) + self.NNN(self.l_i[0] + self.l_i[1] + 55)
             else:
                 return self.NNN(self.l_i[0] + 55)
         else:
             if self.n == 4:
-                return self.NNN(self.l_i[0]-55) + self.NNN(self.l_i[1]+55) + self.NNN(self.l_i[1]+self.l_i[2]+55)
+                return self.NNN(self.l_i[0] - 55) + self.NNN(self.l_i[1] + 55) + self.NNN(
+                    self.l_i[1] + self.l_i[2] + 55)
             else:
-                return self.NNN(self.l_i[0]-55) + self.NNN(self.l_i[1]+55)
-
-
+                return self.NNN(self.l_i[0] - 55) + self.NNN(self.l_i[1] + 55)
 
     def summa2(self):
         """Напряжения от 3-ей шпалы.Складывает η от всех осей, кроме ближайшей к расчетной"""
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
             if self.n == 4:
-                return self.NNN(self.l_i[0]-55) + self.NNN(self.l_i[1]+55) + self.NNN(self.l_i[1]+self.l_i[2]+55)
+                return self.NNN(self.l_i[0] - 55) + self.NNN(self.l_i[1] + 55) + self.NNN(
+                    self.l_i[1] + self.l_i[2] + 55)
             elif self.n == 3:
-                return self.NNN(self.l_i[0]-55) + self.NNN(self.l_i[1]+55)
+                return self.NNN(self.l_i[0] - 55) + self.NNN(self.l_i[1] + 55)
             else:
                 return self.NNN(self.l_i[0] - 55)
         else:
             if self.n == 4:
-                return self.NNN(self.l_i[0]+55) + self.NNN(self.l_i[1]-55) + self.NNN(self.l_i[1]+self.l_i[2]-55)
+                return self.NNN(self.l_i[0] + 55) + self.NNN(self.l_i[1] - 55) + self.NNN(
+                    self.l_i[1] + self.l_i[2] - 55)
             else:
-                return self.NNN(self.l_i[0]+55) + self.NNN(self.l_i[1]-55)
-
+                return self.NNN(self.l_i[0] + 55) + self.NNN(self.l_i[1] - 55)
 
     def P_II_ekvONE(self):
-        return round(self.p_max_ver() * self.NNN(self.l_sh) + self.p_cp() * self.summa1(), 2)
+        return round(self.p_max_ver() * self.NNN(55) + self.p_cp() * self.summa1(), 2)
 
     def P_II_ekvThree(self):
-        return round(self.p_max_ver() * self.NNN(self.l_sh) + self.p_cp() * int(self.summa2()), 2)
+        return round(self.p_max_ver() * self.NNN(55) + self.p_cp() * self.summa2(), 2)
 
     def AA(self):
         "Параметр А, зависящий от радиуса кривой и типа рельса"
@@ -450,15 +448,51 @@ class PodvizhnoySostav:
                f'VI ось: x = {self.l_i[0]}+{self.l_i[1]}+{self.l_i[2]} см; kx = {self.k}×{self.l_i[0] + self.l_i[1] + self.l_i[2]} = {(self.k * (self.l_i[0] + self.l_i[1] + self.l_i[2])):.2f}; µ = {self.Muu4():.5f}'
 
     def Ekv_gruzi_η_shpala_1(self):
-        if self.RaschetnayaOS_N() == 2:
-            return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0]):.5f}\n' \
-                   f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
-                   f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1]+55} = {self.k*self.l_i[1]+55:.2f}; η = {self.NNN(self.l_i[1]+55):.5f}\n' \
-                   f'ηIV: x = {self.l_i[1]}+{self.l_i[2]}+55; kx = {self.k}×{self.l_i[1]+self.l_i[2]+55} = {self.k * (self.l_i[1]+self.l_i[2]+5):.2f}; η = {self.NNN(self.l_i[1]+self.l_i[2]+55):.5f}'
+        if self.RaschetnayaOS_N() == 1:
+            if self.n == 4:
+                return f'ηI: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
+                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} + 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + 55):.5f}\n' \
+                       f'ηIV: x = {self.l_i[0]} + {self.l_i[1]}+{self.l_i[2]}+55; kx = {self.k}×{self.l_i[0] + self.l_i[1] + self.l_i[2] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + self.l_i[2] + 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + self.l_i[2] + 55):.5f}'
+            if self.n == 3:
+                return f'ηI: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
+                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} + 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + 55):.5f}\n'
+            else:
+                return f'ηI: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
+                       f'ηII: x = {self.l_i[0] + self.l_i[1]} + 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + 55):.5f}\n'
+        else:
+            if self.n == 4:
+                return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0]-55):.5f}\n' \
+                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
+                       f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1] + 55} = {self.k * (self.l_i[1] + 55):.2f}; η = {self.NNN(self.l_i[1] + 55):.5f}\n' \
+                       f'ηIV: x = {self.l_i[1]}+{self.l_i[2]}+55; kx = {self.k}×{self.l_i[1] + self.l_i[2] + 55} = {self.k * (self.l_i[1] + self.l_i[2] + 55):.2f}; η = {self.NNN(self.l_i[1] + self.l_i[2] + 55):.5f}'
+            else:
+                return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0]):.5f}\n' \
+                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
+                       f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1] + 55} = {self.k * self.l_i[1] + 55:.2f}; η = {self.NNN(self.l_i[1] + 55):.5f}\n'
 
     def Ekv_gruzi_η_shpala_3(self):
-        if self.RaschetnayaOS_N() == 2:
-            return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0]):.5f}\n' \
-                   f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
-                   f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1]+55} = {self.k*self.l_i[1]+55:.2f}; η = {self.NNN(self.l_i[1]+55):.5f}\n' \
-                   f'ηIV: x = {self.l_i[1]}+{self.l_i[2]}+55; kx = {self.k}×{self.l_i[1]+self.l_i[2]+55} = {self.k * (self.l_i[1]+self.l_i[2]+5):.2f}; η = {self.NNN(self.l_i[1]+self.l_i[2]+55):.5f}'
+        if self.RaschetnayaOS_N() == 1:
+            if self.n == 4:
+                return f'ηI: x = 55 см; kx = {self.k} × 55 = {(self.k * 55):.2f}; η = {self.NNN(self.l_sh):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0] - 55):.5f}\n' \
+                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} - 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] - 55} = {self.k * (self.l_i[0] + self.l_i[1] - 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] - 55):.5f}\n' \
+                       f'ηIV: x = {self.l_i[0] + self.l_i[1] + self.l_i[2]} - 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + self.l_i[2] - 55} = {self.k * (self.l_i[0] + self.l_i[1] + self.l_i[2] - 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + self.l_i[2] - 55):.5f}\n'
+            if self.n == 3:
+                return f'ηI: x = 55 см; kx = {self.k} × 55 = {(self.k * 55):.2f}; η = {self.NNN(self.l_sh):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} - 55 см; kx = {self.k} × {self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN((self.l_i[0] - 55)):.5f}\n' \
+                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} - 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] - 55} = {self.k * (self.l_i[0] + self.l_i[1] - 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] - 55):.5f}\n'
+            else:
+                return f'ηI: x = 55 см; kx = {self.k} × 55 = {(self.k * 55):.2f}; η = {self.NNN(self.l_sh):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} - 55 см; kx = {self.k} × {self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN((self.l_i[0] - 55)):.5f}\n'
+        else:
+            if self.n == 4:
+                return f'ηI: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
+                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
+                       f'ηIII: x = {self.l_i[1]} - 55 см; kx = {self.k}×{self.l_i[1] - 55} = {self.k * (self.l_i[1] - 55):.2f}; η = {self.NNN(self.l_i[1] - 55):.5f}\n' \
+                       f'ηIV: x = {self.l_i[1]} + {self.l_i[2]}-55; kx = {self.k}×{self.l_i[1] + self.l_i[2] - 55} = {self.k * (self.l_i[1] + self.l_i[2] - 5):.2f}; η = {self.NNN(self.l_i[1] + self.l_i[2] - 55):.5f}'
+            if self.n == 3:
+                return f'ηI: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
+                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
+                       f'ηIII: x = {self.l_i[1]} - 55 см; kx = {self.k}×{self.l_i[1] - 55} = {self.k * self.l_i[1] - 55:.2f}; η = {self.NNN(self.l_i[1] - 55):.5f}\n'

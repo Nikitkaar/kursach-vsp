@@ -1,49 +1,25 @@
+import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
-import pandas as pd
 
+# Заданные данные
+x1 = -42
+x2 = 58
+mean = (x2 - x1) / 2 - 45
+std_dev = 30
 
-"""def my_function(**kwargs):
-    for key, value in kwargs.items():
-        print(f"{key}: {value}")
+# Генерация данных для построения нормального распределения
+x = np.linspace(x1 - 10, x2 + 10, 1000)
+y = (1 / (std_dev * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - mean) / std_dev) ** 2)
 
-my_function(name="Alice", age=30, city="New York")
+# Построение графика
+plt.figure(figsize=(8, 6))
+plt.plot(x, y, color='b')
+plt.xlabel('Значения X')
+plt.ylabel('Плотность вероятности')
+plt.title('Нормальное распределение')
+plt.axvline(x=mean, color='r', linestyle='--', label='Вершина графика')
+plt.legend()
 
-def my_function(*args, **kwargs):
-    for arg in args:
-        print(arg)
-    for key, value in kwargs.items():
-        print(f"{key}: {value}")
-
-my_function(1, 2, 3, name="Alice", age=30)
-"""
-
-import pandas as pd
-
-# Чтение данных из файла Excel
-df = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\ОценочныеКритерииПрочностиПути.xlsx', sheet_name="Локомотив")
-
-# Ваша переменная capacity
-capacity = 20.7
-
-# Получение критерия для capacity
-if capacity > 50:
-    criteria = ">50"
-elif 50 >= capacity > 25:
-    criteria = "50-25"
-elif 25 >= capacity > 10:
-    criteria = "24-10"
-else:
-    criteria = "<10"
-
-# Получение значения из пересечения строки [бк] и столбца с критерием
-Loko_0 = df.loc[df['Критерии'] == '[бк]', criteria].values[0]
-Loko_1 = df.loc[df['Критерии'] == '[бк]', criteria].values[0]
-Loko_2 = df.loc[df['Критерии'] == '[бк]', criteria].values[0]
-
-df = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\ОценочныеКритерииПрочностиПути.xlsx', sheet_name="Лист2")
-Vag_0 = df.loc[df['Критерии'] == '[бк]', criteria].values[0]
-Vag_1 = df.loc[df['Критерии'] == '[бк]', criteria].values[0]
-Vag_2 = df.loc[df['Критерии'] == '[бк]', criteria].values[0]
-print(round(Vag_0))
+plt.grid(True)
+plt.show()
 
