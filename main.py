@@ -2,18 +2,18 @@ from initial_data import PodvizhnoySostav
 from openpyxl import Workbook
 import pandas as pd
 
-station = "Тула"
-t_min_min = -42
-t_max_max = 58
+station = "Будогощь"
+t_min_min = -51
+t_max_max = 55
 Ta = t_max_max - t_min_min
-rail_type = "P50"
-v = 85
-val = 23  # РУЧНОЙ ВВОД ИЗ Таблицы
-raion = "Тула"
-capacity = 20.7
+rail_type = "P65"
+v = 75
+val = 17  # РУЧНОЙ ВВОД ИЗ Таблицы (строка выбора характеристик пути, в зависимости от его конструкции)
+
+capacity = 28.5
 material_of_sleepers = 'Дерево'
 h = 55
-Type = ['ВЛ10', '8-миосный']  # РУЧНОЙ ВВОД ИЗ ДАНО
+Type = ['2ТЭ116', '8-осный']  # РУЧНОЙ ВВОД ИЗ ДАНО
 
 # Чтение данных из файла Excel
 df = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\ОценочныеКритерииПрочностиПути.xlsx', sheet_name="Локомотив")
@@ -75,17 +75,17 @@ ae = float(list(workbook_8.loc[workbook_8["№"] == val, 'æ'])[0])
 
 # ВВОЖУ ИСХОДНЫЕ ДАННЫЕ
 # Локомотив/Вагон;
-P_ct = [alarm, 14000]  # РУЧНОЙ ВВОД ИЗ ДАНО
+P_ct = [alarm, 12400]  # РУЧНОЙ ВВОД ИЗ ДАНО
 q = [alarms_0, alarms_1]
 JestcostRessor = [list(alarms_2)[0], list(alarms_3)[0]]
 d = [list(alarms_4)[0], list(alarms_5)[0]]
 n = [list(alarms_6)[0], list(alarms_7)[0]]
 l_i = [list(alarms_8_1), list(alarms_9_1)]
-curve = ["Прямая", 600]  # РУЧНОЙ ВВОД ИЗ ДАНО
+curve = ["Прямая", 700]  # РУЧНОЙ ВВОД ИЗ ДАНО
 
 # Прямая, Лето\Зима:     Кривая, Лето\Зима:
-U = [val_0, 500, val_1, 600]  # РУЧНОЙ ВВОД
-k = [val_2, 0.0, val_3, 0.0]  # РУЧНОЙ ВВОД
+U = [val_0, 480, val_1, 500]  # РУЧНОЙ ВВОД
+k = [val_2, 0.0, val_3, 0.0]
 
 if rail_type == 'P50' or rail_type == 'Р50':
     J0 = 2018
@@ -104,7 +104,7 @@ f2 = list(workbook_9.loc[workbook_9["Type"] == Type[1], curve[0]])[0]
 f3 = list(workbook_9.loc[workbook_9["Type"] == Type[1], curve[1]])[0]
 # Локомотив:     Вагон:
 # Прямая/Кривая; Прямая/Кривая
-f = [f0, f1, f2, f3]  ##можно автоматизировать ввод с помощью таблицы
+f = [f0, f1, f2, f3]
 
 sostavs = [
     PodvizhnoySostav(type_sostav=Type[0], season="Лето", curve=curve[0], q=q[0], JestcostRessor=JestcostRessor[0],
@@ -217,6 +217,13 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=13, column=4, value=sostavs[0].z_max()[1])
     sheet.cell(row=13, column=5, value=sostavs[4].z_max()[1])
     sheet.cell(row=13, column=6, value="z_max")
+    inf = sostav.Ekv_gruzi_η()
+    sheet.cell(row=133, column=i, value=inf)
+    sheet.cell(row=133, column=9, value="Ekv_gruzi_η")
+
+    inf = sostav.Ekv_gruzi_µ()
+    sheet.cell(row=134, column=i, value=inf)
+    sheet.cell(row=134, column=9, value="Ekv_gruzi_µ")
 
     if sostav.n == 4:
         inf = f'{sostav.l_i[0]}+{sostav.l_i[1]}+{sostav.l_i[2]}'
@@ -475,19 +482,10 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=116, column=i, value=round(sostavs[indexxx_1()].sigma_kp() * 1.3 + 25.2 * delta_t_p1_min, 2))
     sheet.cell(row=116, column=9, value="нормальные суммарные напряжения(Кривая)")
 
-    inf = sostav.Ekv_gruzi_η()
-    sheet.cell(row=133, column=i, value=inf)
-    sheet.cell(row=133, column=9, value="Ekv_gruzi_η")
-
-    inf = sostav.Ekv_gruzi_µ()
-    sheet.cell(row=134, column=i, value=inf)
-    sheet.cell(row=134, column=9, value="Ekv_gruzi_µ")
-
-
-    sheet.cell(row=135, column=1, value=sostavs[4].Ekv_gruzi_η_shpala_1())
+    sheet.cell(row=135, column=i, value=sostavs[4].Ekv_gruzi_η_shpala_1())
     sheet.cell(row=135, column=9, value="Ekv_gruzi_η_shpala_1")
 
-    sheet.cell(row=136, column=1, value=sostavs[4].Ekv_gruzi_η_shpala_3())
+    sheet.cell(row=136, column=i, value=sostavs[4].Ekv_gruzi_η_shpala_3())
     sheet.cell(row=136, column=9, value="Ekv_gruzi_η_shpala_3")
     
     sheet.cell(row=117, column=i, value=25.2 * delta_t_p0_min)
@@ -543,6 +541,8 @@ for i, sostav in enumerate(sostavs, start=1):
     t_у_curve = round(P_norm1 / (25 * 2 * F))
     sheet.cell(row=132, column=i, value=t_у_curve)
     sheet.cell(row=132, column=9, value="[∆t_у_curve]")
+
+
     sheet.cell(row=141, column=i, value=delta_t_p0_min + round(P_norm0 / (25 * 2 * F), 2) - 10)
     sheet.cell(row=141, column=9, value="[T] прямая")
     sheet.cell(row=140, column=i, value=delta_t_p1_min + round(P_norm1 / (25 * 2 * F), 2) - 10)
@@ -572,3 +572,9 @@ for i, sostav in enumerate(sostavs, start=1):
 
 workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
 
+print(sostavs[0].l_i)
+
+print(sostavs[0].Ekv_gruzi_η())
+print(sostavs[0].Ekv_gruzi_µ())
+print(sostavs[4].Ekv_gruzi_η())
+print(sostavs[4].Ekv_gruzi_µ())

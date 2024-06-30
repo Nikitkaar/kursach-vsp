@@ -200,7 +200,7 @@ class PodvizhnoySostav:
             return round(self.MMM(self.l_i[0]), 5)
 
     def Muu3(self):
-        if self.n == 2:
+        if self.n == 2 or (self.k * (self.l_i[0] + self.l_i[1])) >= 5.5:
             return 0
         else:
             return round(self.MMM(self.l_i[0] + self.l_i[1]), 5)
@@ -459,8 +459,8 @@ class PodvizhnoySostav:
                        f'ηII: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
                        f'ηIII: x = {self.l_i[0] + self.l_i[1]} + 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + 55):.5f}\n'
             else:
-                return f'ηI: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
-                       f'ηII: x = {self.l_i[0] + self.l_i[1]} + 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + 55):.5f}\n'
+                return f'ηI: x = 55 см; kx = {self.k}× 55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} + 55 см; kx = {self.k} × {self.l_i[0] + 55} = {self.k * (self.l_i[0] + 55):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n'
         else:
             if self.n == 4:
                 return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0]-55):.5f}\n' \

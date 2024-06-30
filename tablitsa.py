@@ -73,7 +73,7 @@ ax.text(x=18, y=main.t_min_zakr_curve - 40, s=f'[∆tp] = {main.delta_t_p1_min}�
 ax.text(x=4, y=main.t_min_zakr_curve - 42, s=f'[∆tp] = {main.delta_t_p0_min}℃', va='bottom', ha='left', fontsize=7, rotation=90)
 ax.text(x=2, y=main.t_min_zakr, s=f'[∆ty] = {main.t_у}℃', va='bottom', ha='left', fontsize=7, rotation=90)
 ax.text(x=14, y=main.t_min_zakr_curve, s=f'[∆ty] = {main.t_у_curve}℃', va='bottom', ha='left', fontsize=7, rotation=90)
-ax.text(x=15, y=main.t_min_min - 12, s=f'Кривая R = {main.curve[1]}м\ntопт = 8±5℃', va='bottom', ha='left', fontsize=10)
+ax.text(x=15, y=main.t_min_min - 12, s=f'Кривая R = {main.curve[1]}м\ntопт = 30±5℃', va='bottom', ha='left', fontsize=10)
 
 # Рисуем график
 ax.plot(x, y, x1, y1, x2, y2, x3, y3)
