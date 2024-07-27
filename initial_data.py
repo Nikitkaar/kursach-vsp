@@ -104,7 +104,7 @@ class PodvizhnoySostav:
         if 'чс' in self.type_sostav.lower() or 'вл' in self.type_sostav.lower():
             return [10.9 + 9.6 * 10 ** (-4) * self.v ** 2, 'Электровоз']
         elif 'тэ' in self.type_sostav.lower() or 'м62' in self.type_sostav.lower() or 'чм' in self.type_sostav.lower():
-            return [10.9 + 9.6 * 10 ** (-4) * self.v ** 2, 'Тепловоз']
+            return [7.9 + 8.0 * 10 ** (-4) * self.v ** 2, 'Тепловоз']
         elif '8' in self.type_sostav.lower():
             return [9.5 + 9 * 10 ** (-4) * self.v ** 2, 'НЕТУ']
         elif '6' in self.type_sostav.lower():

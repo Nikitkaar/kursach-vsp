@@ -2,18 +2,18 @@ from initial_data import PodvizhnoySostav
 from openpyxl import Workbook
 import pandas as pd
 
-station = "Будогощь"
-t_min_min = -51
+station = "Владимир"
+t_min_min = -42
 t_max_max = 55
 Ta = t_max_max - t_min_min
-rail_type = "P65"
-v = 75
-val = 17  # РУЧНОЙ ВВОД ИЗ Таблицы (строка выбора характеристик пути, в зависимости от его конструкции)
-
-capacity = 28.5
-material_of_sleepers = 'Дерево'
-h = 55
-Type = ['2ТЭ116', '8-осный']  # РУЧНОЙ ВВОД ИЗ ДАНО
+rail_type = "P50"
+v = 85
+val = 12  # РУЧНОЙ ВВОД ИЗ Таблицы (номер строки выбора характеристик пути, в зависимости от его конструкции)
+          # Железобетон: Р65 - 10; Р50 - 12       Дерево: Р65 - 17; Р50 - 23
+capacity = 29.9
+material_of_sleepers = 'Железобетон'
+h = 60
+Type = ['2ТЭ10', '6-осный']  # РУЧНОЙ ВВОД ИЗ ДАНО
 
 # Чтение данных из файла Excel
 df = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\ОценочныеКритерииПрочностиПути.xlsx', sheet_name="Локомотив")
@@ -75,7 +75,7 @@ ae = float(list(workbook_8.loc[workbook_8["№"] == val, 'æ'])[0])
 
 # ВВОЖУ ИСХОДНЫЕ ДАННЫЕ
 # Локомотив/Вагон;
-P_ct = [alarm, 12400]  # РУЧНОЙ ВВОД ИЗ ДАНО
+P_ct = [alarm, 14500]  # РУЧНОЙ ВВОД ИЗ ДАНО
 q = [alarms_0, alarms_1]
 JestcostRessor = [list(alarms_2)[0], list(alarms_3)[0]]
 d = [list(alarms_4)[0], list(alarms_5)[0]]
@@ -84,7 +84,7 @@ l_i = [list(alarms_8_1), list(alarms_9_1)]
 curve = ["Прямая", 700]  # РУЧНОЙ ВВОД ИЗ ДАНО
 
 # Прямая, Лето\Зима:     Кривая, Лето\Зима:
-U = [val_0, 480, val_1, 500]  # РУЧНОЙ ВВОД
+U = [val_0, 1300, val_1, 1400]  # РУЧНОЙ ВВОД
 k = [val_2, 0.0, val_3, 0.0]
 
 if rail_type == 'P50' or rail_type == 'Р50':
@@ -217,12 +217,11 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=13, column=4, value=sostavs[0].z_max()[1])
     sheet.cell(row=13, column=5, value=sostavs[4].z_max()[1])
     sheet.cell(row=13, column=6, value="z_max")
-    inf = sostav.Ekv_gruzi_η()
-    sheet.cell(row=133, column=i, value=inf)
+
+    sheet.cell(row=133, column=i, value= sostav.Ekv_gruzi_η())
     sheet.cell(row=133, column=9, value="Ekv_gruzi_η")
 
-    inf = sostav.Ekv_gruzi_µ()
-    sheet.cell(row=134, column=i, value=inf)
+    sheet.cell(row=134, column=i, value= sostav.Ekv_gruzi_µ())
     sheet.cell(row=134, column=9, value="Ekv_gruzi_µ")
 
     if sostav.n == 4:
@@ -249,20 +248,20 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=19, column=1, value=L)
     sheet.cell(row=19, column=2, value="L")
 
-    inf = sostav.W
-    sheet.cell(row=20, column=i, value=inf)
 
-    inf = sostav.alpha0
-    sheet.cell(row=21, column=i, value=inf)
+    sheet.cell(row=20, column=i, value= sostav.W)
 
-    inf = sostav.omega
-    sheet.cell(row=22, column=i, value=inf)
 
-    inf = sostav.omega_a
-    sheet.cell(row=23, column=i, value=inf)
+    sheet.cell(row=21, column=i, value= sostav.alpha0)
 
-    inf = sostav.b
-    sheet.cell(row=24, column=i, value=inf)
+
+    sheet.cell(row=22, column=i, value= sostav.omega)
+
+
+    sheet.cell(row=23, column=i, value= sostav.omega_a)
+
+
+    sheet.cell(row=24, column=i, value= sostav.b)
 
     inf = sostav.p_max_p()
     sheet.cell(row=25, column=i, value=inf)
@@ -566,6 +565,11 @@ for i, sostav in enumerate(sostavs, start=1):
     t_min_zakr_curve = max(t_max_max - t_у_curve, t_min_min)
     sheet.cell(row=145, column=i, value=t_min_zakr_curve)
     sheet.cell(row=145, column=9, value='t_min_zakr_curve')
+    sheet.cell(row=146, column=9, value='Грузонапряженность')
+    sheet.cell(row=146, column=i, value=capacity)
+    sheet.cell(row=147, column=9, value='Станция')
+    sheet.cell(row=147, column=i, value=station)
+
 
 # Уже заняты 133 и 134
 # Почему-то возвращают только первое вхождение если строки кода стоят здесь, а не выше

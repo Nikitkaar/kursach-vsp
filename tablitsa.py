@@ -2,6 +2,9 @@ import main
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import grafic_progibov
+import grafic_Izgib_moments
+import shpala
 
 def round_up_to_10(number):
   if number >= 0:
