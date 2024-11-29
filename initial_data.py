@@ -115,18 +115,25 @@ class PodvizhnoySostav:
     # ПУНКТ 1.2 Определение среднего и максимального вероятного
     # значения динамической силы воздействия колеса на рельс
 
-#    def p_max_p(self): - старая формула
-#        """вычисляет динамическую нагрузку Р (верхний индекс max) + (нижний - р)"""
-#        return round(self.JestcostRessor * self.z_max()[0], 2)
+    def p_max_p_zmax(self):
+        """вычисляет динамическую нагрузку Р (верхний индекс max) + (нижний - р)"""
+        return round(self.JestcostRessor * self.z_max()[0])
+
+    def p_max_p_kd(self):
+        """вычисляет динамическую нагрузку Р (верхний индекс max) + (нижний - р)"""
+        if self.redaction == "new":
+            return round(self.kd*(self.P_ct-self.q))
 
     def p_max_p(self):
-        """вычисляет динамическую нагрузку Р (верхний индекс max) + (нижний - р)"""
-        return self.Pmax_p
+        if self.redaction == "new":
+            return max(self.p_max_p_kd(), self.p_max_p_zmax())
+        else:
+            return self.p_max_p_zmax()
 
     def p_cp_p(self):
         """вычисляем – среднее значение динамической нагрузки колеса на рельс от вертикальных колебаний надрессорного
         строения экипажа, кг."""
-        return round(0.75 * self.p_max_p(), 2)
+        return round(0.75 * self.p_max_p(), 0)
 
     def p_cp(self):
         """Pср	–	среднее значение вертикальной нагрузки колеса на рельс, кгс"""

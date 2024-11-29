@@ -5,7 +5,6 @@ import main
 
 k = [main.k[2], main.k[2]]
 
-
 def summa_l_0():
     """Расстояния от колесных пар до 1-ой шпалы."""
     if main.sostavs[4].RaschetnayaOS_N() == 1 or main.sostavs[4].n == 2:
@@ -66,7 +65,7 @@ for i in range(len(k)):
         axes[i].annotate(f'{x:.1f}     \u03B7 = 0', xy=(x, y), xytext=(-15, 15), textcoords='offset points', fontsize=6, ha='left', va='top')
 
     for i in range(0, 1):
-        lighthigh_x = li
+        lighthigh_x = summa_l_0()
         lighthigh_y = [0] * len(lighthigh_x)
         axes[i].scatter(lighthigh_x, lighthigh_y, color='red', marker='o', s=10)
         axes[i].scatter(lighthigh_x, [x - 0.7 for x in lighthigh_y], color='None', edgecolors = 'blue', marker='o', s=1000)
@@ -82,7 +81,7 @@ for i in range(len(k)):
         axes[i].add_patch(rect2)
         axes[i].add_patch(rect3)
     for i in range(1, 2):
-        lighthigh_x = li_1
+        lighthigh_x = summa_l_1()
         lighthigh_y = [0] * len(lighthigh_x)
         axes[i].scatter(lighthigh_x, lighthigh_y, color='red', marker='o', s=10)
         axes[i].scatter(lighthigh_x, [x - 0.7 for x in lighthigh_y], color='None', edgecolors = 'blue', marker='o', s=1000)
@@ -102,3 +101,4 @@ plt.subplots_adjust(hspace=20)
 
 plt.tight_layout()
 plt.savefig('ШПАЛА.pdf', format='pdf', bbox_inches='tight', pad_inches=0)
+

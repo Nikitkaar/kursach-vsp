@@ -74,7 +74,7 @@ for i in range(len(k)):
             axes[i].annotate(f"{x:.1f}     \u03B7 = {np.exp((-k[i] * np.abs(x))) * (np.cos(k[i] * x) + np.sin(k[i] * np.abs(x))):.5f}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                              ha='left', va='top')
 
-    for i in range(2,3):
+    for i in range(2, 3):
         lighthigh_x = isser()[2]
         if main.sostavs[2].RaschetnayaOS_N() == 2:
             lighthigh_x[0] = -lighthigh_x[0]
@@ -86,7 +86,7 @@ for i in range(len(k)):
             axes[i].annotate(f"{x:.1f}     \u03B7 = {np.exp((-k[i] * np.abs(x))) * (np.cos(k[i] * x) + np.sin(k[i] * np.abs(x))):.5f}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                              ha='left', va='top')
 
-    for i in range(3,4):
+    for i in range(3, 4):
         lighthigh_x = isser()[3]
         if main.sostavs[3].RaschetnayaOS_N() == 2:
             lighthigh_x[0] = -lighthigh_x[0]
@@ -98,7 +98,7 @@ for i in range(len(k)):
             axes[i].annotate(f"{x:.1f}     \u03B7 = {np.exp((-k[i] * np.abs(x))) * (np.cos(k[i] * x) + np.sin(k[i] * np.abs(x))):.5f}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                              ha='left', va='top')
 
-    for i in range(4,5):
+    for i in range(4, 5):
         lighthigh_x = isser()[4]
         if main.sostavs[4].RaschetnayaOS_N() == 2:
             lighthigh_x[0] = -lighthigh_x[0]
@@ -112,7 +112,7 @@ for i in range(len(k)):
                 xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                 ha='left', va='top')
 
-    for i in range(5,6):
+    for i in range(5, 6):
         lighthigh_x = isser()[5]
         if main.sostavs[5].RaschetnayaOS_N() == 2:
             lighthigh_x[0] = -lighthigh_x[0]
@@ -126,7 +126,7 @@ for i in range(len(k)):
                 xy=(x, y), xytext=(-20, 9), textcoords='offset points', fontsize=4.8,
                 ha='left', va='top')
 
-    for i in range(6,7):
+    for i in range(6, 7):
         lighthigh_x = isser()[6]
         if main.sostavs[6].RaschetnayaOS_N() == 2:
             lighthigh_x[0] = -lighthigh_x[0]
@@ -140,7 +140,7 @@ for i in range(len(k)):
                 xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                 ha='left', va='top')
 
-    for i in range(7,8):
+    for i in range(7, 8):
         lighthigh_x = isser()[7]
         if main.sostavs[7].RaschetnayaOS_N() == 2:
             lighthigh_x[0] = -lighthigh_x[0]

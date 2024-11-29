@@ -1,19 +1,77 @@
+from New_class import Shpala #- я пытался вызвать все с одного места
+from progibi import Grafics_progibov
+from temperature_diagramm import TempDiagramm
+from izgibi import Grafics_izgibov
 from initial_data import PodvizhnoySostav
 from openpyxl import Workbook
 import pandas as pd
+#import tkinter as tk
+#from tkinter import ttk, messagebox
 
-station = "Рыбинск"
-t_min_min = -33
-t_max_max = 56
+"""
+class MainApplication(tk.Tk):
+    def __init__(self):
+        super().__init__()
+
+        self.title("Ввод данных")
+        self.geometry("400x300")
+
+        # Создаем элементы интерфейса
+        self.create_widgets()
+
+    def create_widgets(self):
+        # Поле ввода для станции
+        ttk.Label(self, text="Станция:").grid(row=0, column=0, padx=10, pady=5)
+        self.station_entry = ttk.Entry(self)
+        self.station_entry.grid(row=0, column=1, padx=10, pady=5)
+
+        # Поле ввода для минимальной температуры
+        ttk.Label(self, text="t_min_min:").grid(row=1, column=0, padx=10, pady=5)
+        self.t_min_min_entry = ttk.Entry(self)
+        self.t_min_min_entry.grid(row=1, column=1, padx=10, pady=5)
+
+        # Поле ввода для максимальной температуры
+        ttk.Label(self, text="t_max_max:").grid(row=2, column=0, padx=10, pady=5)
+        self.t_max_max_entry = ttk.Entry(self)
+        self.t_max_max_entry.grid(row=2, column=1, padx=10, pady=5)
+
+        # Кнопка для выполнения расчета
+        ttk.Button(self, text="Выполнить расчет", command=self.calculate).grid(row=3, column=0, columnspan=2, pady=10)
+
+    def calculate(self):
+        # Получаем значения из полей ввода
+        station = self.station_entry.get()
+        t_min_min = self.t_min_min_entry.get()
+        t_max_max = self.t_max_max_entry.get()
+
+        # Здесь можно добавить ваш основной код расчета
+        # Например, вывод значений в сообщении
+        messagebox.showinfo("Результаты", f"Станция: {station}\nt_min_min: {t_min_min}\nt_max_max: {t_max_max}")
+
+
+if __name__ == "__main__":
+    app = MainApplication()
+    app.mainloop()
+"""
+
+
+
+# Чтение данных из файла Excel
+first_data = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\ввод_исходных_данных.xlsx', sheet_name="Дополненное_издание(25")
+redaction = list(first_data.loc[first_data[1] == 21, "I"])[0]
+print(redaction)
+station = list(first_data.loc[first_data[1] == 2, "I"])[0]
+t_min_min = list(first_data.loc[first_data[1] == 6, "I"])[0]
+t_max_max = list(first_data.loc[first_data[1] == 7, "I"])[0]
 Ta = t_max_max - t_min_min
-rail_type = "P65"
-v = 90
-val = 12  # РУЧНОЙ ВВОД ИЗ Таблицы (номер строки выбора характеристик пути, в зависимости от его конструкции)
+rail_type = list(first_data.loc[first_data[1] == 17, "I"])[0]
+v = list(first_data.loc[first_data[1] == 5, "I"])[0]
+val = list(first_data.loc[first_data[1] == 19, "I"])[0]  # РУЧНОЙ ВВОД ИЗ Таблицы (номер строки выбора характеристик пути, в зависимости от его конструкции)
           # Железобетон: Р65 - 10; Р50 - 12       Дерево: Р65 - 17; Р50 - 23
-capacity = 26.4
-material_of_sleepers = 'Железобетон'
-h = 65
-Type = ['ВЛ60', '6-тиосный']  # РУЧНОЙ ВВОД ИЗ ДАНО
+capacity = list(first_data.loc[first_data[1] == 20, "I"])[0]
+material_of_sleepers = list(first_data.loc[first_data[1] == 16, "I"])[0]
+h = list(first_data.loc[first_data[1] == 18, "I"])[0]
+Type = [list(first_data.loc[first_data[1] == 3, "I"])[0], list(first_data.loc[first_data[1] == 3, "II"])[0]]  # РУЧНОЙ ВВОД ИЗ ДАНО
 
 
 # Чтение данных из файла Excel
@@ -57,7 +115,7 @@ alarms_8 = workbook_7.loc[workbook_7["Type"] == Type[0], 'l_i']
 fcr_vag = list(workbook_7.loc[workbook_7["Type"] == Type[1], 'fсг'])[0]
 fcr_loc = list(workbook_7.loc[workbook_7["Type"] == Type[0], 'fсг'])[0]
 
-kd = [0.26, 0.1+(0.2*(v / fcr_vag))]   # ВВОД ИСХОДНЫХ ДАННЫХ
+kd = [list(first_data.loc[first_data[1] == 11, "I"])[0], round(0.1+(0.2*(v / fcr_vag)), 2)]   # ВВОД ИСХОДНЫХ ДАННЫХ
 
 # Разделить строку по запятым и преобразовать каждый элемент в числовой формат
 alarms_8_1 = [int(x) for x in list(alarms_8)[0].split(',')]
@@ -85,16 +143,16 @@ ae = float(list(workbook_8.loc[workbook_8["№"] == val, 'æ'])[0])
 
 # ВВОЖУ ИСХОДНЫЕ ДАННЫЕ
 # Локомотив/Вагон;
-P_ct = [alarm, 12500]  # РУЧНОЙ ВВОД ИЗ ДАНО
+P_ct = [alarm, list(first_data.loc[first_data[1] == 4, "II"])[0]]  # РУЧНОЙ ВВОД ИЗ ДАНО
 q = [alarms_0, alarms_1]
 JestcostRessor = [list(alarms_2)[0], list(alarms_3)[0]]
 d = [list(alarms_4)[0], list(alarms_5)[0]]
 n = [list(alarms_6)[0], list(alarms_7)[0]]
 l_i = [list(alarms_8_1), list(alarms_9_1)]
-curve = ["Прямая", 700]  # РУЧНОЙ ВВОД ИЗ ДАНО
+curve = ["Прямая", list(first_data.loc[first_data[1] == 13, "II"])[0]]  # РУЧНОЙ ВВОД ИЗ ДАНО
 Pmax_p = [float(kd[0]*(P_ct[0] - q[0])), float(kd[1]*(P_ct[1] - q[1]))]
 # Прямая, Лето\Зима:     Кривая, Лето\Зима:
-U = [val_0, 1500, val_1, 1600]  # РУЧНОЙ ВВОД
+U = [val_0, list(first_data.loc[first_data[1] == 15, "I"])[0], val_1, list(first_data.loc[first_data[1] == 15, "II"])[0]]  # РУЧНОЙ ВВОД
 k = [val_2, 0.0, val_3, 0.0]
 
 if rail_type == 'P50' or rail_type == 'Р50':
@@ -114,41 +172,47 @@ f2 = list(workbook_9.loc[workbook_9["Type"] == Type[1], curve[0]])[0]
 f3 = list(workbook_9.loc[workbook_9["Type"] == Type[1], curve[1]])[0]
 # Локомотив:     Вагон:
 # Прямая/Кривая; Прямая/Кривая
-f = [f0, f1, f2, f3]
+if redaction == "new" or redaction != "old":
+#f = [f0, f1, f2, f3]
+    f = [list(first_data.loc[first_data[1] == 9, "I"])[0], list(first_data.loc[first_data[1] == 10, "I"])[0],
+         list(first_data.loc[first_data[1] == 9, "II"])[0], list(first_data.loc[first_data[1] == 10, "II"])[0]]
+else:
+    f = [f0, f1, f2, f3]
+
 
 sostavs = [
     PodvizhnoySostav(type_sostav=Type[0], season="Лето", curve=curve[0], q=q[0], JestcostRessor=JestcostRessor[0],
                      d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=U[2], k=k[2], P_ct=P_ct[0], l_sh=55, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
-                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_loc, Pmax_p=max(Pmax_p)),
+                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_loc, kd=kd[0], redaction = redaction),
     PodvizhnoySostav(type_sostav=Type[0], season="Зима", curve=curve[0], q=q[0], JestcostRessor=JestcostRessor[0],
                      d=d[0], n=n[0], l_i=l_i[0], f=f[0], e=0.047, u=U[1], k=k[1], P_ct=P_ct[0], l_sh=55, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
-                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_loc, Pmax_p=max(Pmax_p)),
+                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_loc, kd=kd[0], redaction = redaction),
     PodvizhnoySostav(type_sostav=Type[0], season="Лето", curve=curve[1], q=q[0], JestcostRessor=JestcostRessor[0],
                      d=d[0], n=n[0], l_i=l_i[0], f=f[1], e=0.047, u=U[0], k=k[0], P_ct=P_ct[0], l_sh=51, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers,
-                     omega=omega, omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_loc, Pmax_p=max(Pmax_p)),
+                     omega=omega, omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_loc, kd=kd[0], redaction = redaction),
     PodvizhnoySostav(type_sostav=Type[0], season="Зима", curve=curve[1], q=q[0], JestcostRessor=JestcostRessor[0],
                      d=d[0], n=n[0], l_i=l_i[0], f=f[1], e=0.047, u=U[3], k=k[3], P_ct=P_ct[0], l_sh=51, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers,
-                     omega=omega, omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_loc, Pmax_p=max(Pmax_p)),
+                     omega=omega, omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_loc, kd=kd[0], redaction = redaction),
     PodvizhnoySostav(type_sostav=Type[1], season="Лето", curve=curve[0], q=q[1], JestcostRessor=JestcostRessor[1],
                      d=d[1], n=n[1], l_i=l_i[1], f=f[2], e=0.067, u=U[2], k=k[2], P_ct=P_ct[1], l_sh=55, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
-                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_vag, Pmax_p=max(Pmax_p)),
+                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_vag, kd=kd[1], redaction = redaction),
     PodvizhnoySostav(type_sostav=Type[1], season="Зима", curve=curve[0], q=q[1], JestcostRessor=JestcostRessor[1],
                      d=d[1], n=n[1], l_i=l_i[1], f=f[2], e=0.067, u=U[1], k=k[1], P_ct=P_ct[1], l_sh=55, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
-                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_vag, Pmax_p=max(Pmax_p)),
+                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_vag, kd=kd[1], redaction = redaction),
     PodvizhnoySostav(type_sostav=Type[1], season="Лето", curve=curve[1], q=q[1], JestcostRessor=JestcostRessor[1],
                      d=d[1], n=n[1], l_i=l_i[1], f=f[3], e=0.067, u=U[0], k=k[0], P_ct=P_ct[1], l_sh=51, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
-                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_vag, Pmax_p=max(Pmax_p)),
+                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_vag, kd=kd[1], redaction = redaction),
     PodvizhnoySostav(type_sostav=Type[1], season="Зима", curve=curve[1], q=q[1], JestcostRessor=JestcostRessor[1],
                      d=d[1], n=n[1], l_i=l_i[1], f=f[3], e=0.067, u=U[3], k=k[3], P_ct=P_ct[1], l_sh=51, v=v, L=L,
                      alpha0=alpha0, W=W, rail_type=rail_type, material_of_sleepers=material_of_sleepers, omega=omega,
-                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_vag, Pmax_p=max(Pmax_p)),
+                     omega_a=omega_a, b=b, ae=ae, h=h, fcr=fcr_vag, kd=kd[1], redaction = redaction),
 ]
 
 """Минимальные температуры на прямой и кривой соответственно"""
@@ -217,7 +281,7 @@ for i, sostav in enumerate(sostavs, start=1):
 
     sheet.cell(row=10, column=i, value=rail_type)
 
-    sheet.cell(row=11, column=i, value=sostav.f)
+    sheet.cell(row=11, column=i, value=round(sostav.f, 2))
     sheet.cell(row=11, column=9, value="f")
 
     sheet.cell(row=12, column=4, value=sostavs[0].e)
@@ -254,22 +318,16 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=18, column=i, value=sostav.k)
     sheet.cell(row=18, column=9, value="k")
 
-
     sheet.cell(row=19, column=1, value=L)
     sheet.cell(row=19, column=2, value="L")
 
-
     sheet.cell(row=20, column=i, value= sostav.W)
-
 
     sheet.cell(row=21, column=i, value= sostav.alpha0)
 
-
     sheet.cell(row=22, column=i, value= sostav.omega)
 
-
     sheet.cell(row=23, column=i, value= sostav.omega_a)
-
 
     sheet.cell(row=24, column=i, value= sostav.b)
 
@@ -314,7 +372,7 @@ for i, sostav in enumerate(sostavs, start=1):
     inf = sostav.pi_7_4k()
     sheet.cell(row=37, column=i, value=inf)
 
-    inf = round(sostav.P_I_ekv(), 2)
+    inf = round(sostav.P_I_ekv(), 0)
     sheet.cell(row=38, column=i, value=inf)
 
     inf = sostav.Muu2()
@@ -329,7 +387,7 @@ for i, sostav in enumerate(sostavs, start=1):
     inf = sostav.Sigma_Muu()
     sheet.cell(row=42, column=i, value=inf)
 
-    inf = round(sostav.P_II_ekv(), 2)
+    inf = round(sostav.P_II_ekv())
     sheet.cell(row=43, column=i, value=inf)
 
     inf = sostav.N_2()
@@ -363,6 +421,9 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=53, column=i, value=sostav.NNN(55))
     sheet.cell(row=53, column=9, value="Тета от длинны шпалы")
 
+    sheet.cell(row=54, column=i, value=J0)
+    sheet.cell(row=54, column=9, value="Момент инерции рельса")
+
     inf = sostav.m()
     sheet.cell(row=55, column=i, value=inf)
 
@@ -390,6 +451,9 @@ for i, sostav in enumerate(sostavs, start=1):
     inf = sostav.l_i[2]
     sheet.cell(row=61, column=i, value=inf)
     sheet.cell(row=61, column=9, value='l_i[2]')
+
+    sheet.cell(row=63, column=8, value=h)
+    sheet.cell(row=63, column=9, value='высота насыпи')
 
     sheet.cell(row=62, column=i, value=Vag_3)
     sheet.cell(row=62, column=9, value='[бз_Вагон]')
@@ -466,11 +530,13 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=90, column=i, value=kd[1])
     sheet.cell(row=90, column=9, value='kd_vag')
 
-    sheet.cell(row=91, column=i, value=Pmax_p[0])
-    sheet.cell(row=91, column=9, value='Pmax_p_loc')
+    sheet.cell(row=96, column=i, value=sostav.p_max_p_zmax())
+    sheet.cell(row=96, column=9, value='Pmax_p_zmax')
 
-    sheet.cell(row=92, column=i, value=Pmax_p[1])
-    sheet.cell(row=92, column=9, value='Pmax_p_vag')
+    sheet.cell(row=97, column=i, value=sostav.p_max_p_kd())
+    sheet.cell(row=97, column=9, value='Pmax_p_kd')
+
+
 
     inf = round(sostav.summa2(), 5)
     sheet.cell(row=95, column=i, value=inf)
@@ -511,7 +577,7 @@ for i, sostav in enumerate(sostavs, start=1):
     inf = sostav.AA1()[0]
     sheet.cell(row=108, column=i, value=inf)
     sheet.cell(row=108, column=9, value="Параметр µ Першин")
-    
+
     sheet.cell(row=113, column=i, value=delta_t_p0_min)
     sheet.cell(row=113, column=9, value="[∆t_р_min]Прямая")
     sheet.cell(row=114, column=i, value=round(sostavs[indexxx_0()].sigma_kp() * 1.3 + 25.2 * delta_t_p0_min, 2))
@@ -527,7 +593,7 @@ for i, sostav in enumerate(sostavs, start=1):
 
     sheet.cell(row=136, column=i, value=sostavs[4].Ekv_gruzi_η_shpala_3())
     sheet.cell(row=136, column=9, value="Ekv_gruzi_η_shpala_3")
-    
+
     sheet.cell(row=117, column=i, value=25.2 * delta_t_p0_min)
     sheet.cell(row=118, column=i, value=25.2 * delta_t_p1_min)
     sheet.cell(row=117, column=9, value="σ_t(Прямая)")
@@ -556,7 +622,7 @@ for i, sostav in enumerate(sostavs, start=1):
     kgs0 = round(P_k0 * 101.971621297793, 2)
     sheet.cell(row=125, column=i, value=kgs0)
     sheet.cell(row=125, column=9, value="Pк(Прямая)кгс")
-    
+
     kgs1 = round(P_k1 * 101.971621297793, 2)
     sheet.cell(row=126, column=i, value=kgs1)
     sheet.cell(row=126, column=9, value="Pк(Кривая)кгс")
@@ -575,11 +641,11 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=130, column=i, value=F * 2)
     sheet.cell(row=130, column=9, value="F * 2")
 
-    t_у = round(P_norm0 / (25 * 2 * F))
-    sheet.cell(row=131, column=i, value=t_у)
+    t_y = round(P_norm0 / (25 * 2 * F))
+    sheet.cell(row=131, column=i, value=t_y)
     sheet.cell(row=131, column=9, value="[∆t_уПрямая]")
-    t_у_curve = round(P_norm1 / (25 * 2 * F))
-    sheet.cell(row=132, column=i, value=t_у_curve)
+    t_y_curve = round(P_norm1 / (25 * 2 * F))
+    sheet.cell(row=132, column=i, value=t_y_curve)
     sheet.cell(row=132, column=9, value="[∆t_у_curve]")
 
 
@@ -600,10 +666,10 @@ for i, sostav in enumerate(sostavs, start=1):
     t_max_zakr_curve = min(t_min_min + delta_t_p1_min, t_max_max)
     sheet.cell(row=143, column=i, value=t_max_zakr_curve)
     sheet.cell(row=143, column=9, value="t_max_zakr_curve")
-    t_min_zakr = max(t_max_max - t_у, t_min_min)
+    t_min_zakr = max(t_max_max - t_y, t_min_min)
     sheet.cell(row=144, column=i, value=t_min_zakr)
     sheet.cell(row=144, column=9, value='t_min_zakr')
-    t_min_zakr_curve = max(t_max_max - t_у_curve, t_min_min)
+    t_min_zakr_curve = max(t_max_max - t_y_curve, t_min_min)
     sheet.cell(row=145, column=i, value=t_min_zakr_curve)
     sheet.cell(row=145, column=9, value='t_min_zakr_curve')
     sheet.cell(row=146, column=9, value='Грузонапряженность')
@@ -611,17 +677,25 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=147, column=9, value='Станция')
     sheet.cell(row=147, column=i, value=station)
 
-
+    aaa = TempDiagramm(t_max_max=t_max_max, t_min_min=t_min_min, t_y_curve=t_y_curve, curve=curve[1],
+                       t_min_zakr=t_min_zakr, t_max_zakr=t_max_zakr, t_min_zakr_curve=t_min_zakr_curve,
+                       t_max_zakr_curve=t_max_zakr_curve, t_y=t_y, delta_t_p1_min=delta_t_p1_min,
+                       delta_t_p0_min=delta_t_p0_min)
+    aaa.grafic_maker()
 
 # Уже заняты 133 и 134
 # Почему-то возвращают только первое вхождение если строки кода стоят здесь, а не выше
 
 workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
 
-print(sostavs[0].l_i)
+xxx = Shpala(sostavs=sostavs[4])
+xxx.grafic()  # Вызов метода для построения графиков
 
-print(sostavs[0].Ekv_gruzi_η())
-print(sostavs[0].Ekv_gruzi_µ())
-print(sostavs[4].Ekv_gruzi_η())
-print(sostavs[4].Ekv_gruzi_µ())
-print(fcr_vag)
+yyy = Grafics_progibov(sostavs=sostavs, k = k)
+yyy.grafic_mader()
+
+zzz = Grafics_izgibov(sostavs=sostavs, k = k)
+zzz.grafic_mader()
+
+
+
