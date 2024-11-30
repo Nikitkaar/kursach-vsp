@@ -1,4 +1,5 @@
 from New_class import Shpala #- я пытался вызвать все с одного места
+from veroyatnost_raspredel_temp import GrafVerTemp
 from progibi import Grafics_progibov
 from temperature_diagramm import TempDiagramm
 from izgibi import Grafics_izgibov
@@ -172,7 +173,7 @@ f2 = list(workbook_9.loc[workbook_9["Type"] == Type[1], curve[0]])[0]
 f3 = list(workbook_9.loc[workbook_9["Type"] == Type[1], curve[1]])[0]
 # Локомотив:     Вагон:
 # Прямая/Кривая; Прямая/Кривая
-if redaction == "new" or redaction != "old":
+if redaction == "new" and redaction != "old":   # при новой редакции ребята обычно сами дают значения f
 #f = [f0, f1, f2, f3]
     f = [list(first_data.loc[first_data[1] == 9, "I"])[0], list(first_data.loc[first_data[1] == 10, "I"])[0],
          list(first_data.loc[first_data[1] == 9, "II"])[0], list(first_data.loc[first_data[1] == 10, "II"])[0]]
@@ -677,11 +678,18 @@ for i, sostav in enumerate(sostavs, start=1):
     sheet.cell(row=147, column=9, value='Станция')
     sheet.cell(row=147, column=i, value=station)
 
+    vvv = GrafVerTemp(t_max_max=t_max_max, t_min_min=t_min_min,
+                       t_min_zakr=min(t_min_zakr, t_min_zakr_curve), t_max_zakr=t_max_zakr,
+                       t_y=min(t_y, t_y_curve), delta_t_p=min(delta_t_p1_min, delta_t_p0_min))
+    vvv.grafic_maker_()
+
+
     aaa = TempDiagramm(t_max_max=t_max_max, t_min_min=t_min_min, t_y_curve=t_y_curve, curve=curve[1],
                        t_min_zakr=t_min_zakr, t_max_zakr=t_max_zakr, t_min_zakr_curve=t_min_zakr_curve,
                        t_max_zakr_curve=t_max_zakr_curve, t_y=t_y, delta_t_p1_min=delta_t_p1_min,
                        delta_t_p0_min=delta_t_p0_min)
     aaa.grafic_maker()
+
 
 # Уже заняты 133 и 134
 # Почему-то возвращают только первое вхождение если строки кода стоят здесь, а не выше
@@ -695,7 +703,7 @@ yyy = Grafics_progibov(sostavs=sostavs, k = k)
 yyy.grafic_mader()
 
 zzz = Grafics_izgibov(sostavs=sostavs, k = k)
-zzz.grafic_mader()
+zzz.grafic_mader_()
 
 
 

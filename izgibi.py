@@ -25,7 +25,7 @@ class Grafics_izgibov:
 
         return result
 
-    def grafic_mader(self):
+    def grafic_mader_(self):
         fig, axes = plt.subplots(8, 1, figsize=(8, 11), dpi=300)
 
         for i in range(8):
@@ -91,5 +91,5 @@ class Grafics_izgibov:
                         ha='left', va='top')
 
         plt.tight_layout()
-        plt.savefig('ИЗГИБЫttt.pdf', format='pdf', bbox_inches='tight', pad_inches=0)
+        plt.savefig('ИЗГИБЫ.pdf', format='pdf', bbox_inches='tight', pad_inches=0)
 

@@ -113,4 +113,4 @@ class Shpala:
                 axes[i].add_patch(rect3)
 
         plt.subplots_adjust(hspace=0.5)
-        plt.savefig("my_plot.pdf")  # Сохраните график после его построения
+        plt.savefig("ШПАЛА.pdf")  # Сохраните график после его построения
