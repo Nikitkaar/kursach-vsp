@@ -1,15 +1,16 @@
-from New_class import Shpala #- я пытался вызвать все с одного места
+from New_class import Shpala
 from veroyatnost_raspredel_temp import GrafVerTemp
 from progibi import Grafics_progibov
 from temperature_diagramm import TempDiagramm
 from izgibi import Grafics_izgibov
 from initial_data import PodvizhnoySostav
 from openpyxl import Workbook
+from User_Interface import DataEntryForm  # Импортируйте ваш класс пользовательского интерфейса
+from tkinter import messagebox
 import pandas as pd
-#import tkinter as tk
-#from tkinter import ttk, messagebox
+import tkinter as tk
+from tkinter import ttk
 
-"""
 class MainApplication(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -17,51 +18,54 @@ class MainApplication(tk.Tk):
         self.title("Ввод данных")
         self.geometry("400x300")
 
-        # Создаем элементы интерфейса
-        self.create_widgets()
+        # Создаем экземпляр DataEntryForm и размещаем его
+        self.data_entry_form = DataEntryForm(master=self)
+        self.data_entry_form.pack()
 
-    def create_widgets(self):
-        # Поле ввода для станции
-        ttk.Label(self, text="Станция:").grid(row=0, column=0, padx=10, pady=5)
-        self.station_entry = ttk.Entry(self)
-        self.station_entry.grid(row=0, column=1, padx=10, pady=5)
-
-        # Поле ввода для минимальной температуры
-        ttk.Label(self, text="t_min_min:").grid(row=1, column=0, padx=10, pady=5)
-        self.t_min_min_entry = ttk.Entry(self)
-        self.t_min_min_entry.grid(row=1, column=1, padx=10, pady=5)
-
-        # Поле ввода для максимальной температуры
-        ttk.Label(self, text="t_max_max:").grid(row=2, column=0, padx=10, pady=5)
-        self.t_max_max_entry = ttk.Entry(self)
-        self.t_max_max_entry.grid(row=2, column=1, padx=10, pady=5)
-
-        # Кнопка для выполнения расчета
-        ttk.Button(self, text="Выполнить расчет", command=self.calculate).grid(row=3, column=0, columnspan=2, pady=10)
+        # Создаем кнопку для выполнения расчета
+        ttk.Button(self, text="Выполнить расчет", command=self.calculate).pack(pady=10)
 
     def calculate(self):
-        # Получаем значения из полей ввода
-        station = self.station_entry.get()
-        t_min_min = self.t_min_min_entry.get()
-        t_max_max = self.t_max_max_entry.get()
+        # Получаем значение станции из DataEntryForm
+        station = self.data_entry_form.get_station_name()
 
-        # Здесь можно добавить ваш основной код расчета
-        # Например, вывод значений в сообщении
-        messagebox.showinfo("Результаты", f"Станция: {station}\nt_min_min: {t_min_min}\nt_max_max: {t_max_max}")
+        if not station:
+            messagebox.showwarning("Ошибка", "Пожалуйста, введите название станции.")
+            return
 
+        # Чтение данных из файла Excel
+        try:
+            first_data = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\ввод_исходных_данных.xlsx', sheet_name="Дополненное_издание(25")
+            redaction = list(first_data.loc[first_data[1] == 21, "I"])[0]
+            # Здесь можно использовать введенную станцию
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка при чтении файла: {e}")
+            return
+
+        # Создание Excel файла для записи данных
+        workbook = Workbook()
+        sheet = workbook.active
+
+        # Замените на ваш процесс записи данных
+        for i, sostav in enumerate(['Example1', 'Example2'], start=1):  # Замените на ваши данные
+            sheet.cell(row=147, column=i, value=station)  # Используйте полученную переменную station
+
+        # Сохранение файла
+        workbook.save(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\output.xlsx')
+
+        # Вывод результатов
+        messagebox.showinfo("Результаты", f"Станция: {station} записана в файл.")
 
 if __name__ == "__main__":
     app = MainApplication()
     app.mainloop()
-"""
 
 
 
 # Чтение данных из файла Excel
 first_data = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\ввод_исходных_данных.xlsx', sheet_name="Дополненное_издание(25")
 redaction = list(first_data.loc[first_data[1] == 21, "I"])[0]
-print(redaction)
-station = list(first_data.loc[first_data[1] == 2, "I"])[0]
+#station = list(first_data.loc[first_data[1] == 2, "I"])[0]
 t_min_min = list(first_data.loc[first_data[1] == 6, "I"])[0]
 t_max_max = list(first_data.loc[first_data[1] == 7, "I"])[0]
 Ta = t_max_max - t_min_min
@@ -73,7 +77,7 @@ capacity = list(first_data.loc[first_data[1] == 20, "I"])[0]
 material_of_sleepers = list(first_data.loc[first_data[1] == 16, "I"])[0]
 h = list(first_data.loc[first_data[1] == 18, "I"])[0]
 Type = [list(first_data.loc[first_data[1] == 3, "I"])[0], list(first_data.loc[first_data[1] == 3, "II"])[0]]  # РУЧНОЙ ВВОД ИЗ ДАНО
-
+t_opt = list(first_data.loc[first_data[1] == 27, "I"])[0]
 
 # Чтение данных из файла Excel
 df = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\ОценочныеКритерииПрочностиПути.xlsx', sheet_name="Локомотив")
@@ -116,8 +120,10 @@ alarms_8 = workbook_7.loc[workbook_7["Type"] == Type[0], 'l_i']
 fcr_vag = list(workbook_7.loc[workbook_7["Type"] == Type[1], 'fсг'])[0]
 fcr_loc = list(workbook_7.loc[workbook_7["Type"] == Type[0], 'fсг'])[0]
 
-kd = [list(first_data.loc[first_data[1] == 11, "I"])[0], round(0.1+(0.2*(v / fcr_vag)), 2)]   # ВВОД ИСХОДНЫХ ДАННЫХ
-
+if redaction == "new" and redaction != "old" and redaction != None:
+    kd = [list(first_data.loc[first_data[1] == 11, "I"])[0], round(0.1+(0.2*(v / fcr_vag)), 2)]   # ВВОД ИСХОДНЫХ ДАННЫХ
+else:
+    kd = [0, 0]
 # Разделить строку по запятым и преобразовать каждый элемент в числовой формат
 alarms_8_1 = [int(x) for x in list(alarms_8)[0].split(',')]
 alarms_9 = workbook_7.loc[workbook_7["Type"] == Type[1], 'l_i']
@@ -680,7 +686,7 @@ for i, sostav in enumerate(sostavs, start=1):
 
     vvv = GrafVerTemp(t_max_max=t_max_max, t_min_min=t_min_min,
                        t_min_zakr=min(t_min_zakr, t_min_zakr_curve), t_max_zakr=t_max_zakr,
-                       t_y=min(t_y, t_y_curve), delta_t_p=min(delta_t_p1_min, delta_t_p0_min))
+                       t_y=min(t_y, t_y_curve), delta_t_p=min(delta_t_p1_min, delta_t_p0_min), t_opt=t_opt)
     vvv.grafic_maker_()
 
 
@@ -704,6 +710,4 @@ yyy.grafic_mader()
 
 zzz = Grafics_izgibov(sostavs=sostavs, k = k)
 zzz.grafic_mader_()
-
-
 
