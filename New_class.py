@@ -55,7 +55,7 @@ class Shpala:
             axes[i].plot(x, y, linewidth=0.5)
             axes[i].set_title('k = {:.5f}'.format(self.k), fontsize=8)
             axes[i].set_xlim(-400, 450)
-            axes[i].set_ylim(-1, 1.5)
+            axes[i].set_ylim(-1, 1.45)
             axes[i].tick_params(labelsize=6)
             axes[i].invert_yaxis()
             axes[i].spines['left'].set_position(('data', 1.5))

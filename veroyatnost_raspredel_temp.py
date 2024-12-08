@@ -6,9 +6,13 @@ class GrafVerTemp:
 
     def __init__(self, **kwargs):
         self.t_y = kwargs.get('t_y')
+        #self.t_y = 52
         self.t_max_max = kwargs.get('t_max_max')  # максимум
-        self.delta_t_p = min(kwargs.get('delta_t_p'), self.t_max_max)
+        self.delta_t_p_true = kwargs.get('delta_t_p') #пишем на графике
+        #self.delta_t_p_true = 75
         self.t_min_min = kwargs.get('t_min_min')  # минимум
+        self.delta_t_p = min(kwargs.get('delta_t_p')+self.t_min_min, self.t_max_max)
+        #self.delta_t_p = self.delta_t_p_true + self.t_min_min
         self.mean = kwargs.get('mean',  (self.t_max_max+self.t_min_min)/2)  # среднее значение
         self.std_dev = kwargs.get('std_dev', 25)  # более широкое стандартное отклонение для пологой вершины
         self.x_left = self.round_to_tens(self.t_min_min)
@@ -76,6 +80,7 @@ class GrafVerTemp:
         plt.vlines(self.t_max_max - self.t_y, 0, y_min, color='blue', linestyle='-')
 
         # Добавим горизонтальный отрезок между максимальной и минимальной температурами
+        plt.hlines(0, self.t_min_min, self.t_max_max, colors='orange', linestyles='-')
         plt.hlines(y_min, self.t_min_min, self.t_max_max, colors='red', linestyles='-')
         plt.hlines(y_min, self.t_opt - 5, self.t_opt - 30, colors='green', linestyles='-')
         plt.hlines(y_min, self.t_opt + 5, self.t_opt + 20, colors='black', linestyles='-')
@@ -90,7 +95,7 @@ class GrafVerTemp:
         # Подпись к стрелке
         plt.text(arrow_end[0] + 1, arrow_end[1] + 0.0002, f'[∆ty] = {self.t_y}℃', fontsize=10, ha='left')
 
-        plt.annotate('', xy=(self.t_min_min + 70, 0), xytext=(self.t_min_min, 0),
+        plt.annotate('', xy=(self.t_min_min + 63, 0), xytext=(self.t_min_min, 0),
                      arrowprops=dict(arrowstyle='->', color='black', lw=1.0))
         # Подпись к стрелке
         plt.text(self.t_min_min + 55, 0.0002, f'tзаз = 70℃', fontsize=10, ha='left')
@@ -98,14 +103,13 @@ class GrafVerTemp:
         plt.annotate('', xy=(self.delta_t_p, 0), xytext=(self.t_min_min, 0),
                      arrowprops=dict(arrowstyle='->', color='gray', lw=1.0))
         # Подпись к стрелке
-        plt.text(self.delta_t_p - 10, 0.0002, f'[∆tp] = {self.delta_t_p}℃', fontsize=10, ha='left')
+        plt.text(self.delta_t_p - 7, 0.0002, f'[∆tp] = {self.delta_t_p_true}℃', fontsize=10, ha='left')
         plt.text(self.t_max_max - 7, 0.0015, f'ω1', fontsize=20, ha='left')
         plt.text(self.t_min_min + 15, 0.0015, f'ω2', fontsize=20, ha='left')
 
 
-
         plt.hlines(0, self.t_min_min, self.delta_t_p, colors='orange', linestyles='-')
-        plt.hlines(0, self.t_min_min, self.t_min_min + 70, colors='black', linestyles='-') # ВОТ ТУТ ЖОПА с ТЕМПЕРАТУРОЙ ЗАЗОРА
+        plt.hlines(0, self.t_min_min, self.t_min_min + 63, colors='black', linestyles='-') # ВОТ ТУТ ЖОПА с ТЕМПЕРАТУРОЙ ЗАЗОРА
 
         # Заштриховываем область между графиком функции и фиолетовой и красной линиями
         # Под синей линией и до фиолетовой линии
@@ -125,11 +129,11 @@ class GrafVerTemp:
         plt.xticks(ticks_x)
 
         # Настройка ограничений по высоте оси Y
-        plt.ylim(-0.001, np.max(y_normalized))  # Добавляем небольшой запас и более низкую верхнюю границу
+        plt.ylim(-0.001, np.max(y_normalized) * 1.02)  # Добавляем небольшой запас и более низкую верхнюю границу
         plt.xlim(self.t_min_min - 10, self.t_max_max + 10)  # Устанавливаем ограничения по ширине оси X
 
         # Добавление стрелок на левые и нижние оси
-        plt.plot((0), (np.max(y_normalized)), ls="", marker="^", ms=5, color="black", transform=plt.gca().get_yaxis_transform(),
+        plt.plot((0), (np.max(y_normalized) * 1.02), ls="", marker="^", ms=5, color="black", transform=plt.gca().get_yaxis_transform(),
                  clip_on=False)
         plt.plot((self.t_max_max + 10), (0), ls="", marker=">", ms=5, color="black", transform=plt.gca().get_xaxis_transform(),
                  clip_on=False)

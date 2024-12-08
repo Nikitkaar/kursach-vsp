@@ -1,6 +1,6 @@
 import numpy
 import pandas as pd
-
+import origin
 
 class PodvizhnoySostav:
     """Хранит и принимает исходные данные и работает с ними, выполняя расчеты. По пунктам КР (Пункты будут подписаны в
@@ -91,6 +91,8 @@ class PodvizhnoySostav:
     нет интерфейса, стабильной связи с эксель и ворд (файл ворд иногда вылетает,
     необходимо держать резервную копию), недостаточно подробное описание
     Кажется, все можно было сделать гораздо проще с помощью f-строк, не засоряя проект ненужными функциями"""
+    # Создание словаря из ваших данных
+
 
     def __init__(self, **kwargs):
         # Обработка переданных аргументов
@@ -99,6 +101,22 @@ class PodvizhnoySostav:
         # Остальные атрибуты и их инициализация
         self.k3 = 1.3  # round(random.uniform(0.9, 1.3), 1)
         self.ballast = "Щебень"
+        self.M = {
+            400: {'Р50': 0.3, 'Р65': 0.232},
+            450: {'Р50': 0.316, 'Р65': 0.257},
+            500: {'Р50': 0.332, 'Р65': 0.283},
+            550: {'Р50': 0.348, 'Р65': 0.309},
+            600: {'Р50': 0.365, 'Р65': 0.335},
+            650: {'Р50': 0.376, 'Р65': 0.347},
+            700: {'Р50': 0.387, 'Р65': 0.36},
+            750: {'Р50': 0.398, 'Р65': 0.372},
+            800: {'Р50': 0.41, 'Р65': 0.385},
+            850: {'Р50': 0.42, 'Р65': 0.391},
+            900: {'Р50': 0.43, 'Р65': 0.397},
+            950: {'Р50': 0.44, 'Р65': 0.403},
+            1000: {'Р50': 0.45, 'Р65': 0.41},
+            'Прямая': {'Р50': 0.6, 'Р65': 0.585}
+        }
 
     def z_max(self):
         if 'чс' in self.type_sostav.lower() or 'вл' in self.type_sostav.lower():
@@ -106,11 +124,11 @@ class PodvizhnoySostav:
         elif 'тэ' in self.type_sostav.lower() or 'м62' in self.type_sostav.lower() or 'чм' in self.type_sostav.lower():
             return [7.9 + 8.0 * 10 ** (-4) * self.v ** 2, 'Тепловоз']
         elif '8' in self.type_sostav.lower():
-            return [9.5 + 9 * 10 ** (-4) * self.v ** 2, 'НЕТУ']
+            return [9.5 + 9 * 10 ** (-4) * self.v ** 2, 'Вагон']
         elif '6' in self.type_sostav.lower():
-            return [6 + 16 * 10 ** (-4) * self.v ** 2, 'НЕТУ']
+            return [6 + 16 * 10 ** (-4) * self.v ** 2, 'Вагон']
         else:
-            return [10 + 16 * 10 ** (-4) * self.v ** 2, 'НЕТУ']
+            return [10 + 16 * 10 ** (-4) * self.v ** 2, 'Вагон']
 
     # ПУНКТ 1.2 Определение среднего и максимального вероятного
     # значения динамической силы воздействия колеса на рельс
@@ -371,17 +389,17 @@ class PodvizhnoySostav:
 
     # Открываем файл Excel
     def C1(self):
-        workbook_12 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\C1.xlsx')
-        return list(workbook_12.loc[workbook_12["H"] == self.h, "l" + str(self.b)])[0]
+        rsec = origin.C1_data[self.h][self.b]
+        return rsec
 
     def C2(self):
-        workbook_11 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\C2.xlsx')
-        return list(workbook_11.loc[workbook_11["H"] == self.h, "l" + str(self.b)])[0]
+        rse = origin.C2_data[self.h][self.b]
+        return rse
 
     def A(self):
         """коэффициент, учитывающий расстояние между шпалами, ширину шпалы и глубину"""
-        workbook_15 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\A.xlsx')
-        return list(workbook_15.loc[workbook_15["h"] == self.h, "l" + str(self.b)].head())[0]
+        A = origin.A_data[self.b][self.h]
+        return A
 
     def summa1(self):
         """Напряжения от 1-0й шпалы. Складывает η от всех осей, кроме ближайшей к расчетной"""
@@ -425,23 +443,13 @@ class PodvizhnoySostav:
 
     def AA(self):
         "Параметр А, зависящий от радиуса кривой и типа рельса"
-        workbook_16 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\AA.xlsx')
-
-        # Преобразовываем столбец "R" в строковый тип данных
-        workbook_16["R"] = workbook_16["R"].astype(str)
-
-        alarm = workbook_16.loc[workbook_16["R"] == str(self.curve), self.rail_type]
-        return list((alarm.head()))
+        alarmsed = origin.AA_data[self.rail_type][self.curve]
+        return alarmsed
 
     def AA1(self):
         "Параметр µ, зависящий от радиуса кривой и типа рельса"
-        workbook_17 = pd.read_excel(r'C:\Users\Администратор\PycharmProjects\kursach-vsp\M.xlsx')
-
-        # Преобразовываем столбец "R" в строковый тип данных
-        workbook_17["R"] = workbook_17["R"].astype(str)
-
-        alarm = workbook_17.loc[workbook_17["R"] == str(self.curve), self.rail_type]
-        return list((alarm.head()))
+        alarm = self.M[self.curve][self.rail_type]
+        return alarm
 
     def Ekv_gruzi_η(self):
         if self.RaschetnayaOS_N() == 2:

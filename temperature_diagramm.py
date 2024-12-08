@@ -7,15 +7,23 @@ class TempDiagramm:
     def __init__(self, **kwargs):
         self.t_y_curve = kwargs.get('t_y_curve')
         self.t_y = kwargs.get('t_y')
+        #self.t_y_curve = 36
+        #self.t_y = 52
         self.t_max_max = kwargs.get('t_max_max', None)
         self.t_min_min = kwargs.get('t_min_min', None)
         self.t_max_zakr = kwargs.get('t_max_zakr', None)
         self.t_min_zakr = kwargs.get('t_min_zakr', None)
         self.t_max_zakr_curve = kwargs.get('t_max_zakr_curve', None)
         self.t_min_zakr_curve = kwargs.get('t_min_zakr_curve', None)
+        #self.t_max_zakr = 27
+        #self.t_min_zakr = 6
+        #self.t_max_zakr_curve = 9
+        #self.t_min_zakr_curve = 22
         self.curve = kwargs.get('curve', None)
         self.delta_t_p1_min = kwargs.get('delta_t_p1_min', None)
+        #self.delta_t_p0_min = 75
         self.delta_t_p0_min = kwargs.get('delta_t_p0_min', None)
+        #self.delta_t_p1_min = 57
         # Пример использования для инициализации low и high
         self.low = self.round_up_to_10(self.t_min_min)
         self.high = self.round_up_to_10(self.t_max_max)
@@ -49,24 +57,25 @@ class TempDiagramm:
         ax.plot(x1, y1, color='black', linewidth=1)
         ax.plot(x2, y2, color='black', linewidth=1)
         ax.plot(x3, y3, color='black', linewidth=1)
-
-        # Заштриховываем область
-        ax.fill_between(
-            x=[0, 13],  # Координаты x для начала и конца области по оси X
-            y1=self.t_max_zakr,  # Координаты y для верхней линии
-            y2=self.t_min_zakr,  # Координаты y для нижней линии
-            hatch='///',  # Узор штриховки
-            color=None,  # Цвет заливки
-            alpha=0.0  # Прозрачность заливки
-        )
-        ax.fill_between(
-            x=[13, 30],  # Координаты x для начала и конца области по оси X
-            y1=self.t_max_zakr_curve,  # Координаты y для верхней линии
-            y2=self.t_min_zakr_curve,  # Координаты y для нижней линии
-            hatch='///',  # Узор штриховки
-            color=None,  # Цвет заливки
-            alpha=0.0  # Прозрачность заливки
-        )
+        if self.t_max_zakr > self.t_min_zakr:
+            # Заштриховываем область
+            ax.fill_between(
+                x=[0, 13],  # Координаты x для начала и конца области по оси X
+                y1=self.t_max_zakr,  # Координаты y для верхней линии
+                y2=self.t_min_zakr,  # Координаты y для нижней линии
+                hatch='///',  # Узор штриховки
+                color=None,  # Цвет заливки
+                alpha=0.0  # Прозрачность заливки
+            )
+        if self.t_max_zakr_curve > self.t_min_zakr_curve:
+            ax.fill_between(
+                x=[13, 30],  # Координаты x для начала и конца области по оси X
+                y1=self.t_max_zakr_curve,  # Координаты y для верхней линии
+                y2=self.t_min_zakr_curve,  # Координаты y для нижней линии
+                hatch='///',  # Узор штриховки
+                color=None,  # Цвет заливки
+                alpha=0.0  # Прозрачность заливки
+            )
         # Рисуем горизонтальные линии (спайны)
         ax.hlines(y=self.t_max_max, xmin=0, xmax=30, color='black', linewidth=1, linestyles='--')  # Верхний спайн
         ax.hlines(y=self.t_min_min, xmin=0, xmax=30, color='black', linewidth=1, linestyles='--')  # Нижний спайн
