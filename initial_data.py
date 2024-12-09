@@ -487,7 +487,7 @@ class PodvizhnoySostav:
                        f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1] + 55} = {self.k * (self.l_i[1] + 55):.2f}; η = {self.NNN(self.l_i[1] + 55):.5f}\n' \
                        f'ηIV: x = {self.l_i[1]}+{self.l_i[2]}+55; kx = {self.k}×{self.l_i[1] + self.l_i[2] + 55} = {self.k * (self.l_i[1] + self.l_i[2] + 55):.2f}; η = {self.NNN(self.l_i[1] + self.l_i[2] + 55):.5f}'
             else:
-                return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0]):.5f}\n' \
+                return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0] - 55):.5f}\n' \
                        f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
                        f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1] + 55} = {self.k * self.l_i[1] + 55:.2f}; η = {self.NNN(self.l_i[1] + 55):.5f}\n'
 

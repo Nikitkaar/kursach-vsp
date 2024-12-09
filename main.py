@@ -249,8 +249,8 @@ class App:
             "4-хосный": {'P_ct': 11000, 'q': 995, 'G': 200, 'd': 95, 'n': 2, 'l_i': '185, 0, 0', 'fсг': 48},
             "6-осный": {'P_ct': 10700, 'q': 1070, 'G': 195, 'd': 95, 'n': 3, 'l_i': '175, 175, 0', 'fсг': 50},
             "6-тиосный": {'P_ct': 10700, 'q': 1070, 'G': 195, 'd': 95, 'n': 3, 'l_i': '175, 175, 0', 'fсг': 50},
-            "8-осный": {'P_ct': 10550, 'q': 995, 'G': 200, 'd': 95, 'n': 4, 'l_i': '185, 125, 185', 'fсг': 48},
-            "8-миосный": {'P_ct': 10550, 'q': 995, 'G': 200, 'd': 95, 'n': 4, 'l_i': '185, 125, 185', 'fсг': 48}}
+            "8-осный": {'P_ct': 10550, 'q': 995, 'G': 200, 'd': 95, 'n': 4, 'l_i': '185, 135, 185', 'fсг': 48},
+            "8-миосный": {'P_ct': 10550, 'q': 995, 'G': 200, 'd': 95, 'n': 4, 'l_i': '185, 135, 185', 'fсг': 48}}
 
         q_vag = Characteristici_vagonov[self.Type[1]]['q']
         G_vagona = Characteristici_vagonov[self.Type[1]]['G']
@@ -561,30 +561,38 @@ class App:
 
             inf = sostav.Muu2()
             sheet.cell(row=39, column=i, value=inf)
+            sheet.cell(row=39, column=9, value="Изгиб 2-ой оси")
 
             inf = sostav.Muu3()
             sheet.cell(row=40, column=i, value=inf)
+            sheet.cell(row=40, column=9, value="изгиб 3 оси")
 
             inf = sostav.Muu4()
+            sheet.cell(row=41, column=9, value="изгиб 4 оси")
             sheet.cell(row=41, column=i, value=inf)
 
             inf = sostav.Sigma_Muu()
             sheet.cell(row=42, column=i, value=inf)
+            sheet.cell(row=42, column=9, value="сумма изгибов")
 
             inf = round(sostav.P_II_ekv())
             sheet.cell(row=43, column=i, value=inf)
 
             inf = sostav.N_2()
             sheet.cell(row=44, column=i, value=inf)
+            sheet.cell(row=44, column=9, value="Прогиб 2(I) или 1(II) оси")
 
             inf = sostav.N_3()
             sheet.cell(row=45, column=i, value=inf)
+            sheet.cell(row=45, column=9, value="Прогиб 3(I) или 2(II) оси")
 
             inf = sostav.N_4()
             sheet.cell(row=46, column=i, value=inf)
+            sheet.cell(row=46, column=9, value="Прогиб 4(I) или 3(II) оси")
 
             inf = sostav.Sigma_N()
             sheet.cell(row=47, column=i, value=inf)
+            sheet.cell(row=47, column=9, value="Cумма прогибов")
 
             inf = sostav.RaschetnayaOS_N()
             sheet.cell(row=48, column=i, value=inf)

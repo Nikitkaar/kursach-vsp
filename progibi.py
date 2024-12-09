@@ -157,7 +157,7 @@ class Grafics_progibov:
                 # Добавление подписей к точкам
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
                     axes[i].annotate(
-                        f"{x:.1f}     \u03B7 = {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) - np.sin(self.sostavs[i].k * np.abs(x))):.5f}",
+                        f"{x:.1f}     \u03B7 = {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x))):.5f}",
                         xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                         ha='left', va='top')
 
