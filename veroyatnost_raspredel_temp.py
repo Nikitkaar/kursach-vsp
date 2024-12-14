@@ -28,7 +28,7 @@ class GrafVerTemp:
 
     def grafic_maker_(self):
         plt.clf()
-        plt.figure(figsize=(12, 6))  # Изменяем размер графика, увеличивая ширину
+        plt.figure(figsize=(11, 7))  # Изменяем размер графика, увеличивая ширину
 
         # Define the data
         x = np.linspace(self.t_min_min, self.t_max_max, 1000)
@@ -65,7 +65,7 @@ class GrafVerTemp:
                    / np.max(y) * (1 / (self.t_max_max - self.t_min_min))
 
         # Отметим среднее значение и границы штриховой линией
-        plt.vlines(self.mean, 0, np.max(y_normalized), color='red', linestyle='--', label=f'Средняя за год температура = {self.mean}℃')
+        plt.vlines(self.mean, 0, np.max(y_normalized), color='red', linestyle='--', label=f'Средняя за год температура рельса = {self.mean}℃')
         plt.vlines(self.t_max_max, 0, np.min(y_normalized), color='red', linestyle='-')
         plt.vlines(self.t_min_min, 0, np.min(y_normalized), color='red', linestyle='-')
         plt.vlines(self.delta_t_p, 0, y_min, color='red', linestyle='-')
@@ -95,10 +95,10 @@ class GrafVerTemp:
         # Подпись к стрелке
         plt.text(arrow_end[0] + 1, arrow_end[1] + 0.0002, f'[∆ty] = {self.t_y}℃', fontsize=10, ha='left')
 
-        plt.annotate('', xy=(self.t_min_min + 63, 0), xytext=(self.t_min_min, 0),
-                     arrowprops=dict(arrowstyle='->', color='black', lw=1.0))
+        #plt.annotate('', xy=(self.t_min_min + 63, 0), xytext=(self.t_min_min, 0),
+        #             arrowprops=dict(arrowstyle='->', color='black', lw=1.0))
         # Подпись к стрелке
-        plt.text(self.t_min_min + 55, 0.0002, f'tзаз = 70℃', fontsize=10, ha='left')
+        #plt.text(self.t_min_min + 55, 0.0002, f'tзаз = 40℃', fontsize=10, ha='left')
 
         plt.annotate('', xy=(self.delta_t_p, 0), xytext=(self.t_min_min, 0),
                      arrowprops=dict(arrowstyle='->', color='gray', lw=1.0))
@@ -109,7 +109,7 @@ class GrafVerTemp:
 
 
         plt.hlines(0, self.t_min_min, self.delta_t_p, colors='orange', linestyles='-')
-        plt.hlines(0, self.t_min_min, self.t_min_min + 63, colors='black', linestyles='-') # ВОТ ТУТ ЖОПА с ТЕМПЕРАТУРОЙ ЗАЗОРА
+        #plt.hlines(0, self.t_min_min, self.t_min_min + 63, colors='black', linestyles='-') # ВОТ ТУТ ЖОПА с ТЕМПЕРАТУРОЙ ЗАЗОРА
 
         # Заштриховываем область между графиком функции и фиолетовой и красной линиями
         # Под синей линией и до фиолетовой линии
@@ -142,13 +142,13 @@ class GrafVerTemp:
                  ha='right', color='blue')
         plt.text(self.t_min_min-7, 0.22 * np.max(y_normalized), f'Мин: {self.t_min_min}℃', fontsize=10,
                  ha='left', color='blue')
-        plt.text(self.t_opt-1, 0.15 * np.max(y_normalized), '10', fontsize=10,
+        plt.text(self.t_opt-1, np.max(y_min) * 1.1, '10', fontsize=10,
                  ha='left', color='blue')
-        plt.text(self.t_opt-2, violet_y1, f'tопт = {self.t_opt}±5℃', fontsize=10,
+        plt.text(self.t_opt-2, violet_y1, f'tопт из инструкции 2544р = {self.t_opt}±5℃', fontsize=10,
                  ha='left', color='blue')
-        plt.text(self.t_opt - 18, 0.15 * np.max(y_normalized), '25', fontsize=10,
+        plt.text(self.t_opt - 18, np.max(y_min) * 1.1, '25', fontsize=10,
                  ha='left', color='blue')
-        plt.text(self.t_opt + 11, 0.15 * np.max(y_normalized), '15', fontsize=10,
+        plt.text(self.t_opt + 11, np.max(y_min) * 1.1, '15', fontsize=10,
                  ha='left', color='blue')
         # Set the title and labels
         plt.title("График плотности вероятности распределения температуры рельса в годичном цикле")

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+from origin import μ_η
 
 
 class Shpala:
@@ -81,7 +82,7 @@ class Shpala:
                                 s=1000)
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
                     axes[i].annotate(
-                        f"{x:.1f}     \u03B7 = {np.exp((-self.k * np.abs(x))) * (np.cos(self.k * x) + np.sin(self.k * np.abs(x))):.5f}",
+                        f"{x:.1f}     \u03B7 = {μ_η(self.k * np.abs(x), 'η')}",
                         xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                         ha='left', va='top')
                 # Добавление прямоугольников
@@ -101,7 +102,7 @@ class Shpala:
                                 s=1000)
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
                     axes[i].annotate(
-                        f"{x:.1f}     \u03B7 = {np.exp((-self.k * np.abs(x))) * (np.cos(self.k * x) + np.sin(self.k * np.abs(x))):.5f}",
+                        f"{x:.1f}     \u03B7 = {μ_η(self.k * np.abs(x), 'η')}",
                         xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                         ha='left', va='top')
                 # Добавление прямоугольников

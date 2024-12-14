@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+import origin
+from  origin import μ_η
+
 
 class Grafics_progibov:
 
@@ -12,7 +15,7 @@ class Grafics_progibov:
         # Остальные атрибуты и их инициализация
 
 
-    def isser(self):
+    def isser(self):     # расстояния от оси колесной пары до расчетной оси
         result = []
 
         for sostav in self.sostavs:
@@ -29,6 +32,7 @@ class Grafics_progibov:
 
         for i in range(8):
             x = np.linspace(-550, 550, 1100)
+
             y = np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x)))
 
             axes[i].plot(x, y, linewidth=0.5)
@@ -66,7 +70,7 @@ class Grafics_progibov:
 
                 # Добавление подписей к точкам
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
-                    axes[i].annotate(f"{x:.1f}     \u03B7 = {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x))):.5f}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
+                    axes[i].annotate(f"{x:.1f}     \u03B7 = {origin.μ_η(self.sostavs[i].k * np.abs(x), 'η')}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                                      ha='left', va='top')
 
             for i in range(1,2):
@@ -78,7 +82,7 @@ class Grafics_progibov:
 
                 # Добавление подписей к точкам
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
-                    axes[i].annotate(f"{x:.1f}     \u03B7 = {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x))):.5f}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
+                    axes[i].annotate(f"{x:.1f}     \u03B7 = {origin.μ_η(self.sostavs[i].k * np.abs(x), 'η')}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                                      ha='left', va='top')
 
             for i in range(2, 3):
@@ -90,7 +94,7 @@ class Grafics_progibov:
 
                 # Добавление подписей к точкам
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
-                    axes[i].annotate(f"{x:.1f}     \u03B7 = {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x))):.5f}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
+                    axes[i].annotate(f"{x:.1f}     \u03B7 = {origin.μ_η(self.sostavs[i].k * np.abs(x), 'η')}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                                      ha='left', va='top')
 
             for i in range(3, 4):
@@ -102,7 +106,7 @@ class Grafics_progibov:
 
                 # Добавление подписей к точкам
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
-                    axes[i].annotate(f"{x:.1f}     \u03B7 = {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x))):.5f}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
+                    axes[i].annotate(f"{x:.1f}     \u03B7 = {origin.μ_η(self.sostavs[i].k * np.abs(x), 'η')}", xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                                      ha='left', va='top')
 
             for i in range(4, 5):
@@ -115,7 +119,7 @@ class Grafics_progibov:
                 # Добавление подписей к точкам
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
                     axes[i].annotate(
-                        f"{x:.1f}     \u03B7 = {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x))):.5f}",
+                        f"{x:.1f}     \u03B7 = {origin.μ_η(self.sostavs[i].k * np.abs(x), 'η')}",
                         xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                         ha='left', va='top')
 
@@ -129,8 +133,8 @@ class Grafics_progibov:
                 # Добавление подписей к точкам
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
                     axes[i].annotate(
-                        f"{x:.1f}     \u03B7 = {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x))):.5f}",
-                        xy=(x, y), xytext=(-20, 9), textcoords='offset points', fontsize=4.8,
+                        f"{x:.1f}     \u03B7 = {origin.μ_η(self.sostavs[i].k * np.abs(x), 'η')}",
+                        xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                         ha='left', va='top')
 
             for i in range(6, 7):
@@ -143,7 +147,7 @@ class Grafics_progibov:
                 # Добавление подписей к точкам
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
                     axes[i].annotate(
-                        f"{x:.1f}     \u03B7 = {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x))):.5f}",
+                        f"{x:.1f}     \u03B7 = {origin.μ_η(self.sostavs[i].k * np.abs(x), 'η')}",
                         xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                         ha='left', va='top')
 
@@ -157,10 +161,10 @@ class Grafics_progibov:
                 # Добавление подписей к точкам
                 for (x, y) in zip(lighthigh_x, lighthigh_y):
                     axes[i].annotate(
-                        f"{x:.1f}     \u03B7 = {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x))):.5f}",
+                        f"{x:.1f}     \u03B7 = {origin.μ_η(self.sostavs[i].k * np.abs(x), 'η')}",
                         xy=(x, y), xytext=(-20, -3), textcoords='offset points', fontsize=4.8,
                         ha='left', va='top')
-
+                            # {np.exp((-self.sostavs[i].k * np.abs(x))) * (np.cos(self.sostavs[i].k * x) + np.sin(self.sostavs[i].k * np.abs(x))):.5f}
         plt.tight_layout()
         plt.savefig('ПРОГИБЫ.pdf', format='pdf', bbox_inches='tight', pad_inches=0)
 

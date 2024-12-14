@@ -1,5 +1,4 @@
 import numpy
-import pandas as pd
 import origin
 
 class PodvizhnoySostav:
@@ -226,13 +225,13 @@ class PodvizhnoySostav:
         if (self.k * self.l_i[0]) >= 5.5:
             return 0
         else:
-            return round(self.MMM(self.l_i[0]), 5)
+            return origin.μ_η(self.k*self.l_i[0], "μ")      #(self.k*x, "η")round(self.MMM(self.l_i[0]), 5)
 
     def Muu3(self):
         if self.n == 2 or (self.k * (self.l_i[0] + self.l_i[1])) >= 5.5:
             return 0
         else:
-            return round(self.MMM(self.l_i[0] + self.l_i[1]), 5)
+            return origin.μ_η(self.k*(self.l_i[0] + self.l_i[1]), "μ")       #round(self.MMM(self.l_i[0] + self.l_i[1]), 5)
 
     def Muu4(self):
         if self.n == 2 or self.n == 3:
@@ -241,7 +240,7 @@ class PodvizhnoySostav:
             if (self.k * sum(self.l_i)) >= 5.5:
                 return 0
             else:
-                return round(self.MMM(self.l_i[0] + self.l_i[1] + self.l_i[2]), 5)
+                return origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] + self.l_i[2]), "μ")         #round(self.MMM(self.l_i[0] + self.l_i[1] + self.l_i[2]), 5)
 
     def Sigma_Muu(self):
         return self.Muu2() + self.Muu4() + self.Muu3()
@@ -251,21 +250,21 @@ class PodvizhnoySostav:
 
     def P_I_ekv(self):
         if self.RaschetnayaOS_Muu() == 1 and self.n == 2:
-            return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.l_i[0], "μ")
         elif self.RaschetnayaOS_Muu() == 1 and self.n == 3:
-            return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0]) + self.p_cp() * self.MMM(
-                self.l_i[0] + self.l_i[1])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.l_i[0], "μ") + self.p_cp() * origin.μ_η(
+                self.l_i[0] + self.l_i[1], "μ")
         elif self.RaschetnayaOS_Muu() == 1 and self.n == 4:
-            return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0]) + self.p_cp() * self.MMM(
-                self.l_i[0] + self.l_i[1]) + self.p_cp() * self.MMM(self.l_i[0] + self.l_i[1] + self.l_i[2])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.l_i[0], "μ") + self.p_cp() * origin.μ_η(
+                self.l_i[0] + self.l_i[1], "μ") + self.p_cp() * origin.μ_η(self.l_i[0] + self.l_i[1] + self.l_i[2], "μ")
         elif self.RaschetnayaOS_Muu() == 2 and self.n == 2:
-            return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.l_i[0], "μ")
         elif self.RaschetnayaOS_Muu() == 2 and self.n == 3:
-            return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0]) + self.p_cp() * self.MMM(self.l_i[1])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.l_i[0], "μ") + self.p_cp() * origin.μ_η(self.l_i[1], "μ")
         elif self.RaschetnayaOS_Muu() == 2 and self.n == 4:
-            return self.p_max_ver() + self.p_cp() * self.MMM(self.l_i[0]) + self.p_cp() * self.MMM(
-                self.l_i[1]) + self.p_cp() * self.MMM(
-                self.l_i[1] + self.l_i[2])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.l_i[0], "μ") + self.p_cp() * origin.μ_η(
+                self.l_i[1], "μ") + self.p_cp() * origin.μ_η(
+                self.l_i[1] + self.l_i[2], "μ")
 
     def N_2(self):
         """Ордината функции момента от приложенной еденичной силы (линии влияния) Мю по 2-ой и расчетной
@@ -273,7 +272,7 @@ class PodvizhnoySostav:
         if (self.k * self.l_i[0]) >= 5.5:
             return 0
         else:
-            return self.NNN(self.l_i[0])
+            return origin.μ_η(self.k*self.l_i[0], "η")
 
     def N_3(self):
         """Ордината функции момента от приложенной еденичной силы (линии влияния) Мю по 3-ей расчетной
@@ -284,9 +283,9 @@ class PodvizhnoySostav:
             if (self.k * (self.l_i[0] + self.l_i[1])) >= 5.5:
                 return 0
             else:
-                return self.NNN(self.l_i[0] + self.l_i[1])
+                return origin.μ_η(self.k*(self.l_i[0] + self.l_i[1]), "η")
         else:
-            return self.NNN(self.l_i[1])
+            return origin.μ_η(self.k*self.l_i[1], "η")
 
     def N_4(self):
         """Ордината функции момента от приложенной еденичной силы (линии влияния) Мю по 4-ей расчетной
@@ -297,33 +296,33 @@ class PodvizhnoySostav:
             if self.k * (sum(self.l_i)) >= 5.5 or self.n < 4:
                 return 0
             else:
-                return self.NNN(self.l_i[0] + self.l_i[1] + self.l_i[2])
+                return origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] + self.l_i[2]), "η")
         else:
             if (self.k * (self.l_i[1] + self.l_i[2])) >= 5.5:
                 return 0
             else:
-                return self.NNN(self.l_i[1] + self.l_i[2])
+                return origin.μ_η(self.k*(self.l_i[1] + self.l_i[2]), "η")
 
     def Sigma_N(self):
         return self.N_2() + self.N_3() + self.N_4()
 
     def P_II_ekv(self):
         if self.RaschetnayaOS_N() == 1 and self.n == 2:
-            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.k*self.l_i[0], "η")
         elif self.RaschetnayaOS_N() == 1 and self.n == 3:
-            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(
-                self.l_i[0] + self.l_i[1])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.k*self.l_i[0], "η") + self.p_cp() * origin.μ_η(self.k*
+                (self.l_i[0] + self.l_i[1]), "η")
         elif self.RaschetnayaOS_N() == 1 and self.n == 4:
-            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(
-                self.l_i[0] + self.l_i[1]) + self.p_cp() * self.NNN(self.l_i[0] + self.l_i[1] + self.l_i[2])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.k*self.l_i[0], "η") + self.p_cp() * origin.μ_η(self.k*
+                (self.l_i[0] + self.l_i[1]), "η") + self.p_cp() * origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] + self.l_i[2]), "η")
         elif self.RaschetnayaOS_N() == 2 and self.n == 2:
-            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.k*self.l_i[0], "η")
         elif self.RaschetnayaOS_N() == 2 and self.n == 3:
-            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(self.l_i[1])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.k*self.l_i[0], "η") + self.p_cp() * origin.μ_η(self.k*self.l_i[1], "η")
         elif self.RaschetnayaOS_N() == 2 and self.n == 4:
-            return self.p_max_ver() + self.p_cp() * self.NNN(self.l_i[0]) + self.p_cp() * self.NNN(
-                self.l_i[1]) + self.p_cp() * self.NNN(
-                self.l_i[1] + self.l_i[2])
+            return self.p_max_ver() + self.p_cp() * origin.μ_η(self.k*self.l_i[0], "η") + self.p_cp() * origin.μ_η(self.k*
+                self.l_i[1], "η") + self.p_cp() * origin.μ_η(self.k*
+                (self.l_i[1] + self.l_i[2]), "η")
 
     def sigma_kp(self):
         return round(self.P_I_ekv() * self.f / (4 * self.k * self.W), 2)
@@ -405,41 +404,41 @@ class PodvizhnoySostav:
         """Напряжения от 1-0й шпалы. Складывает η от всех осей, кроме ближайшей к расчетной"""
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
             if self.n == 4:
-                return self.NNN(self.l_i[0] + 55) + self.NNN(self.l_i[0] + self.l_i[1] + 55) + self.NNN(
-                    self.l_i[0] + self.l_i[1] + self.l_i[2] + 55)
+                return origin.μ_η(self.k*(self.l_i[0] + 55), "η") + origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] + 55), "η") + origin.μ_η(self.k*
+                    (self.l_i[0] + self.l_i[1] + self.l_i[2] + 55), "η")
             elif self.n == 3:
-                return self.NNN(self.l_i[0] + 55) + self.NNN(self.l_i[0] + self.l_i[1] + 55)
+                return origin.μ_η(self.k*(self.l_i[0] + 55), "η") + origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] + 55), "η")
             else:
-                return self.NNN(self.l_i[0] + 55)
+                return origin.μ_η(self.k*(self.l_i[0] + 55), "η")
         else:
             if self.n == 4:
-                return self.NNN(self.l_i[0] - 55) + self.NNN(self.l_i[1] + 55) + self.NNN(
-                    self.l_i[1] + self.l_i[2] + 55)
+                return origin.μ_η(self.k*(self.l_i[0] - 55), "η") + origin.μ_η(self.k*(self.l_i[1] + 55), "η") + origin.μ_η(self.k*
+                    (self.l_i[1] + self.l_i[2] + 55), "η")
             else:
-                return self.NNN(self.l_i[0] - 55) + self.NNN(self.l_i[1] + 55)
+                return origin.μ_η(self.k*(self.l_i[0] - 55), "η") + origin.μ_η(self.k*(self.l_i[1] + 55), "η")
 
     def summa2(self):
         """Напряжения от 3-ей шпалы.Складывает η от всех осей, кроме ближайшей к расчетной"""
         if self.RaschetnayaOS_N() == 1 or self.n == 2:
             if self.n == 4:
-                return self.NNN(self.l_i[0] - 55) + self.NNN(self.l_i[1] + 55) + self.NNN(
-                    self.l_i[1] + self.l_i[2] + 55)
+                return origin.μ_η(self.k*(self.l_i[0] - 55), "η") + origin.μ_η(self.k*(self.l_i[1] + 55), "η") + origin.μ_η(self.k*
+                    (self.l_i[1] + self.l_i[2] + 55), "η")
             elif self.n == 3:
-                return self.NNN(self.l_i[0] - 55) + self.NNN(self.l_i[1] + 55)
+                return origin.μ_η(self.k*(self.l_i[0] - 55), "η") + origin.μ_η(self.k*(self.l_i[1] + 55), "η")
             else:
-                return self.NNN(self.l_i[0] - 55)
+                return origin.μ_η(self.k*(self.l_i[0] - 55), "η")
         else:
             if self.n == 4:
-                return self.NNN(self.l_i[0] + 55) + self.NNN(self.l_i[1] - 55) + self.NNN(
-                    self.l_i[1] + self.l_i[2] - 55)
+                return origin.μ_η(self.k*(self.l_i[0] + 55), "η") + origin.μ_η(self.k*(self.l_i[1] - 55), "η") + origin.μ_η(self.k*
+                    (self.l_i[1] + self.l_i[2] - 55), "η")
             else:
-                return self.NNN(self.l_i[0] + 55) + self.NNN(self.l_i[1] - 55)
+                return origin.μ_η(self.k*(self.l_i[0] + 55), "η") + origin.μ_η(self.k*(self.l_i[1] - 55), "η")
 
     def P_II_ekvONE(self):
-        return round(self.p_max_ver() * self.NNN(55) + self.p_cp() * self.summa1(), 2)
+        return round(self.p_max_ver() * origin.μ_η(self.k*55, "η") + self.p_cp() * self.summa1(), 2)
 
     def P_II_ekvThree(self):
-        return round(self.p_max_ver() * self.NNN(55) + self.p_cp() * self.summa2(), 2)
+        return round(self.p_max_ver() * origin.μ_η(self.k*55, "η") + self.p_cp() * self.summa2(), 2)
 
     def AA(self):
         "Параметр А, зависящий от радиуса кривой и типа рельса"
@@ -469,49 +468,49 @@ class PodvizhnoySostav:
     def Ekv_gruzi_η_shpala_1(self):
         if self.RaschetnayaOS_N() == 1:
             if self.n == 4:
-                return f'ηI: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
-                       f'ηII: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
-                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} + 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + 55):.5f}\n' \
-                       f'ηIV: x = {self.l_i[0]} + {self.l_i[1]}+{self.l_i[2]}+55; kx = {self.k}×{self.l_i[0] + self.l_i[1] + self.l_i[2] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + self.l_i[2] + 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + self.l_i[2] + 55):.5f}'
+                return f'ηI: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {origin.μ_η(self.k*55, "η")}\n' \
+                       f'ηII: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + 55), "η"):.5f}\n' \
+                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} + 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + 55):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] + 55), "η"):.5f}\n' \
+                       f'ηIV: x = {self.l_i[0]} + {self.l_i[1]}+{self.l_i[2]}+55; kx = {self.k}×{self.l_i[0] + self.l_i[1] + self.l_i[2] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + self.l_i[2] + 55):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] + self.l_i[2] + 55), "η"):.5f}'
             if self.n == 3:
-                return f'ηI: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
-                       f'ηII: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
-                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} + 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + 55):.5f}\n'
+                return f'ηI: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {origin.μ_η(self.k*55, "η"):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + 55), "η"):.5f}\n' \
+                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} + 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + 55} = {self.k * (self.l_i[0] + self.l_i[1] + 55):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] + 55), "η"):.5f}\n'
             else:
-                return f'ηI: x = 55 см; kx = {self.k}× 55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
-                       f'ηII: x = {self.l_i[0]} + 55 см; kx = {self.k} × {self.l_i[0] + 55} = {self.k * (self.l_i[0] + 55):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n'
+                return f'ηI: x = 55 см; kx = {self.k}× 55 = {(self.k * 55):.2f}; η = {origin.μ_η(self.k*55, "η"):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} + 55 см; kx = {self.k} × {self.l_i[0] + 55} = {self.k * (self.l_i[0] + 55):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + 55), "η"):.5f}\n'
         else:
             if self.n == 4:
-                return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0]-55):.5f}\n' \
-                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
-                       f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1] + 55} = {self.k * (self.l_i[1] + 55):.2f}; η = {self.NNN(self.l_i[1] + 55):.5f}\n' \
-                       f'ηIV: x = {self.l_i[1]}+{self.l_i[2]}+55; kx = {self.k}×{self.l_i[1] + self.l_i[2] + 55} = {self.k * (self.l_i[1] + self.l_i[2] + 55):.2f}; η = {self.NNN(self.l_i[1] + self.l_i[2] + 55):.5f}'
+                return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {origin.μ_η(self.k*(self.l_i[0]-55), "η"):.5f}\n' \
+                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {origin.μ_η(self.k*55, "η"):.5f}\n' \
+                       f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1] + 55} = {self.k * (self.l_i[1] + 55):.2f}; η = {origin.μ_η(self.k*(self.l_i[1] + 55), "η"):.5f}\n' \
+                       f'ηIV: x = {self.l_i[1]}+{self.l_i[2]}+55; kx = {self.k}×{self.l_i[1] + self.l_i[2] + 55} = {self.k * (self.l_i[1] + self.l_i[2] + 55):.2f}; η = {origin.μ_η(self.k*(self.l_i[1] + self.l_i[2] + 55), "η"):.5f}'
             else:
-                return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0] - 55):.5f}\n' \
-                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
-                       f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1] + 55} = {self.k * self.l_i[1] + 55:.2f}; η = {self.NNN(self.l_i[1] + 55):.5f}\n'
+                return f'ηI: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] - 55), "η"):.5f}\n' \
+                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {origin.μ_η(self.k*55, "η"):.5f}\n' \
+                       f'ηIII: x = {self.l_i[1]}+55 см; kx = {self.k}×{self.l_i[1] + 55} = {self.k * self.l_i[1] + 55:.2f}; η = {origin.μ_η(self.k*(self.l_i[1] + 55), "η"):.5f}\n'
 
     def Ekv_gruzi_η_shpala_3(self):
         if self.RaschetnayaOS_N() == 1:
             if self.n == 4:
-                return f'ηI: x = 55 см; kx = {self.k} × 55 = {(self.k * 55):.2f}; η = {self.NNN(self.l_sh):.5f}\n' \
-                       f'ηII: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN(self.l_i[0] - 55):.5f}\n' \
-                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} - 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] - 55} = {self.k * (self.l_i[0] + self.l_i[1] - 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] - 55):.5f}\n' \
-                       f'ηIV: x = {self.l_i[0] + self.l_i[1] + self.l_i[2]} - 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + self.l_i[2] - 55} = {self.k * (self.l_i[0] + self.l_i[1] + self.l_i[2] - 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] + self.l_i[2] - 55):.5f}\n'
+                return f'ηI: x = 55 см; kx = {self.k} × 55 = {(self.k * 55):.2f}; η = {origin.μ_η(self.k*self.l_sh, "η"):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} - 55 см; kx = {self.k}×{self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] - 55), "η"):.5f}\n' \
+                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} - 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] - 55} = {self.k * (self.l_i[0] + self.l_i[1] - 55):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] - 55), "η"):.5f}\n' \
+                       f'ηIV: x = {self.l_i[0] + self.l_i[1] + self.l_i[2]} - 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] + self.l_i[2] - 55} = {self.k * (self.l_i[0] + self.l_i[1] + self.l_i[2] - 55):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] + self.l_i[2] - 55), "η"):.5f}\n'
             if self.n == 3:
-                return f'ηI: x = 55 см; kx = {self.k} × 55 = {(self.k * 55):.2f}; η = {self.NNN(self.l_sh):.5f}\n' \
-                       f'ηII: x = {self.l_i[0]} - 55 см; kx = {self.k} × {self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN((self.l_i[0] - 55)):.5f}\n' \
-                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} - 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] - 55} = {self.k * (self.l_i[0] + self.l_i[1] - 55):.2f}; η = {self.NNN(self.l_i[0] + self.l_i[1] - 55):.5f}\n'
+                return f'ηI: x = 55 см; kx = {self.k} × 55 = {(self.k * 55):.2f}; η = {origin.μ_η(self.k*self.l_sh, "η"):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} - 55 см; kx = {self.k} × {self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] - 55), "η"):.5f}\n' \
+                       f'ηIII: x = {self.l_i[0] + self.l_i[1]} - 55 см; kx = {self.k} × {self.l_i[0] + self.l_i[1] - 55} = {self.k * (self.l_i[0] + self.l_i[1] - 55):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + self.l_i[1] - 55), "η"):.5f}\n'
             else:
-                return f'ηI: x = 55 см; kx = {self.k} × 55 = {(self.k * 55):.2f}; η = {self.NNN(self.l_sh):.5f}\n' \
-                       f'ηII: x = {self.l_i[0]} - 55 см; kx = {self.k} × {self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {self.NNN((self.l_i[0] - 55)):.5f}\n'
+                return f'ηI: x = 55 см; kx = {self.k} × 55 = {(self.k * 55):.2f}; η = {origin.μ_η(self.k*self.l_sh, "η"):.5f}\n' \
+                       f'ηII: x = {self.l_i[0]} - 55 см; kx = {self.k} × {self.l_i[0] - 55} = {(self.k * (self.l_i[0] - 55)):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] - 55), "η"):.5f}\n'
         else:
             if self.n == 4:
-                return f'ηI: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
-                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
-                       f'ηIII: x = {self.l_i[1]} - 55 см; kx = {self.k}×{self.l_i[1] - 55} = {self.k * (self.l_i[1] - 55):.2f}; η = {self.NNN(self.l_i[1] - 55):.5f}\n' \
-                       f'ηIV: x = {self.l_i[1]} + {self.l_i[2]}-55; kx = {self.k}×{self.l_i[1] + self.l_i[2] - 55} = {self.k * (self.l_i[1] + self.l_i[2] - 5):.2f}; η = {self.NNN(self.l_i[1] + self.l_i[2] - 55):.5f}'
+                return f'ηI: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + 55), "η"):.5f}\n' \
+                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {origin.μ_η(self.k*55, "η"):.5f}\n' \
+                       f'ηIII: x = {self.l_i[1]} - 55 см; kx = {self.k}×{self.l_i[1] - 55} = {self.k * (self.l_i[1] - 55):.2f}; η = {origin.μ_η(self.k*(self.l_i[1] - 55), "η"):.5f}\n' \
+                       f'ηIV: x = {self.l_i[1]} + {self.l_i[2]}-55; kx = {self.k}×{self.l_i[1] + self.l_i[2] - 55} = {self.k * (self.l_i[1] + self.l_i[2] - 5):.2f}; η = {origin.μ_η(self.k*(self.l_i[1] + self.l_i[2] - 55), "η"):.5f}'
             if self.n == 3:
-                return f'ηI: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {self.NNN(self.l_i[0] + 55):.5f}\n' \
-                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {self.NNN(55):.5f}\n' \
-                       f'ηIII: x = {self.l_i[1]} - 55 см; kx = {self.k}×{self.l_i[1] - 55} = {self.k * self.l_i[1] - 55:.2f}; η = {self.NNN(self.l_i[1] - 55):.5f}\n'
+                return f'ηI: x = {self.l_i[0]} + 55 см; kx = {self.k}×{self.l_i[0] + 55} = {(self.k * (self.l_i[0] + 55)):.2f}; η = {origin.μ_η(self.k*(self.l_i[0] + 55), "η"):.5f}\n' \
+                       f'ηII: x = 55 см; kx = {self.k}×55 = {(self.k * 55):.2f}; η = {origin.μ_η(self.k*55, "η"):.5f}\n' \
+                       f'ηIII: x = {self.l_i[1]} - 55 см; kx = {self.k}×{self.l_i[1] - 55} = {self.k * self.l_i[1] - 55:.2f}; η = {origin.μ_η(self.k*(self.l_i[1] - 55), "η"):.5f}\n'

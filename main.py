@@ -5,14 +5,15 @@ from temperature_diagramm import TempDiagramm
 from izgibi import Izgibi
 from initial_data import PodvizhnoySostav
 from openpyxl import Workbook
+from openpyxl.styles import Font
 from tkinter import messagebox
 import tkinter as tk
 import origin
 from tkinter import ttk
 
+
 class App:
     def __init__(self, root):
-
         print("Инициализация началась")
         self.root = root
         self.root.title("Ввод данных")
@@ -33,6 +34,9 @@ class App:
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scroll_y.pack(side="right", fill="y")
 
+        # Добавление обработчика события прокрутки мыши
+        self.canvas.bind_all("<MouseWheel>", self.on_mouse_wheel)
+
         # Создание полей ввода
         self.entries = {}
         entry_labels = [
@@ -46,26 +50,46 @@ class App:
             "material_of_sleepers",
             "h",
             "t_opt",
-            "val",
             "Type (элемент 1)",
             "Type (элемент 2)",
             "U[1]_лето_прямая",
             "U[2]_лето_кривая",
             "U[3]_зима_прямая",
             "U[4]_зима_кривая",
+            "k[1]_лето_прямая",
+            "k[2]_лето_кривая",
+            "k[3]_зима_прямая",
+            "k[4]_зима_кривая",
             "f[1]",
             "f[2]",
             "f[3]",
             "f[4]",
             "curve",
             "kd_locomotiva",
-            "P_ct_vagona"
+            "P_ct_vagona",
+            "L",
+            "alfa1",
+            "epsiland",
+            "beta",
+            "gamma",
+            "omega",
+            "omega_a",
+            "b",
+            "W"
         ]
 
-        # Добавление полей ввода в три столбца
+        # Добавление полей ввода в три столбца с выбором для определенных полей
         for index, label in enumerate(entry_labels):
             ttk.Label(self.scrollable_frame, text=label + ":").grid(row=index, column=0, sticky="w", pady=5)
-            entry = ttk.Entry(self.scrollable_frame)
+            if label == "redaction":
+                entry = ttk.Combobox(self.scrollable_frame, values=["new", "old"])
+            elif label == "rail_type":
+                entry = ttk.Combobox(self.scrollable_frame, values=["Р65", "Р50"])
+            elif label == "material_of_sleepers":
+                entry = ttk.Combobox(self.scrollable_frame, values=["Дерево", "Железобетон"])
+            else:
+                entry = ttk.Entry(self.scrollable_frame)
+
             entry.grid(row=index, column=1, pady=5)
             entry.bind('<Return>', self.focus_next)  # Привязка клавиши Enter к функции
             self.entries[label] = entry  # Сохраняем ссылки на поля ввода
@@ -81,9 +105,16 @@ class App:
         # Кнопка для подтверждения ввода
         self.confirm_button = ttk.Button(self.scrollable_frame, text="Подтвердить", command=self.confirm)
         self.confirm_button.grid(row=len(entry_labels), column=0, columnspan=2, pady=20)
+        # Устанавливаем размер окна (ширина x высота)
+        self.root.geometry("400x650")  # Значение можно изменить по вашему желанию
+        print("Инициализация закончилась")
 
-        print("Инициализация закончилась?")
-    print("допустим инициализация на уровне аттрибутов класса")
+    def on_mouse_wheel(self, event):
+        """Обработка прокрутки колесика мыши"""
+        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")  # Прокрутка на 1 единицу
+
+
+
     def focus_next(self, event):
         """Переход к следующему полю ввода"""
         current_widget = event.widget
@@ -101,9 +132,7 @@ class App:
         messagebox.showinfo("Копирование", "Данные скопированы в буфер обмена.")
 
     def paste_from_clipboard(self):
-        """Вставляет значения из буфера обмена в поля ввода
-        :param self:
-        """
+        """Вставляет значения из буфера обмена в поля ввода"""
         clipboard_data = self.root.clipboard_get().strip().split('\n')
         for line, label in zip(clipboard_data, self.entries.keys()):
             try:
@@ -121,12 +150,13 @@ class App:
         for field, entry in self.entries.items():
             value = entry.get().strip()  # Убираем пробелы
 
-            if field in ["t_min_min", "t_max_max", "скорость", "h", "t_opt", "val", "capacity", "P_ct_vagona",
-                         "curve",
-                         "kd_locomotiva", "R"]:
+            if field in ["t_min_min", "t_max_max", "скорость", "h", "t_opt", "capacity", "P_ct_vagona", "curve",
+                         "kd_locomotiva", "k[4]_зима_кривая", "k[3]_зима_прямая", "k[2]_лето_кривая", "k[1]_лето_прямая",
+                         "L", "alfa1", "epsiland", "beta", "gamma", "omega", "omega_a", "b", "W"]:
                 # Преобразуем числовые значения
                 try:
-                    if field in ["capacity", "kd_locomotiva"]:
+                    if field in ["capacity", "kd_locomotiva", "k[1]_лето_прямая", "k[4]_зима_кривая", "k[3]_зима_прямая",
+                                 "k[2]_лето_кривая", "L", "alfa1", "epsiland", "beta", "gamma", "omega", "omega_a", "b", "W"]:
                         value = float(value)
                     else:
                         value = int(value)
@@ -137,26 +167,91 @@ class App:
             data[field] = value  # Сохраняем значения
 
         # Формирование итоговых переменных
+        self.rail_type = data['rail_type']
+        self.material_of_sleepers = data["material_of_sleepers"]
+
+        if self.material_of_sleepers == "Железобетон":
+            if self.rail_type == "Р65":
+                self.val = 10
+            elif self.rail_type == "Р50":
+                self.val = 12
+        else:
+            if self.rail_type == "Р65":
+                self.val = 17
+            else:
+                self.val = 23
+
         self.station = data["Название станции"]
-        self.val = data["val"]
         self.Type = [data["Type (элемент 1)"], data["Type (элемент 2)"]]
-        self.U = [origin.characteristiki_puti[self.val - 1]["U"], origin.characteristiki_puti[self.val]["U"],
-                  float(data["U[3]_зима_прямая"]), float(data["U[4]_зима_кривая"])]
+        self.redaction = data["redaction"]
+        W = data["W"]
+        omega = data["omega"]
+        omega_a = data["omega_a"]
+        b = data["b"]
+        if self.rail_type == 'P50' or self.rail_type == 'Р50':
+            J0 = 2018
+        elif self.rail_type == 'P65' or self.rail_type == 'Р65':
+            J0 = 3547
+        else:
+            J0 = 4490
+        if self.redaction == "new":
+            self.U = [float(data["U[1]_лето_прямая"]), float(data["U[2]_лето_кривая"]),
+                      float(data["U[3]_зима_прямая"]), float(data["U[4]_зима_кривая"])]
+            if float(data["k[1]_лето_прямая"]) == 0:
+                k = [origin.characteristiki_puti[self.val - 1]['k'], origin.characteristiki_puti[self.val]['k'], round((self.U[1] / (4 * 2.1 * 10 ** 6 * J0)) ** 0.25, 5), round((self.U[3] / (4 * 2.1 * 10 ** 6 * J0)) ** 0.25, 5)]
+            else:
+                k = [float(data["k[3]_зима_прямая"]), float(data["k[2]_лето_кривая"]), float(data["k[1]_лето_прямая"]), float(data["k[4]_зима_кривая"])]
+        elif self.redaction == "old":
+            self.U = [origin.characteristiki_puti[self.val - 1]["U"], origin.characteristiki_puti[self.val]["U"],
+                      float(data["U[3]_зима_прямая"]), float(data["U[4]_зима_кривая"])]
+            k = [origin.characteristiki_puti[self.val - 1]['k'], origin.characteristiki_puti[self.val]['k'],
+                 round((self.U[1] / (4 * 2.1 * 10 ** 6 * J0)) ** 0.25, 5),
+                 round((self.U[3] / (4 * 2.1 * 10 ** 6 * J0)) ** 0.25, 5)]
+
+        if self.redaction == "new":
+            if data["L"] == 0:
+                L = origin.characteristiki_puti[self.val - 1]['L']
+                alfa1 = origin.characteristiki_puti[self.val - 1]['α1']
+                epsiland = origin.characteristiki_puti[self.val - 1]['eps']
+                betaa = origin.characteristiki_puti[self.val - 1]['beta']
+                gamma = origin.characteristiki_puti[self.val - 1]['gamma']
+            else:
+                L = data["L"]
+                alfa1 = data["alfa1"]
+                epsiland = data["epsiland"]
+                betaa = data["beta"]
+                gamma = data["gamma"]
+            if data["omega"] == 0:
+                omega = origin.characteristiki_puti[self.val]['ω']
+            if data["W"] == 0:
+                W = origin.characteristiki_puti[self.val]['W(6)']
+            if data["omega_a"] == 0:
+                omega_a = origin.characteristiki_puti[self.val]['Ωа']
+            if data["b"] == 0:
+                b = origin.characteristiki_puti[self.val]['b']
+        if self.redaction == "old":
+            L = origin.characteristiki_puti[self.val - 1]['L']
+            alfa1 = origin.characteristiki_puti[self.val - 1]['α1']
+            epsiland = origin.characteristiki_puti[self.val - 1]['eps']
+            betaa = origin.characteristiki_puti[self.val - 1]['beta']
+            gamma = origin.characteristiki_puti[self.val - 1]['gamma']
+            b = origin.characteristiki_puti[self.val]['b']
+            omega_a = origin.characteristiki_puti[self.val]['Ωа']
+            W = origin.characteristiki_puti[self.val]['W(6)']
+            omega = origin.characteristiki_puti[self.val]['ω']
+
+
         self.f = [float(data["f[1]"]), float(data["f[2]"]), float(data["f[3]"]), float(data["f[4]"])]
         self.capacity = data["capacity"]
         self.t_min_min = data["t_min_min"]
         self.t_max_max = data["t_max_max"]
         self.Ta = self.t_max_max + abs(self.t_min_min)
         self.kd_locomotiva = data["kd_locomotiva"]
-        self.redaction = data["redaction"]
         self.v = data["скорость"]
-        self.rail_type = data['rail_type']
-        self.material_of_sleepers = data["material_of_sleepers"]
         self.P_ct_vagona = data["P_ct_vagona"]
         self.R = data["curve"]
         self.h = data["h"]
         self.t_opt = data["t_opt"]
-
 
         CriteriiProchnostiPuti_Vagon = {
             '>50': {"bkr": 1500, "bsh": 11, "bb": 2.6, "bz": 0.8},
@@ -265,24 +360,15 @@ class App:
         li_loc = [int(x) for x in str_li_loc.split(',')]
         li_vag = [int(x) for x in str_li_vag.split(',')]
 
-        if self.redaction == "new":
+        if self.redaction == "new" and self.kd_locomotiva != 0:
             kd = [self.kd_locomotiva, round(0.1 + (0.2 * (self.v / fcr_vag)), 2)]  # ВВОД ИСХОДНЫХ ДАННЫХ
+        elif self.redaction == "new" and self.kd_locomotiva == 0:
+            kd = [round(0.1 + (0.2 * (self.v / fcr_loc)), 2), round(0.1 + (0.2 * (self.v / fcr_vag)), 2)]  # ВВОД ИСХОДНЫХ ДАННЫХ
         else:  # and self.redaction != "old"
             kd = [0, 0]
 
-        k_leto_curve = origin.characteristiki_puti[self.val]['k']
-        k_leto_pryamo = origin.characteristiki_puti[self.val - 1]['k']
-        L = origin.characteristiki_puti[self.val - 1]['L']
-        alfa1 = origin.characteristiki_puti[self.val - 1]['α1']
-        epsiland = origin.characteristiki_puti[self.val - 1]['eps']
-        betaa = origin.characteristiki_puti[self.val - 1]['beta']
-        gamma = origin.characteristiki_puti[self.val - 1]['gamma']
-
-        W = origin.characteristiki_puti[self.val]['W(6)']
         alpha0 = origin.characteristiki_puti[self.val]['α0']
-        omega = origin.characteristiki_puti[self.val]['ω']
-        omega_a = origin.characteristiki_puti[self.val]['Ωа']
-        b = origin.characteristiki_puti[self.val]['b']
+
         ae = origin.characteristiki_puti[self.val]['æ']
 
         # ВВОЖУ ИСХОДНЫЕ ДАННЫЕ
@@ -294,18 +380,6 @@ class App:
         l_i = [li_loc, li_vag]
         print(l_i)
         curve = ["Прямая", self.R]  # РУЧНОЙ ВВОД ИЗ ДАНО
-        # Прямая, Лето\Зима:     Кривая, Лето\Зима:
-        k = [k_leto_curve, 0.0, k_leto_pryamo, 0.0]
-
-        if self.rail_type == 'P50' or self.rail_type == 'Р50':
-            J0 = 2018
-        elif self.rail_type == 'P65' or self.rail_type == 'Р65':
-            J0 = 3547
-        else:
-            J0 = 4490
-
-        k[1] = round((self.U[1] / (4 * 2.1 * 10 ** 6 * J0)) ** 0.25, 5)
-        k[3] = round((self.U[3] / (4 * 2.1 * 10 ** 6 * J0)) ** 0.25, 5)
 
         f0 = origin.wtf[curve[0]][self.Type[0]]
         f1 = origin.wtf[curve[1]][self.Type[0]]
@@ -419,7 +493,7 @@ class App:
                 if sostav.delta_t_p() == delta_t_p1_min:
                     return index
 
-        if self.rail_type == 'P50':
+        if self.rail_type == 'Р50':
             "Площадь поперечного сечения рельса"
             F = 65.99
         else:
@@ -431,9 +505,12 @@ class App:
         workbook_3 = Workbook()
         sheet = workbook_3.active
 
+        # Создание шрифта 14 размера
+        font_14 = Font(size=14)
+
         for i, sostav in enumerate(sostavs, start=1):
 
-            sheet.cell(row=1, column=4, value=self.Type[0])
+            sheet.cell(row=1, column=4, value=self.Type[0]).font = font_14
             sheet.cell(row=1, column=5, value=self.Type[1])
 
             sheet.cell(row=2, column=i, value=sostav.curve)
@@ -719,6 +796,15 @@ class App:
             sheet.cell(row=90, column=i, value=kd[1])
             sheet.cell(row=90, column=9, value='kd_vag')
 
+            sheet.cell(row=91, column=i, value=бкр_locomotiva)
+            sheet.cell(row=91, column=9, value='Vag_[бкр]')
+
+            sheet.cell(row=92, column=i, value=origin.delta_ty_data[self.rail_type][curve[0]])
+            sheet.cell(row=92, column=9, value='ty из инструкции на прямой')
+
+            sheet.cell(row=93, column=i, value=origin.delta_ty_data[self.rail_type][curve[1]])
+            sheet.cell(row=93, column=9, value='ty из инструкции на кривой')
+
             sheet.cell(row=96, column=i, value=sostav.p_max_p_zmax())
             sheet.cell(row=96, column=9, value='Pmax_p_zmax')
 
@@ -765,26 +851,26 @@ class App:
             sheet.cell(row=108, column=i, value=inf)
             sheet.cell(row=108, column=9, value="Параметр µ Першин")
 
-            sheet.cell(row=113, column=i, value=delta_t_p0_min)
+            sheet.cell(row=113, column=i, value=delta_t_p0_min).font = font_14
             sheet.cell(row=113, column=9, value="[∆t_р_min]Прямая")
             sheet.cell(row=114, column=i,
-                       value=round(sostavs[indexxx_0()].sigma_kp() * 1.3 + 25.2 * delta_t_p0_min, 2))
+                       value=round(sostavs[indexxx_0()].sigma_kp() * 1.3 + 25.2 * delta_t_p0_min, 2)).font = font_14
             sheet.cell(row=114, column=9, value="нормальные суммарные напряжения(Прямая)")
 
-            sheet.cell(row=115, column=i, value=delta_t_p1_min)
+            sheet.cell(row=115, column=i, value=delta_t_p1_min).font = font_14
             sheet.cell(row=115, column=9, value="[∆t_р_min]Кривая")
             sheet.cell(row=116, column=i,
-                       value=round(sostavs[indexxx_1()].sigma_kp() * 1.3 + 25.2 * delta_t_p1_min, 2))
+                       value=round(sostavs[indexxx_1()].sigma_kp() * 1.3 + 25.2 * delta_t_p1_min, 2)).font = font_14
             sheet.cell(row=116, column=9, value="нормальные суммарные напряжения(Кривая)")
 
-            sheet.cell(row=135, column=i, value=sostavs[4].Ekv_gruzi_η_shpala_1())
+            sheet.cell(row=135, column=i, value=sostavs[4].Ekv_gruzi_η_shpala_1()).font = font_14
             sheet.cell(row=135, column=9, value="Ekv_gruzi_η_shpala_1")
 
-            sheet.cell(row=136, column=i, value=sostavs[4].Ekv_gruzi_η_shpala_3())
+            sheet.cell(row=136, column=i, value=sostavs[4].Ekv_gruzi_η_shpala_3()).font = font_14
             sheet.cell(row=136, column=9, value="Ekv_gruzi_η_shpala_3")
 
-            sheet.cell(row=117, column=i, value=25.2 * delta_t_p0_min)
-            sheet.cell(row=118, column=i, value=25.2 * delta_t_p1_min)
+            sheet.cell(row=117, column=i, value=25.2 * delta_t_p0_min).font = font_14
+            sheet.cell(row=118, column=i, value=25.2 * delta_t_p1_min).font = font_14
             sheet.cell(row=117, column=9, value="σ_t(Прямая)")
             sheet.cell(row=118, column=9, value="σ_t(Кривая)")
 
@@ -830,12 +916,19 @@ class App:
             sheet.cell(row=130, column=i, value=F * 2)
             sheet.cell(row=130, column=9, value="F * 2")
 
-            t_y = round(P_norm0 / (25 * 2 * F))
-            sheet.cell(row=131, column=i, value=t_y)
-            sheet.cell(row=131, column=9, value="[∆t_уПрямая]")
-            t_y_curve = round(P_norm1 / (25 * 2 * F))
-            sheet.cell(row=132, column=i, value=t_y_curve)
-            sheet.cell(row=132, column=9, value="[∆t_у_curve]")
+            t_y_counted = round(P_norm0 / (25 * 2 * F))
+            sheet.cell(row=95, column=i, value=t_y_counted).font = font_14
+            sheet.cell(row=95, column=9, value="[∆t_уПрямая расчетное]")
+
+            t_y_curve_counted = round(P_norm1 / (25 * 2 * F))
+            sheet.cell(row=94, column=i, value=t_y_curve_counted).font = font_14
+            sheet.cell(row=94, column=9, value="[∆t_у_curve расчетное]")
+
+            sheet.cell(row=132, column=i, value=min(t_y_curve_counted, origin.delta_ty_data[self.rail_type][curve[1]])).font = font_14
+            sheet.cell(row=132, column=9, value="[∆t_у_curve выбранное]")
+
+            sheet.cell(row=131, column=i, value=min(t_y_counted, origin.delta_ty_data[self.rail_type][curve[0]])).font = font_14
+            sheet.cell(row=131, column=9, value="[∆t_у_прямая выбранное]")
 
             sheet.cell(row=141, column=i, value=delta_t_p0_min + round(P_norm0 / (25 * 2 * F), 2) - 10)
             sheet.cell(row=141, column=9, value="[T] прямая")
@@ -843,9 +936,9 @@ class App:
             sheet.cell(row=140, column=9, value="[T] кривая")
             sheet.cell(row=139, column=i, value=self.Ta)
             sheet.cell(row=139, column=9, value="Tа")
-            sheet.cell(row=138, column=i, value=self.t_min_min)
+            sheet.cell(row=138, column=i, value=self.t_min_min).font = font_14
             sheet.cell(row=138, column=9, value="t_min_min")
-            sheet.cell(row=137, column=i, value=self.t_max_max)
+            sheet.cell(row=137, column=i, value=self.t_max_max).font = font_14
             sheet.cell(row=137, column=9, value="t_max_max")
 
             t_max_zakr = min(self.t_min_min + delta_t_p0_min, self.t_max_max)
@@ -854,10 +947,10 @@ class App:
             t_max_zakr_curve = min(self.t_min_min + delta_t_p1_min, self.t_max_max)
             sheet.cell(row=143, column=i, value=t_max_zakr_curve)
             sheet.cell(row=143, column=9, value="t_max_zakr_curve")
-            t_min_zakr = max(self.t_max_max - t_y, self.t_min_min)
+            t_min_zakr = max(self.t_max_max - min(t_y_counted, origin.delta_ty_data[self.rail_type][curve[0]]), self.t_min_min)
             sheet.cell(row=144, column=i, value=t_min_zakr)
             sheet.cell(row=144, column=9, value='t_min_zakr')
-            t_min_zakr_curve = max(self.t_max_max - t_y_curve, self.t_min_min)
+            t_min_zakr_curve = max(self.t_max_max - min(t_y_curve_counted, origin.delta_ty_data[self.rail_type][curve[1]]), self.t_min_min)
             sheet.cell(row=145, column=i, value=t_min_zakr_curve)
             sheet.cell(row=145, column=9, value='t_min_zakr_curve')
             sheet.cell(row=146, column=9, value='Грузонапряженность')
@@ -867,21 +960,22 @@ class App:
 
             vvv = GrafVerTemp(t_max_max=self.t_max_max, t_min_min=self.t_min_min,
                               t_min_zakr=min(t_min_zakr, t_min_zakr_curve), t_max_zakr=t_max_zakr,
-                              t_y=min(t_y, t_y_curve), delta_t_p=min(delta_t_p1_min, delta_t_p0_min),
+                              t_y=min(t_y_counted, t_y_curve_counted, origin.delta_ty_data[self.rail_type][curve[0]],origin.delta_ty_data[self.rail_type][curve[1]]), delta_t_p=min(delta_t_p1_min, delta_t_p0_min),
                               t_opt=self.t_opt)
             vvv.grafic_maker_()
 
-            aaa = TempDiagramm(t_max_max=self.t_max_max, t_min_min=self.t_min_min, t_y_curve=t_y_curve,
+            aaa = TempDiagramm(t_max_max=self.t_max_max, t_min_min=self.t_min_min, t_y_curve=min(t_y_curve_counted, origin.delta_ty_data[self.rail_type][curve[1]]),
                                curve=curve[1],
                                t_min_zakr=t_min_zakr, t_max_zakr=t_max_zakr, t_min_zakr_curve=t_min_zakr_curve,
-                               t_max_zakr_curve=t_max_zakr_curve, t_y=t_y, delta_t_p1_min=delta_t_p1_min,
+                               t_max_zakr_curve=t_max_zakr_curve, t_y=min(t_y_counted, origin.delta_ty_data[self.rail_type][curve[0]]), delta_t_p1_min=delta_t_p1_min,
                                delta_t_p0_min=delta_t_p0_min)
             aaa.grafic_maker()
 
         # Уже заняты 133 и 134
         # Почему-то возвращают только первое вхождение если строки кода стоят здесь, а не выше
-
+        print(k)
         workbook_3.save('УЛЬТИМАТИВНАЯ_Формулы.xlsx')
+        workbook_3.close()
 
         xxx = Shpala(sostavs=sostavs[4])
         xxx.grafic()  # Вызов метода для построения графиков
@@ -893,11 +987,12 @@ class App:
         zzz.grafic_mader()
 
         messagebox.showinfo("Успех", "Все данные успешно введены!")
+        print(self.val)
         self.root.destroy()  # Закрыть окно после подтверждения
+        self.root.quit()  # Завершает цикл обработки событий Tkinter
     # Запуск приложения
 if __name__ == "__main__":
     root = tk.Tk()
     app = App(root)
     root.mainloop()
-
 

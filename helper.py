@@ -1,25 +1,38 @@
-import numpy as np
-import matplotlib.pyplot as plt
+from docx import Document
 
-# Заданные данные
-x1 = -42
-x2 = 58
-mean = (x2 - x1) / 2 - 45
-std_dev = 30
+def merge_cells(doc):
+    # Создание таблицы
+    table = doc.add_table(rows=5, cols=5)
 
-# Генерация данных для построения нормального распределения
-x = np.linspace(x1 - 10, x2 + 10, 1000)
-y = (1 / (std_dev * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - mean) / std_dev) ** 2)
+    # Заполнение ячеек данными
+    for row in range(5):
+        for col in range(5):
+            cell = table.cell(row, col)
+            cell.text = f'[{row},{col}]'
 
-# Построение графика
-plt.figure(figsize=(8, 6))
-plt.plot(x, y, color='b')
-plt.xlabel('Значения X')
-plt.ylabel('Плотность вероятности')
-plt.title('Нормальное распределение')
-plt.axvline(x=mean, color='r', linestyle='--', label='Вершина графика')
-plt.legend()
+    # Объединение ячеек по строкам (ячейка из столбца 0, строки 0-1)
+    cell_to_merge_row = table.cell(0, 0)
+    cell_to_merge_row.merge(table.cell(1, 0))
 
-plt.grid(True)
-plt.show()
+    # Объединение ячеек по столбцам (ячейка из первого ряда, столбцы 1-2)
+    cell_to_merge_col = table.cell(0, 1)
+    cell_to_merge_col.merge(table.cell(0, 2))
+
+    # Объединение ячеек одновременно (ячейка из 0-1 ряда, 3-4 столбца)
+    cell_to_merge_both = table.cell(0, 3)
+    cell_to_merge_both.merge(table.cell(1, 4))
+
+    # Установка текста для объединенных ячеек
+    cell_to_merge_row.text = 'Объединение по строкам'
+    cell_to_merge_col.text = 'Объединение по столбцам'
+    cell_to_merge_both.text = 'Объединение обеих'
+
+# Создание документа
+doc = Document()
+doc.add_heading('Пример объединения ячеек', level=1)
+merge_cells(doc)
+
+# Сохранение документа
+doc.save('merged_cells_example.docx')
+
 

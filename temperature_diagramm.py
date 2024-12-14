@@ -38,10 +38,10 @@ class TempDiagramm:
             return math.floor(number / 10) * 10
     def grafic_maker(self):
         # Прямая
-        x = [5, 5]
+        x = [3, 3]
         y = [self.t_min_min, self.t_max_zakr]
         y1 = [self.t_max_max, self.t_min_zakr]
-        x1 = [3, 3]
+        x1 = [2, 2]
 
         # Кривая
         x2 = [17, 17]
@@ -67,6 +67,23 @@ class TempDiagramm:
                 color=None,  # Цвет заливки
                 alpha=0.0  # Прозрачность заливки
             )
+            ax.text(x=4, y=self.t_max_zakr + 5, s=f't max закр = {self.t_max_zakr}℃', va='bottom', ha='left',
+                    fontsize=10)
+            ax.text(x=4, y=self.t_min_zakr - 5, s=f't min закр = {self.t_min_zakr}℃', va='bottom', ha='left',
+                    fontsize=10)
+            ax.text(x=1, y=self.t_max_zakr-3, s=f'[∆ty] = {self.t_y}℃', va='bottom', ha='left', fontsize=7, rotation=90)
+            ax.text(x=1, y=self.t_max_zakr + 3, s=f'[∆tp] = {self.delta_t_p0_min}℃', va='bottom', ha='left',
+                    fontsize=7,
+                    rotation=90)
+        else:
+            ax.text(x=4, y=self.t_max_zakr - 7, s=f't max закр = {self.t_max_zakr}℃', va='bottom', ha='left',
+                    fontsize=10)
+            ax.text(x=4, y=self.t_min_zakr + 5, s=f't min закр = {self.t_min_zakr}℃', va='bottom', ha='left',
+                    fontsize=10)
+            ax.text(x=1, y=self.t_min_zakr+3, s=f'[∆ty] = {self.t_y}℃', va='bottom', ha='left', fontsize=7, rotation=90)
+            ax.text(x=2, y=self.t_max_zakr - 25, s=f'[∆tp] = {self.delta_t_p0_min}℃', va='bottom', ha='left',
+                    fontsize=7,
+                    rotation=90)
         if self.t_max_zakr_curve > self.t_min_zakr_curve:
             ax.fill_between(
                 x=[13, 30],  # Координаты x для начала и конца области по оси X
@@ -76,6 +93,27 @@ class TempDiagramm:
                 color=None,  # Цвет заливки
                 alpha=0.0  # Прозрачность заливки
             )
+            ax.text(x=14, y=self.t_min_zakr_curve-3, s=f'[∆ty] = {self.t_y_curve}℃', va='bottom', ha='left', fontsize=7,
+                    rotation=90)
+            ax.text(x=16, y=self.t_min_zakr_curve - 40, s=f'[∆tp] = {self.delta_t_p1_min}℃', va='bottom', ha='left',
+                    fontsize=10, rotation=90)
+            ax.text(x=18, y=self.t_max_zakr + 15, s=f't max закр = {self.t_max_zakr_curve}℃', va='bottom', ha='left',
+                    fontsize=10)
+            ax.text(x=18, y=self.t_min_zakr_curve - 5, s=f't min закр = {self.t_min_zakr_curve}℃', va='bottom',
+                    ha='left',
+                    fontsize=10)
+
+        else:
+            ax.text(x=14, y=self.t_min_zakr_curve+3, s=f'[∆ty] = {self.t_y_curve}℃', va='bottom', ha='left', fontsize=7,
+                    rotation=90)
+            ax.text(x=16, y=self.t_max_zakr_curve - 25, s=f'[∆tp] = {self.delta_t_p1_min}℃', va='bottom', ha='left',
+                    fontsize=7, rotation=90)
+            ax.text(x=18, y=self.t_max_zakr - 15, s=f't max закр = {self.t_max_zakr_curve}℃', va='bottom', ha='left',
+                    fontsize=10)
+            ax.text(x=18, y=self.t_min_zakr_curve + 5, s=f't min закр = {self.t_min_zakr_curve}℃', va='bottom',
+                    ha='left',
+                    fontsize=10)
+
         # Рисуем горизонтальные линии (спайны)
         ax.hlines(y=self.t_max_max, xmin=0, xmax=30, color='black', linewidth=1, linestyles='--')  # Верхний спайн
         ax.hlines(y=self.t_min_min, xmin=0, xmax=30, color='black', linewidth=1, linestyles='--')  # Нижний спайн
@@ -84,25 +122,11 @@ class TempDiagramm:
         ax.hlines(y=self.t_min_zakr_curve, xmin=13, xmax=30, color='black', linewidth=1, linestyles='-.')  # Нижний спайн
         ax.hlines(y=self.t_max_zakr_curve, xmin=13, xmax=30, color='black', linewidth=1, linestyles='-.')  # Нижний спайн
 
-        ax.fill_between(x, x1, x2, color='lightblue', alpha=0.5)  # Заштриховывание между y1 и y2
-
         # Добавляем текст с помощью ax.text
         ax.text(5, self.t_min_min - 5, f'tmin min = {self.t_min_min}℃', ha='center',
                 va='center')  # ha - выравнивание по горизонтали, va - по вертикали
         ax.text(5, self.t_max_max + 5, f'tmax max = {self.t_max_max}℃', ha='center', va='center')
         # Подписываем линию
-        ax.text(x=15, y=self.t_max_zakr, s=f't max закр = {self.t_max_zakr_curve}℃', va='bottom', ha='left', fontsize=10)
-        ax.text(x=2, y=self.t_max_zakr, s=f't max закр = {self.t_max_zakr}℃', va='bottom', ha='left', fontsize=10)
-        ax.text(x=2, y=self.t_min_zakr - 7, s=f't min закр = {self.t_min_zakr}℃', va='bottom', ha='left', fontsize=10)
-        ax.text(x=15, y=self.t_min_zakr_curve - 7, s=f't min закр = {self.t_min_zakr_curve}℃', va='bottom', ha='left',
-                fontsize=10)
-        ax.text(x=18, y=self.t_min_zakr_curve - 40, s=f'[∆tp] = {self.delta_t_p1_min}℃', va='bottom', ha='left',
-                fontsize=10, rotation=90)
-        ax.text(x=4, y=self.t_min_zakr_curve - 42, s=f'[∆tp] = {self.delta_t_p0_min}℃', va='bottom', ha='left', fontsize=7,
-                rotation=90)
-        ax.text(x=2, y=self.t_min_zakr, s=f'[∆ty] = {self.t_y}℃', va='bottom', ha='left', fontsize=7, rotation=90)
-        ax.text(x=14, y=self.t_min_zakr_curve, s=f'[∆ty] = {self.t_y_curve}℃', va='bottom', ha='left', fontsize=7,
-                rotation=90)
         ax.text(x=15, y=self.t_min_min - 12, s=f'Кривая R = {self.curve}м\ntопт = 30±5℃', va='bottom', ha='left',
                 fontsize=10)
 
