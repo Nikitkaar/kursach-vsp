@@ -95,15 +95,14 @@ class GrafVerTemp:
         # Подпись к стрелке
         plt.text(arrow_end[0] + 1, arrow_end[1] + 0.0002, f'[∆ty] = {self.t_y}℃', fontsize=10, ha='left')
 
-        #plt.annotate('', xy=(self.t_min_min + 63, 0), xytext=(self.t_min_min, 0),
-        #             arrowprops=dict(arrowstyle='->', color='black', lw=1.0))
+        #plt.annotate('', xy=(self.t_min_min + 63, 0), xytext=(self.t_min_min, 0), arrowprops=dict(arrowstyle='->', color='black', lw=1.0))
         # Подпись к стрелке
-        #plt.text(self.t_min_min + 55, 0.0002, f'tзаз = 40℃', fontsize=10, ha='left')
+        #plt.text(self.t_min_min + 63, 0.0002, f'tзаз = 63℃', fontsize=10, ha='left')
 
         plt.annotate('', xy=(self.delta_t_p, 0), xytext=(self.t_min_min, 0),
                      arrowprops=dict(arrowstyle='->', color='gray', lw=1.0))
         # Подпись к стрелке
-        plt.text(self.delta_t_p - 7, 0.0002, f'[∆tp] = {self.delta_t_p_true}℃', fontsize=10, ha='left')
+        plt.text(self.delta_t_p - 12, 0.0002, f'[∆tp] = {self.delta_t_p_true}℃', fontsize=10, ha='left')
         plt.text(self.t_max_max - 7, 0.0015, f'ω1', fontsize=20, ha='left')
         plt.text(self.t_min_min + 15, 0.0015, f'ω2', fontsize=20, ha='left')
 
@@ -144,14 +143,14 @@ class GrafVerTemp:
                  ha='left', color='blue')
         plt.text(self.t_opt-1, np.max(y_min) * 1.1, '10', fontsize=10,
                  ha='left', color='blue')
-        plt.text(self.t_opt-2, violet_y1, f'tопт из инструкции 2544р = {self.t_opt}±5℃', fontsize=10,
+        plt.text(self.t_opt-2, violet_y1, f'tопт из инструкции = {self.t_opt}±5℃', fontsize=10,
                  ha='left', color='blue')
         plt.text(self.t_opt - 18, np.max(y_min) * 1.1, '25', fontsize=10,
                  ha='left', color='blue')
         plt.text(self.t_opt + 11, np.max(y_min) * 1.1, '15', fontsize=10,
                  ha='left', color='blue')
         # Set the title and labels
-        plt.title("График плотности вероятности распределения температуры рельса в годичном цикле")
+        plt.title("График вероятности распределения температуры рельса в годичном цикле")
         plt.xlabel("t℃")
         plt.ylabel("Вероятность распределения")
 

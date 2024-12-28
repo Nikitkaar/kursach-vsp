@@ -67,12 +67,12 @@ class TempDiagramm:
                 color=None,  # Цвет заливки
                 alpha=0.0  # Прозрачность заливки
             )
-            ax.text(x=4, y=self.t_max_zakr + 5, s=f't max закр = {self.t_max_zakr}℃', va='bottom', ha='left',
+            ax.text(x=4, y=self.t_max_zakr + 8, s=f't max закр = {self.t_max_zakr}℃', va='bottom', ha='left',
                     fontsize=10)
             ax.text(x=4, y=self.t_min_zakr - 5, s=f't min закр = {self.t_min_zakr}℃', va='bottom', ha='left',
                     fontsize=10)
-            ax.text(x=1, y=self.t_max_zakr-3, s=f'[∆ty] = {self.t_y}℃', va='bottom', ha='left', fontsize=7, rotation=90)
-            ax.text(x=1, y=self.t_max_zakr + 3, s=f'[∆tp] = {self.delta_t_p0_min}℃', va='bottom', ha='left',
+            ax.text(x=1, y=self.t_min_zakr-23, s=f'[∆ty] = {self.t_y}℃', va='bottom', ha='left', fontsize=7, rotation=90)
+            ax.text(x=2.2, y=self.t_min_zakr - 35, s=f'[∆tp] = {self.delta_t_p0_min}℃', va='bottom', ha='left',
                     fontsize=7,
                     rotation=90)
         else:
@@ -93,13 +93,13 @@ class TempDiagramm:
                 color=None,  # Цвет заливки
                 alpha=0.0  # Прозрачность заливки
             )
-            ax.text(x=14, y=self.t_min_zakr_curve-3, s=f'[∆ty] = {self.t_y_curve}℃', va='bottom', ha='left', fontsize=7,
+            ax.text(x=14, y=self.t_max_zakr_curve+6, s=f'[∆ty] = {self.t_y_curve}℃', va='bottom', ha='left', fontsize=7,
                     rotation=90)
             ax.text(x=16, y=self.t_min_zakr_curve - 40, s=f'[∆tp] = {self.delta_t_p1_min}℃', va='bottom', ha='left',
-                    fontsize=10, rotation=90)
-            ax.text(x=18, y=self.t_max_zakr + 15, s=f't max закр = {self.t_max_zakr_curve}℃', va='bottom', ha='left',
+                    fontsize=7, rotation=90)
+            ax.text(x=18, y=self.t_max_zakr + 6, s=f't max закр = {self.t_max_zakr_curve}℃', va='bottom', ha='left',
                     fontsize=10)
-            ax.text(x=18, y=self.t_min_zakr_curve - 5, s=f't min закр = {self.t_min_zakr_curve}℃', va='bottom',
+            ax.text(x=18, y=self.t_min_zakr_curve - 6, s=f't min закр = {self.t_min_zakr_curve}℃', va='bottom',
                     ha='left',
                     fontsize=10)
 

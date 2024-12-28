@@ -106,7 +106,7 @@ class App:
         self.confirm_button = ttk.Button(self.scrollable_frame, text="Подтвердить", command=self.confirm)
         self.confirm_button.grid(row=len(entry_labels), column=0, columnspan=2, pady=20)
         # Устанавливаем размер окна (ширина x высота)
-        self.root.geometry("400x650")  # Значение можно изменить по вашему желанию
+        self.root.geometry("400x600")  # Значение можно изменить по вашему желанию
         print("Инициализация закончилась")
 
     def on_mouse_wheel(self, event):
@@ -204,8 +204,9 @@ class App:
         elif self.redaction == "old":
             self.U = [origin.characteristiki_puti[self.val - 1]["U"], origin.characteristiki_puti[self.val]["U"],
                       float(data["U[3]_зима_прямая"]), float(data["U[4]_зима_кривая"])]
-            k = [origin.characteristiki_puti[self.val - 1]['k'], origin.characteristiki_puti[self.val]['k'],
+            k = [origin.characteristiki_puti[self.val]['k'],
                  round((self.U[1] / (4 * 2.1 * 10 ** 6 * J0)) ** 0.25, 5),
+                 origin.characteristiki_puti[self.val - 1]['k'],
                  round((self.U[3] / (4 * 2.1 * 10 ** 6 * J0)) ** 0.25, 5)]
 
         if self.redaction == "new":
